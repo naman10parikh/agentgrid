@@ -1,0 +1,43 @@
+{
+  "name": "agentgrid",
+  "version": "0.4.0",
+  "description": "Spawn a grid of AI coding agents in one command",
+  "bin": {
+    "agentgrid": "./agentgrid"
+  },
+  "scripts": {
+    "postinstall": "chmod +x agentgrid pane-status.sh install.sh 2>/dev/null || true",
+    "test": "bash -c './agentgrid version && echo PASS'"
+  },
+  "files": [
+    "agentgrid",
+    "pane-status.sh",
+    "install.sh",
+    "presets/",
+    "examples/",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "cli",
+    "terminal",
+    "tmux",
+    "agents",
+    "grid",
+    "claude",
+    "codex",
+    "ai",
+    "multi-agent",
+    "developer-tools"
+  ],
+  "author": "Naman Parikh",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naman10parikh/agentgrid"
+  },
+  "homepage": "https://github.com/naman10parikh/agentgrid",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

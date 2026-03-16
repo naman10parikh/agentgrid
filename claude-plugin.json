@@ -1,0 +1,30 @@
+{
+  "name": "agentgrid",
+  "version": "0.1.0",
+  "description": "Spawn a grid of AI coding agents in one command. Grid layouts, colored status labels, sound alerts.",
+  "author": "naman10parikh",
+  "license": "MIT",
+  "repository": "https://github.com/naman10parikh/agentgrid",
+  "type": "skill",
+  "install": {
+    "command": "curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash"
+  },
+  "skills": [
+    {
+      "name": "agentgrid",
+      "description": "Create grids of AI coding agents with status indicators and sound alerts",
+      "trigger": "When user wants to run multiple agent sessions in parallel, create grid layouts, or manage multi-agent terminal workflows"
+    }
+  ],
+  "hooks": {
+    "UserPromptSubmit": {
+      "command": "~/.local/bin/agentgrid-pane-status running 2>/dev/null; true"
+    },
+    "PermissionRequest": {
+      "command": "~/.local/bin/agentgrid-pane-status needs-input 2>/dev/null; afplay /System/Library/Sounds/Tink.aiff 2>/dev/null &"
+    },
+    "Stop": {
+      "command": "~/.local/bin/agentgrid-pane-status done 2>/dev/null; afplay /System/Library/Sounds/Glass.aiff 2>/dev/null &"
+    }
+  }
+}
