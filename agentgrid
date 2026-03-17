@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-VERSION="0.6.0"
+VERSION="0.6.1"
 CONFIG_DIR="${HOME}/.agentgrid"
 CONFIG_FILE="${CONFIG_DIR}/config.json"
 SOUNDS_DIR="${CONFIG_DIR}/sounds"
@@ -549,9 +549,10 @@ cmd_save() {
     mkdir -p "$SESSIONS_DIR"
     python3 << PYEOF
 import json, subprocess, re, os
-# Capture: index, label, running command, working directory, pane status
+
+# Capture: index, label, command, directory, status, AND pane PID
 result = subprocess.run(["tmux", "list-panes", "-F",
-    "#{pane_index}|#{@pane_label}|#{pane_current_command}|#{pane_current_path}|#{@pane_status}"],
+    "#{pane_index}|#{@pane_label}|#{pane_current_command}|#{pane_current_path}|#{@pane_status}|#{pane_pid}"],
     capture_output=True, text=True)
 
 def normalize(cmd):
@@ -562,20 +563,66 @@ def normalize(cmd):
     if cmd in ("bash", "zsh", "fish"): return ""
     return cmd
 
+# Build process tree for PID → Claude session mapping
+ps_out = subprocess.run(["ps", "-eo", "ppid,pid"], capture_output=True, text=True)
+children = {}
+for line in ps_out.stdout.strip().split('\n')[1:]:
+    parts = line.strip().split()
+    if len(parts) == 2:
+        ppid, pid = int(parts[0]), int(parts[1])
+        children.setdefault(ppid, []).append(pid)
+
+def get_descendants(pid):
+    result = set()
+    stack = [pid]
+    while stack:
+        p = stack.pop()
+        for c in children.get(p, []):
+            result.add(c)
+            stack.append(c)
+    return result
+
+# Load all active Claude session files (PID → sessionId)
+claude_sessions_dir = os.path.expanduser("~/.claude/sessions")
+pid_to_session = {}
+if os.path.isdir(claude_sessions_dir):
+    for f in os.listdir(claude_sessions_dir):
+        if f.endswith('.json'):
+            try:
+                with open(os.path.join(claude_sessions_dir, f)) as fh:
+                    data = json.load(fh)
+                pid_to_session[data["pid"]] = data["sessionId"]
+            except (json.JSONDecodeError, KeyError):
+                pass
+
 panes = []
 for line in result.stdout.strip().split('\n'):
     if not line: continue
     parts = line.split('|')
-    if len(parts) >= 5:
+    if len(parts) >= 6:
         idx = int(parts[0])
+        pane_pid = int(parts[5])
+        command = normalize(parts[2])
+
+        # Find Claude sessionId by walking process tree from pane shell PID
+        session_id = ""
+        if command == "claude":
+            descendants = get_descendants(pane_pid)
+            for desc in descendants:
+                if desc in pid_to_session:
+                    session_id = pid_to_session[desc]
+                    break
+
         panes.append({
             "pane": idx,
             "label": parts[1],
-            "command": normalize(parts[2]),
+            "command": command,
             "directory": parts[3],
-            "status": parts[4]
+            "status": parts[4],
+            "sessionId": session_id
         })
-        # Capture pane buffer (what's visible on screen) for reference
+
+        # Capture pane buffer for reference
         buf = subprocess.run(["tmux", "capture-pane", "-p", "-t", f":.{idx}"],
             capture_output=True, text=True)
         if buf.stdout.strip():
@@ -588,8 +635,8 @@ with open("$SESSIONS_DIR/$name.json", "w") as f:
 print(f"  Saved: $name ({len(panes)} panes)")
 for p in panes:
     cmd = p["command"] or "shell"
-    print(f"    Pane {p['pane']}: {p['label']} ({cmd})")
-print(f"  Buffers saved to ~/.agentgrid/sessions/$name-pane-*.txt")
+    sid = p["sessionId"][:8] + "..." if p["sessionId"] else "n/a"
+    print(f"    Pane {p['pane']}: {p['label']} ({cmd}) session={sid}")
 PYEOF
 }
 
@@ -668,6 +715,7 @@ for p in panes:
     label = p.get("label", f"Pane {idx}")
     directory = p.get("directory", "")
     command = p.get("command", "")
+    session_id = p.get("sessionId", "")
     target = "$window" + f".{idx}"
 
     # Set pane metadata
@@ -681,11 +729,19 @@ for p in panes:
     # Restart saved command (unless --no-start)
     if start_agents and command:
         time.sleep(0.3)  # Let cd complete
-        if command == "claude":
-            subprocess.run(["tmux", "send-keys", "-t", target, "claude --continue", "Enter"], check=False)
+        if command == "claude" and session_id:
+            # Resume the EXACT conversation via session ID
+            subprocess.run(["tmux", "send-keys", "-t", target,
+                f"claude --resume {session_id}", "Enter"], check=False)
+            started.append(f"    Pane {idx}: {label} -> claude --resume {session_id[:8]}...")
+        elif command == "claude":
+            # No session ID saved — fall back to most recent
+            subprocess.run(["tmux", "send-keys", "-t", target,
+                "claude --continue", "Enter"], check=False)
+            started.append(f"    Pane {idx}: {label} -> claude --continue (no session ID)")
         else:
             subprocess.run(["tmux", "send-keys", "-t", target, command, "Enter"], check=False)
-        started.append(f"    Pane {idx}: {label} -> {command}")
+            started.append(f"    Pane {idx}: {label} -> {command}")
 
 subprocess.run(["tmux", "select-pane", "-t", "$window" + ".1"])
 print(f"  Restored {total} panes")
@@ -693,7 +749,6 @@ if started:
     print(f"  Restarted {len(started)} agents:")
     for s in started:
         print(s)
-    print(f"  (Claude panes resume last conversation via --continue)")
 else:
     print(f"  Layout + names only (no agents started)")
     print(f"  Start agents: agentgrid broadcast claude")
