@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-VERSION="0.6.1"
+VERSION="0.7.0"
 CONFIG_DIR="${HOME}/.agentgrid"
 CONFIG_FILE="${CONFIG_DIR}/config.json"
 SOUNDS_DIR="${CONFIG_DIR}/sounds"
@@ -93,15 +93,24 @@ check_agent_installed() { command -v "$1" &>/dev/null; }
 
 # Map tmux process names to readable agent names
 # tmux shows version numbers (2.1.76) or binary names, not the CLI alias
+# Note: "node" is ambiguous (codex, gemini, cline all use node).
+# The Python detect_agent() in save uses ps args for accurate detection.
 normalize_agent_name() {
     local raw="$1"
     case "$raw" in
-        2.1.*|2.0.*|1.*)  echo "claude" ;;  # Claude Code shows version as process name
-        codex-cli*)        echo "codex" ;;
-        node)              echo "agent" ;;   # Many CLI tools run as node
-        python*|python3*)  echo "aider" ;;   # Aider runs as python
-        bash|zsh|fish)     echo "shell" ;;
-        *)                 echo "$raw" ;;
+        [0-9].[0-9].*|[0-9][0-9].*)  echo "claude" ;;  # Claude Code shows version
+        codex*|codex-cli*)  echo "codex" ;;
+        gemini*)            echo "gemini" ;;
+        aider*)             echo "aider" ;;
+        goose*)             echo "goose" ;;
+        opencode*)          echo "opencode" ;;
+        hermes*)            echo "hermes" ;;
+        cline*)             echo "cline" ;;
+        copilot*)           echo "copilot" ;;
+        node)               echo "agent" ;;   # Ambiguous — could be codex/gemini/etc
+        python*|python3*)   echo "aider" ;;   # Likely aider
+        bash|zsh|fish|sh)   echo "shell" ;;
+        *)                  echo "$raw" ;;
     esac
 }
 
@@ -548,25 +557,17 @@ cmd_save() {
     local name="${1:-default}"
     mkdir -p "$SESSIONS_DIR"
     python3 << PYEOF
-import json, subprocess, re, os
+import json, subprocess, re, os, glob
 
 # Capture: index, label, command, directory, status, AND pane PID
 result = subprocess.run(["tmux", "list-panes", "-F",
     "#{pane_index}|#{@pane_label}|#{pane_current_command}|#{pane_current_path}|#{@pane_status}|#{pane_pid}"],
     capture_output=True, text=True)
 
-def normalize(cmd):
-    """Map tmux process names to readable agent names"""
-    if re.match(r'^\d+\.\d+\.\d+', cmd):  # Version number = Claude Code
-        return "claude"
-    if cmd.startswith("codex"): return "codex"
-    if cmd in ("bash", "zsh", "fish"): return ""
-    return cmd
-
-# Build process tree for PID → Claude session mapping
-ps_out = subprocess.run(["ps", "-eo", "ppid,pid"], capture_output=True, text=True)
+# Build process tree (parent → children) + full command lines
+ps_tree = subprocess.run(["ps", "-eo", "ppid,pid"], capture_output=True, text=True)
 children = {}
-for line in ps_out.stdout.strip().split('\n')[1:]:
+for line in ps_tree.stdout.strip().split('\n')[1:]:
     parts = line.strip().split()
     if len(parts) == 2:
         ppid, pid = int(parts[0]), int(parts[1])
@@ -582,19 +583,114 @@ def get_descendants(pid):
             stack.append(c)
     return result
 
-# Load all active Claude session files (PID → sessionId)
+def get_cmdline(pid):
+    """Get full command line for a PID"""
+    try:
+        r = subprocess.run(["ps", "-o", "args=", "-p", str(pid)],
+            capture_output=True, text=True)
+        return r.stdout.strip()
+    except: return ""
+
+def detect_agent(pane_pid, tmux_cmd):
+    """Detect which agent is running by checking child process command lines.
+    Returns (agent_name, agent_pid) or ("", 0) for idle shells."""
+    # Quick check: tmux shows version numbers for Claude
+    if re.match(r'^\d+\.\d+\.\d+', tmux_cmd):
+        return "claude", 0
+    if tmux_cmd in ("bash", "zsh", "fish", "sh", "dash"):
+        return "", 0  # Idle shell
+
+    # For "node" and other ambiguous names, check child process args
+    for child_pid in get_descendants(pane_pid):
+        cmdline = get_cmdline(child_pid)
+        lower = cmdline.lower()
+        if "/claude" in lower or "claude-code" in lower:
+            return "claude", child_pid
+        if "/codex" in lower or "codex-cli" in lower:
+            return "codex", child_pid
+        if "/gemini" in lower or "gemini-cli" in lower:
+            return "gemini", child_pid
+        if "/aider" in lower or "aider-chat" in lower:
+            return "aider", child_pid
+        if "/goose" in lower and "mongoose" not in lower:
+            return "goose", child_pid
+        if "/opencode" in lower:
+            return "opencode", child_pid
+        if "/hermes" in lower:
+            return "hermes", child_pid
+        if "/cline" in lower:
+            return "cline", child_pid
+        if "/copilot" in lower:
+            return "copilot", child_pid
+    # Fallback: use tmux command name if it matches a known agent
+    if tmux_cmd in ("codex", "gemini", "aider", "goose", "opencode", "hermes", "cline", "copilot"):
+        return tmux_cmd, 0
+    if tmux_cmd == "node":
+        return "agent", 0  # Unknown node agent
+    return tmux_cmd, 0
+
+# ─── Claude session detection ───
 claude_sessions_dir = os.path.expanduser("~/.claude/sessions")
-pid_to_session = {}
+pid_to_claude_session = {}
 if os.path.isdir(claude_sessions_dir):
     for f in os.listdir(claude_sessions_dir):
         if f.endswith('.json'):
             try:
                 with open(os.path.join(claude_sessions_dir, f)) as fh:
                     data = json.load(fh)
-                pid_to_session[data["pid"]] = data["sessionId"]
-            except (json.JSONDecodeError, KeyError):
-                pass
+                pid_to_claude_session[data["pid"]] = data["sessionId"]
+            except: pass
 
+def get_claude_session(pane_pid, cwd):
+    """Get Claude session ID and whether it has messages"""
+    for desc in get_descendants(pane_pid):
+        if desc in pid_to_claude_session:
+            sid = pid_to_claude_session[desc]
+            project_name = cwd.replace("/", "-")
+            conv = os.path.expanduser(f"~/.claude/projects/{project_name}/{sid}.jsonl")
+            has_msgs = os.path.exists(conv) and os.path.getsize(conv) > 0
+            return sid, has_msgs
+    return "", False
+
+# ─── Codex session detection ───
+def get_codex_session(cwd):
+    """Find most recent Codex session. Codex stores sessions as UUID.json in ~/.codex/sessions/"""
+    sessions_dir = os.path.expanduser("~/.codex/sessions")
+    if not os.path.isdir(sessions_dir): return "", False
+    best_file, best_mtime = None, 0
+    for f in os.listdir(sessions_dir):
+        if not f.endswith('.json'): continue
+        fpath = os.path.join(sessions_dir, f)
+        mtime = os.path.getmtime(fpath)
+        if mtime > best_mtime:
+            best_mtime = mtime
+            best_file = fpath
+    if not best_file: return "", False
+    try:
+        with open(best_file) as fh:
+            data = json.load(fh)
+        sid = data.get("session", {}).get("id", "")
+        has_msgs = len(data.get("items", [])) > 0
+        return sid, has_msgs
+    except: return "", False
+
+# ─── Gemini session detection ───
+def get_gemini_session(cwd):
+    """Gemini uses project-scoped sessions. --resume latest works per project."""
+    projects_file = os.path.expanduser("~/.gemini/projects.json")
+    if not os.path.exists(projects_file): return "", False
+    try:
+        with open(projects_file) as fh:
+            projects = json.load(fh).get("projects", {})
+        project_name = projects.get(cwd, "")
+        if not project_name: return "", False
+        history_dir = os.path.expanduser(f"~/.gemini/history/{project_name}")
+        if os.path.isdir(history_dir) and os.listdir(history_dir):
+            return "latest", True  # Gemini uses index/latest, not UUIDs
+        return "", False
+    except: return "", False
+
+# ─── Build pane data ───
 panes = []
 for line in result.stdout.strip().split('\n'):
     if not line: continue
@@ -602,30 +698,26 @@ for line in result.stdout.strip().split('\n'):
     if len(parts) >= 6:
         idx = int(parts[0])
         pane_pid = int(parts[5])
-        command = normalize(parts[2])
+        tmux_cmd = parts[2]
+        cwd = parts[3]
 
-        # Find Claude sessionId by walking process tree from pane shell PID
-        session_id = ""
-        has_messages = False
-        if command == "claude":
-            descendants = get_descendants(pane_pid)
-            for desc in descendants:
-                if desc in pid_to_session:
-                    session_id = pid_to_session[desc]
-                    break
-            # Check if this session has actual conversation messages
-            if session_id:
-                cwd = parts[3]
-                project_name = cwd.replace("/", "-")
-                projects_dir = os.path.expanduser("~/.claude/projects")
-                conv_file = os.path.join(projects_dir, project_name, f"{session_id}.jsonl")
-                has_messages = os.path.exists(conv_file) and os.path.getsize(conv_file) > 0
+        agent, agent_pid = detect_agent(pane_pid, tmux_cmd)
+        session_id, has_messages = "", False
+
+        if agent == "claude":
+            session_id, has_messages = get_claude_session(pane_pid, cwd)
+        elif agent == "codex":
+            session_id, has_messages = get_codex_session(cwd)
+        elif agent == "gemini":
+            session_id, has_messages = get_gemini_session(cwd)
+        # aider, goose, opencode, hermes: no PID-based session mapping
+        # they'll be restarted fresh or with --last/--resume flags
 
         panes.append({
             "pane": idx,
             "label": parts[1],
-            "command": command,
-            "directory": parts[3],
+            "command": agent,
+            "directory": cwd,
             "status": parts[4],
             "sessionId": session_id,
             "hasMessages": has_messages
@@ -643,17 +735,15 @@ with open("$SESSIONS_DIR/$name.json", "w") as f:
     json.dump({"name": "$name", "panes": panes}, f, indent=2)
 print(f"  Saved: $name ({len(panes)} panes)")
 for p in panes:
-    cmd = p["command"] or "shell"
-    if p["command"] == "claude":
-        if p["hasMessages"]:
-            detail = f'session={p["sessionId"][:8]}... (has chat)'
-        elif p["sessionId"]:
-            detail = "no messages sent"
-        else:
-            detail = "no session found"
+    agent = p["command"] or "shell"
+    if p["hasMessages"]:
+        sid = p["sessionId"][:8] + "..." if len(p["sessionId"]) > 8 else p["sessionId"]
+        detail = f"session={sid} (has chat)"
+    elif p["command"] and p["command"] != "shell":
+        detail = "no messages sent"
     else:
         detail = p["directory"].split("/")[-1] or "~"
-    print(f"    Pane {p['pane']}: {p['label']} ({cmd}) {detail}")
+    print(f"    Pane {p['pane']}: {p['label']} ({agent}) {detail}")
 PYEOF
 }
 
@@ -718,12 +808,57 @@ cmd_restore() {
     # Apply names, cd to directories, and restart saved commands
     local start_agents="$( $no_start && echo False || echo True )"
     python3 << PYEOF
-import json, subprocess, time
+import json, subprocess, time, shutil
 
 with open("$file") as f: session = json.load(f)
 panes = session.get("panes", [])
 total = len(panes)
 start_agents = $start_agents
+
+def build_resume_cmd(command, session_id, has_messages):
+    """Build the right resume command for each agent type."""
+    if not command:
+        return None, "shell (directory only)"
+
+    if command == "claude":
+        if session_id and has_messages:
+            return f"claude --resume {session_id}", f"resuming chat ({session_id[:8]}...)"
+        return "claude", "fresh session"
+
+    if command == "codex":
+        if session_id and has_messages:
+            return f"codex resume {session_id}", f"resuming ({session_id[:8]}...)"
+        return "codex", "fresh session"
+
+    if command == "gemini":
+        if session_id == "latest" and has_messages:
+            return "gemini --resume latest", "resuming latest"
+        return "gemini", "fresh session"
+
+    if command == "aider":
+        return "aider", "fresh session (no resume support)"
+
+    if command == "goose":
+        if has_messages:
+            return "goose session resume --last", "resuming last"
+        return "goose", "fresh session"
+
+    if command == "opencode":
+        return "opencode", "fresh session"
+
+    if command == "hermes":
+        return "hermes", "fresh session"
+
+    if command == "cline":
+        return "cline", "fresh session"
+
+    if command == "copilot":
+        return "copilot", "fresh session"
+
+    # Unknown agent — just restart the binary name
+    if shutil.which(command):
+        return command, "restarted"
+    return None, f"unknown ({command})"
 
 started = []
 for p in panes:
@@ -733,6 +868,7 @@ for p in panes:
     directory = p.get("directory", "")
     command = p.get("command", "")
     session_id = p.get("sessionId", "")
+    has_messages = p.get("hasMessages", False)
     target = "$window" + f".{idx}"
 
     # Set pane metadata
@@ -744,25 +880,12 @@ for p in panes:
         subprocess.run(["tmux", "send-keys", "-t", target, f"cd {directory}", "Enter"], check=False)
 
     # Restart saved command (unless --no-start)
-    if start_agents and command:
-        time.sleep(0.3)  # Let cd complete
-        has_messages = p.get("hasMessages", False)
-        if command == "claude" and session_id and has_messages:
-            # Resume the EXACT conversation via session ID
-            subprocess.run(["tmux", "send-keys", "-t", target,
-                f"claude --resume {session_id}", "Enter"], check=False)
-            started.append(f"    Pane {idx}: {label} -> resuming chat ({session_id[:8]}...)")
-        elif command == "claude":
-            # No messages were sent — start fresh Claude (NOT --continue)
-            subprocess.run(["tmux", "send-keys", "-t", target,
-                "claude", "Enter"], check=False)
-            started.append(f"    Pane {idx}: {label} -> fresh claude (no prior chat)")
-        else:
-            subprocess.run(["tmux", "send-keys", "-t", target, command, "Enter"], check=False)
-            started.append(f"    Pane {idx}: {label} -> {command}")
-    elif start_agents and not command:
-        # Shell pane — just directory is restored, nothing to start
-        pass
+    if start_agents:
+        resume_cmd, detail = build_resume_cmd(command, session_id, has_messages)
+        if resume_cmd:
+            time.sleep(0.3)  # Let cd complete
+            subprocess.run(["tmux", "send-keys", "-t", target, resume_cmd, "Enter"], check=False)
+            started.append(f"    Pane {idx}: {label} -> {detail}")
 
 subprocess.run(["tmux", "select-pane", "-t", "$window" + ".1"])
 print(f"  Restored {total} panes")
