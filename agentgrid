@@ -606,12 +606,20 @@ for line in result.stdout.strip().split('\n'):
 
         # Find Claude sessionId by walking process tree from pane shell PID
         session_id = ""
+        has_messages = False
         if command == "claude":
             descendants = get_descendants(pane_pid)
             for desc in descendants:
                 if desc in pid_to_session:
                     session_id = pid_to_session[desc]
                     break
+            # Check if this session has actual conversation messages
+            if session_id:
+                cwd = parts[3]
+                project_name = cwd.replace("/", "-")
+                projects_dir = os.path.expanduser("~/.claude/projects")
+                conv_file = os.path.join(projects_dir, project_name, f"{session_id}.jsonl")
+                has_messages = os.path.exists(conv_file) and os.path.getsize(conv_file) > 0
 
         panes.append({
             "pane": idx,
@@ -619,7 +627,8 @@ for line in result.stdout.strip().split('\n'):
             "command": command,
             "directory": parts[3],
             "status": parts[4],
-            "sessionId": session_id
+            "sessionId": session_id,
+            "hasMessages": has_messages
         })
 
         # Capture pane buffer for reference
@@ -635,8 +644,16 @@ with open("$SESSIONS_DIR/$name.json", "w") as f:
 print(f"  Saved: $name ({len(panes)} panes)")
 for p in panes:
     cmd = p["command"] or "shell"
-    sid = p["sessionId"][:8] + "..." if p["sessionId"] else "n/a"
-    print(f"    Pane {p['pane']}: {p['label']} ({cmd}) session={sid}")
+    if p["command"] == "claude":
+        if p["hasMessages"]:
+            detail = f'session={p["sessionId"][:8]}... (has chat)'
+        elif p["sessionId"]:
+            detail = "no messages sent"
+        else:
+            detail = "no session found"
+    else:
+        detail = p["directory"].split("/")[-1] or "~"
+    print(f"    Pane {p['pane']}: {p['label']} ({cmd}) {detail}")
 PYEOF
 }
 
@@ -729,19 +746,23 @@ for p in panes:
     # Restart saved command (unless --no-start)
     if start_agents and command:
         time.sleep(0.3)  # Let cd complete
-        if command == "claude" and session_id:
+        has_messages = p.get("hasMessages", False)
+        if command == "claude" and session_id and has_messages:
             # Resume the EXACT conversation via session ID
             subprocess.run(["tmux", "send-keys", "-t", target,
                 f"claude --resume {session_id}", "Enter"], check=False)
-            started.append(f"    Pane {idx}: {label} -> claude --resume {session_id[:8]}...")
+            started.append(f"    Pane {idx}: {label} -> resuming chat ({session_id[:8]}...)")
         elif command == "claude":
-            # No session ID saved — fall back to most recent
+            # No messages were sent — start fresh Claude (NOT --continue)
             subprocess.run(["tmux", "send-keys", "-t", target,
-                "claude --continue", "Enter"], check=False)
-            started.append(f"    Pane {idx}: {label} -> claude --continue (no session ID)")
+                "claude", "Enter"], check=False)
+            started.append(f"    Pane {idx}: {label} -> fresh claude (no prior chat)")
         else:
             subprocess.run(["tmux", "send-keys", "-t", target, command, "Enter"], check=False)
             started.append(f"    Pane {idx}: {label} -> {command}")
+    elif start_agents and not command:
+        # Shell pane — just directory is restored, nothing to start
+        pass
 
 subprocess.run(["tmux", "select-pane", "-t", "$window" + ".1"])
 print(f"  Restored {total} panes")
