@@ -652,7 +652,7 @@ cmd_restore() {
     sleep 0.5
 
     # Apply names, cd to directories, and restart saved commands
-    local start_agents="$( $no_start && echo false || echo true )"
+    local start_agents="$( $no_start && echo False || echo True )"
     python3 << PYEOF
 import json, subprocess, time
 
