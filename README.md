@@ -40,17 +40,21 @@ agentgrid launch dev-sprint
 ## Features
 
 ### Grid Layouts
+
 ```bash
 agentgrid 2x2 claude     # 4 panes
 agentgrid 3x4 codex      # 12 panes
 agentgrid 5x5            # 25 empty panes
 ```
+
 All panes are automatically equalized. Re-equalize anytime: `Ctrl+A then E`
 
 ### Interactive Setup (3 Inputs for 50 Panes)
+
 ```bash
 agentgrid setup
 ```
+
 1. How many panes? → `50`
 2. Default agent? → `claude`
 3. Override specific panes? → `1:codex,25:gemini` (or Enter to skip)
@@ -58,50 +62,70 @@ agentgrid setup
 Done. 50 panes, configured in 3 inputs. Optionally save as a preset.
 
 ### Status Labels
+
 Each pane shows a colored label:
 
-| Status | Label | Color | Sound |
-|--------|-------|-------|-------|
-| Working | ⚡ WORKING | Blue | — |
-| Needs input | ⏳ WAITING | Yellow | Tink |
-| Done | ✅ DONE | Green | Glass |
+| Status      | Label      | Color  | Sound |
+| ----------- | ---------- | ------ | ----- |
+| Working     | ⚡ WORKING | Blue   | —     |
+| Needs input | ⏳ WAITING | Yellow | Tink  |
+| Done        | ✅ DONE    | Green  | Glass |
 
 Updates automatically via agent hooks (Claude Code, Codex, OpenCode).
 
 ### Custom Sounds
+
 ```bash
 agentgrid sound done ~/Music/tada.mp3        # Your own audio file
 agentgrid sound waiting system:Hero           # macOS built-in sound
 agentgrid sound test                          # Preview all 3 sounds
 agentgrid sound off                           # Silence
 ```
+
 Supports MP3, WAV, AIFF, M4A, OGG. Plays through DND/Focus mode.
 
 ### Presets (Save & Reuse)
+
 ```bash
 agentgrid preset list                         # See saved presets
 agentgrid launch dev-sprint                   # Launch a preset
 agentgrid preset show mixed-agents            # View details
 agentgrid preset delete old-setup             # Remove
 ```
+
 3 built-in: `dev-sprint` (4 panes), `mixed-agents` (6 panes), `research-swarm` (9 panes).
 
 ### Session Save & Restore
+
 ```bash
-agentgrid save my-grid                        # Save current layout + names
-agentgrid restore my-grid                     # Restore in any new terminal
+agentgrid save my-grid                        # Save layout, names, conversations
+agentgrid restore my-grid                     # Restore grid + resume all chats
+agentgrid restore my-grid --no-start          # Restore layout only (no agents)
 ```
-Grid layout and pane names are preserved. Restore your exact setup anywhere.
+
+Save captures each pane's agent, directory, name, and **conversation session ID**. Restore resumes the exact conversation in each pane — not just the most recent one.
+
+Works per-agent: Claude (`--resume <sessionId>`), Codex (`codex resume <id>`), Gemini (`--resume latest`), Goose (`session resume --last`). Panes where no message was sent start fresh.
+
+### Dashboard
+
+```bash
+agentgrid dashboard                           # Grid map + controls
+agentgrid dashboard live                      # Auto-refreshing (every 2s)
+```
 
 ### Agent Detection & Installation
+
 ```bash
 agentgrid agents                              # Show installed/available
 agentgrid install codex                       # Install one agent
 agentgrid install-all                         # Install everything missing
 ```
+
 10 known agents. Any command works as a custom agent — agentgrid doesn't limit you.
 
 ### Pane Management
+
 ```bash
 agentgrid name "Spark Agent"                  # Name pane (locked)
 agentgrid broadcast "git pull"                # Send to ALL panes
@@ -109,68 +133,78 @@ agentgrid equalize                            # Even out sizes
 agentgrid kill                                # Clear grid to 1 pane
 agentgrid status                              # See all panes + status
 ```
+
 Pane names persist — agents can't overwrite them.
 
 ## Keyboard Shortcuts
 
-| Keys | Action |
-|------|--------|
+| Keys               | Action                                             |
+| ------------------ | -------------------------------------------------- |
 | **Option+H/J/K/L** | Move between panes (H=left, J=down, K=up, L=right) |
-| **Option+Arrow** | Move between panes |
-| **Click** | Switch to pane |
-| **Ctrl+A \|** | Split right |
-| **Ctrl+A -** | Split down |
-| **Ctrl+A .** | Name current pane |
-| **Ctrl+A E** | Equalize sizes |
-| **Ctrl+A c** | New window (tab/group) |
-| **Ctrl+A 1-9** | Switch window |
-| **Ctrl+A d** | Detach (session runs in background) |
-| `tmux attach` | Reattach to background session |
+| **Option+Arrow**   | Move between panes                                 |
+| **Click**          | Switch to pane                                     |
+| **Ctrl+A \|**      | Split right                                        |
+| **Ctrl+A -**       | Split down                                         |
+| **Ctrl+A .**       | Name current pane                                  |
+| **Ctrl+A E**       | Equalize sizes                                     |
+| **Ctrl+A c**       | New window (tab/group)                             |
+| **Ctrl+A 1-9**     | Switch window                                      |
+| **Ctrl+A d**       | Detach (session runs in background)                |
+| `tmux attach`      | Reattach to background session                     |
 
 ## Supported Agents
 
-| Agent | Command | Install | Auto Status |
-|-------|---------|---------|-------------|
-| Claude Code | `claude` | Built-in | Yes (hooks) |
-| Codex | `codex` | `npm install -g @openai/codex` | Yes (hooks) |
-| Gemini CLI | `gemini` | `npm install -g @google/gemini-cli` | Exit code |
-| Aider | `aider` | `pip install aider-chat` | Exit code |
-| OpenCode | `opencode` | `npm install -g opencode` | Yes (hooks) |
-| Goose | `goose` | `brew install goose` | Exit code |
-| Cline | `cline` | `npm install -g @anthropic-ai/cline` | Exit code |
-| Hermes | `hermes` | `npm install -g hermes-cli` | Exit code |
-| Copilot | `copilot` | `npm install -g @github/copilot` | Exit code |
-| Cursor | `cursor` | `brew install --cask cursor` | Exit code |
-| **Any command** | `<your-cmd>` | — | Exit code |
+| Agent           | Command      | Install                              | Auto Status |
+| --------------- | ------------ | ------------------------------------ | ----------- |
+| Claude Code     | `claude`     | Built-in                             | Yes (hooks) |
+| Codex           | `codex`      | `npm install -g @openai/codex`       | Yes (hooks) |
+| Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`  | Exit code   |
+| Aider           | `aider`      | `pip install aider-chat`             | Exit code   |
+| OpenCode        | `opencode`   | `npm install -g opencode`            | Yes (hooks) |
+| Goose           | `goose`      | `brew install goose`                 | Exit code   |
+| Cline           | `cline`      | `npm install -g @anthropic-ai/cline` | Exit code   |
+| Hermes          | `hermes`     | `npm install -g hermes-cli`          | Exit code   |
+| Copilot         | `copilot`    | `npm install -g @github/copilot`     | Exit code   |
+| Cursor          | `cursor`     | `brew install --cask cursor`         | Exit code   |
+| **Any command** | `<your-cmd>` | —                                    | Exit code   |
 
 **Custom agents:** Use literally any terminal command. agentgrid doesn't restrict what you run.
 
 ## All Commands
 
 ```
-agentgrid ROWSxCOLS [agent]     Quick grid (e.g. 2x3 claude)
-agentgrid setup                 Interactive wizard
-agentgrid start [session]       Start/attach tmux (auto-detects)
-agentgrid launch [preset]       Launch preset (or wizard if no name)
-agentgrid save [name]           Save grid layout + pane names
-agentgrid restore [name]        Restore grid in any terminal
-agentgrid agents                Show installed/available agents
-agentgrid install <agent>       Install a CLI agent
-agentgrid install-all           Install all missing agents
-agentgrid name <name>           Name current pane (locked)
-agentgrid broadcast <text>      Send command to all panes
-agentgrid equalize              Even out pane sizes
-agentgrid kill                  Clear grid to 1 pane
-agentgrid status                Show all pane statuses
-agentgrid preset list           Show saved presets
-agentgrid preset show <name>    View preset details
-agentgrid preset delete <name>  Delete preset
-agentgrid sound                 Show current sounds
-agentgrid sound <event> <file>  Set sound (done/waiting/subagent)
-agentgrid sound test            Preview sounds
-agentgrid sound off             Disable sounds
-agentgrid version               Show version
-agentgrid help                  Show help
+agentgrid ROWSxCOLS [agent]         Quick grid (e.g. 2x3 claude)
+agentgrid setup                     Interactive wizard
+agentgrid start [session]           Start/attach tmux (auto-detects)
+agentgrid launch [preset]           Launch a saved preset
+agentgrid save [name]               Save grid + names + conversations
+agentgrid restore [name]            Restore grid and resume all chats
+agentgrid restore [name] --no-start Restore layout only (no agents)
+agentgrid dashboard                 Grid map with statuses + controls
+agentgrid dashboard live            Auto-refreshing dashboard
+agentgrid agents                    Show installed/available agents
+agentgrid install <agent>           Install a CLI agent
+agentgrid install-all               Install all missing agents
+agentgrid add [right|down] [agent]  Add pane to existing grid
+agentgrid swap [up|down]            Swap current pane position
+agentgrid name <name>               Name current pane (locked)
+agentgrid broadcast <text>          Send command to all panes
+agentgrid equalize                  Even out pane sizes
+agentgrid kill                      Clear grid to 1 pane
+agentgrid status                    Show all pane statuses
+agentgrid preset list               Show saved presets
+agentgrid preset show <name>        View preset details
+agentgrid preset delete <name>      Delete preset
+agentgrid sound                     Show current sounds
+agentgrid sound <event> <file>      Set sound (done/waiting/subagent)
+agentgrid sound test                Preview sounds
+agentgrid sound off                 Disable sounds
+agentgrid terminal-setup            Configure all Claude panes
+agentgrid tips                      Usage tips
+agentgrid update                    Self-update from GitHub
+agentgrid detach                    Exit grid (keeps running)
+agentgrid version                   Show version
+agentgrid help                      Show help
 ```
 
 ## Configuration
@@ -187,6 +221,7 @@ Config: `~/.agentgrid/config.json`
   }
 }
 ```
+
 Presets: `~/.agentgrid/presets/*.json`
 Sessions: `~/.agentgrid/sessions/*.json`
 Custom sounds: `~/.agentgrid/sounds/`
