@@ -1,7 +1,7 @@
 #!/bin/bash
 # agentgrid — Spawn a grid of AI coding agents in one command
 # https://github.com/naman10parikh/agentgrid
-# MIT License | v0.6.0
+# MIT License | v0.7.0
 
 set -euo pipefail
 

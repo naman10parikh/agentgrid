@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>agentgrid — Spawn a grid of AI coding agents in one command</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta
+      name="description"
+      content="agentgrid documentation — spawn grids of AI coding agents with one command"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css"
+    />
+    <style>
+      :root {
+        --theme-color: #8b5cf6;
+        --base-background-color: #141312;
+        --sidebar-background: #1e1d1c;
+        --sidebar-nav-link-color--active: #8b5cf6;
+        --sidebar-nav-link-border-color--active: #8b5cf6;
+        --link-color: #8b5cf6;
+        --link-color--hover: #a78bfa;
+        --code-theme-background: #1e1d1c;
+        --heading-color: #f5f5f4;
+      }
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+      }
+      .sidebar .app-name {
+        font-weight: 700;
+        color: #8b5cf6;
+      }
+      .markdown-section code {
+        color: #c4b5fd;
+        background: #292524;
+        border-radius: 4px;
+        padding: 2px 6px;
+      }
+      .markdown-section pre > code {
+        background: #1e1d1c;
+      }
+      .markdown-section table {
+        display: table;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      window.$docsify = {
+        name: "⚡ agentgrid",
+        repo: "https://github.com/naman10parikh/agentgrid",
+        loadSidebar: true,
+        subMaxLevel: 3,
+        auto2top: true,
+        search: {
+          placeholder: "Search docs...",
+          noData: "No results",
+          depth: 3,
+        },
+        copyCode: {
+          buttonText: "Copy",
+          successText: "Copied!",
+        },
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  </body>
+</html>

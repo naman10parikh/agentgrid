@@ -1,0 +1,6 @@
+- [Home](/)
+- [User Guide](guide.md)
+- [Presets](presets.md)
+- [Tips & Tricks](tips.md)
+- [Contributing](https://github.com/naman10parikh/agentgrid/blob/main/CONTRIBUTING.md)
+- [Changelog](https://github.com/naman10parikh/agentgrid/blob/main/CHANGELOG.md)

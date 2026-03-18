@@ -1,6 +1,6 @@
 {
   "name": "agentgrid",
-  "version": "0.4.0",
+  "version": "0.7.0",
   "description": "Spawn a grid of AI coding agents in one command",
   "bin": {
     "agentgrid": "./agentgrid"
