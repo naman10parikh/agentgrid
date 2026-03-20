@@ -1,14 +1,14 @@
 {
   "description": "9-agent research swarm for deep investigation",
   "panes": [
-    {"name": "Lead", "agent": "claude"},
-    {"name": "GitHub", "agent": "claude"},
-    {"name": "Web", "agent": "claude"},
-    {"name": "Docs", "agent": "claude"},
-    {"name": "Reddit", "agent": "claude"},
-    {"name": "HN", "agent": "claude"},
-    {"name": "X/Twitter", "agent": "claude"},
-    {"name": "Competitors", "agent": "claude"},
-    {"name": "Synthesis", "agent": "claude"}
+    { "name": "Lead", "agent": "claude" },
+    { "name": "GitHub", "agent": "claude" },
+    { "name": "Web", "agent": "claude" },
+    { "name": "Docs", "agent": "claude" },
+    { "name": "Reddit", "agent": "claude" },
+    { "name": "HN", "agent": "claude" },
+    { "name": "X/Twitter", "agent": "claude" },
+    { "name": "Competitors", "agent": "claude" },
+    { "name": "Synthesis", "agent": "claude" }
   ]
 }

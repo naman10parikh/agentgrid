@@ -1,11 +1,11 @@
 {
   "description": "Mixed agents: 2 Claude + 2 Codex + 1 Gemini + 1 empty",
   "panes": [
-    {"name": "Claude #1", "agent": "claude"},
-    {"name": "Claude #2", "agent": "claude"},
-    {"name": "Codex #1", "agent": "codex"},
-    {"name": "Codex #2", "agent": "codex"},
-    {"name": "Gemini", "agent": "gemini"},
-    {"name": "Scratch", "agent": ""}
+    { "name": "Claude #1", "agent": "claude" },
+    { "name": "Claude #2", "agent": "claude" },
+    { "name": "Codex #1", "agent": "codex" },
+    { "name": "Codex #2", "agent": "codex" },
+    { "name": "Gemini", "agent": "gemini" },
+    { "name": "Scratch", "agent": "" }
   ]
 }

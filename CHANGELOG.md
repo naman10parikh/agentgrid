@@ -1,5 +1,25 @@
 # Changelog
 
+## v1.0.0 (2026-03-20)
+
+### Added
+
+- **Production-ready release** — comprehensive test suite, polished error messages, npm-publishable package
+- **`--json` flag for `agentgrid status`** — machine-readable output for scripting and monitoring
+- **Graceful tmux detection** — helpful error messages when tmux is not installed or not running
+- **Expanded test suite** — 30+ tests covering grid math, config, agent detection, security, and edge cases
+
+### Changed
+
+- Version bump to 1.0.0 — stable API, all commands documented and tested
+- README rewritten with architecture diagram, FAQ, and compelling narrative
+- Better error messages throughout — every failure tells you how to fix it
+
+### Fixed
+
+- Edge case: broadcast with no panes now shows helpful message instead of silent failure
+- Edge case: grid dimensions > 10x10 rejected with clear message
+
 ## v0.7.0 (2026-03-17)
 
 ### Added

@@ -1,9 +1,9 @@
 {
   "description": "4-agent dev sprint: frontend, backend, tests, docs",
   "panes": [
-    {"name": "Frontend", "agent": "claude"},
-    {"name": "Backend", "agent": "claude"},
-    {"name": "Tests", "agent": "claude"},
-    {"name": "Docs", "agent": "claude"}
+    { "name": "Frontend", "agent": "claude" },
+    { "name": "Backend", "agent": "claude" },
+    { "name": "Tests", "agent": "claude" },
+    { "name": "Docs", "agent": "claude" }
   ]
 }

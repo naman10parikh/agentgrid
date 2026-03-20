@@ -1,13 +1,13 @@
 {
   "name": "agentgrid",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "Spawn a grid of AI coding agents in one command",
   "bin": {
     "agentgrid": "./agentgrid"
   },
   "scripts": {
     "postinstall": "chmod +x agentgrid pane-status.sh install.sh 2>/dev/null || true",
-    "test": "bash -c './agentgrid version && echo PASS'"
+    "test": "bash test.sh"
   },
   "files": [
     "agentgrid",
@@ -16,6 +16,7 @@
     "presets/",
     "examples/",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
@@ -37,6 +38,9 @@
     "url": "https://github.com/naman10parikh/agentgrid"
   },
   "homepage": "https://github.com/naman10parikh/agentgrid",
+  "bugs": {
+    "url": "https://github.com/naman10parikh/agentgrid/issues"
+  },
   "engines": {
     "node": ">=18.0.0"
   }
