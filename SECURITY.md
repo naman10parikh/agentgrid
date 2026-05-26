@@ -13,6 +13,7 @@ We will respond within 48 hours and work with you on a fix before public disclos
 ## Scope
 
 agentgrid is a shell script that configures tmux. It:
+
 - Does NOT run a server or daemon
 - Does NOT collect or transmit any data
 - Does NOT require network access

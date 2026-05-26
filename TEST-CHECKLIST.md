@@ -12,7 +12,7 @@
 agentgrid version
 ```
 
-**Expected:** Shows `agentgrid v0.4.0`
+**Expected:** Shows `agentgrid v0.7.0`
 **Status:** PASS
 
 ### Test 2: Help

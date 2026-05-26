@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "agentgrid"
+      - "pane-status.sh"
+      - "install.sh"
+      - "test.sh"
+      - "package.json"
+      - "presets/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tmux (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y tmux
+
+      - name: Verify dependencies
+        run: |
+          echo "--- bash ---"
+          bash --version | head -1
+          echo "--- tmux ---"
+          tmux -V
+          echo "--- python3 ---"
+          python3 --version
+
+      - name: Run smoke tests
+        run: bash test.sh
+
+      - name: Verify version consistency
+        run: |
+          CLI_VERSION=$(grep '^VERSION=' agentgrid | head -1 | cut -d'"' -f2)
+          PKG_VERSION=$(python3 -c "import json; print(json.load(open('package.json'))['version'])")
+          HEADER_VERSION=$(grep '# MIT License | v' agentgrid | head -1 | sed 's/.*v//')
+          PLUGIN_VERSION=$(python3 -c "import json; print(json.load(open('claude-plugin.json'))['version'])")
+
+          echo "CLI: $CLI_VERSION"
+          echo "package.json: $PKG_VERSION"
+          echo "Header: $HEADER_VERSION"
+          echo "claude-plugin.json: $PLUGIN_VERSION"
+
+          [ "$CLI_VERSION" = "$PKG_VERSION" ] || { echo "FAIL: CLI != package.json"; exit 1; }
+          [ "$CLI_VERSION" = "$HEADER_VERSION" ] || { echo "FAIL: CLI != header"; exit 1; }
+          [ "$CLI_VERSION" = "$PLUGIN_VERSION" ] || { echo "FAIL: CLI != claude-plugin.json"; exit 1; }
+          echo "All versions match: $CLI_VERSION"
+
+      - name: Validate preset JSON files
+        run: |
+          for f in presets/*.json; do
+            python3 -c "import json; json.load(open('$f'))" || { echo "FAIL: Invalid JSON in $f"; exit 1; }
+            echo "OK: $f"
+          done
+
+      - name: Shellcheck
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install -y shellcheck
+          shellcheck -S warning agentgrid pane-status.sh install.sh || true
+
+      - name: Verify help output
+        run: |
+          ./agentgrid help | grep -q "agentgrid v" || { echo "FAIL: help missing version"; exit 1; }
+          ./agentgrid help | grep -q "QUICK START" || { echo "FAIL: help missing sections"; exit 1; }
+          echo "Help output OK"
+
+      - name: Verify executable permissions
+        run: |
+          [ -x agentgrid ] || { echo "FAIL: agentgrid not executable"; exit 1; }
+          [ -x pane-status.sh ] || { echo "FAIL: pane-status.sh not executable"; exit 1; }
+          [ -x install.sh ] || { echo "FAIL: install.sh not executable"; exit 1; }
+          echo "Permissions OK"

@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths: ["tools/agentgrid/app/**"]
+  pull_request:
+    branches: [main]
+    paths: ["tools/agentgrid/app/**"]
+
+defaults:
+  run:
+    working-directory: tools/agentgrid/app
+
+jobs:
+  build-and-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        node-version: [20]
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install --legacy-peer-deps
+      - run: npx electron-vite build
+      - run: npx vitest run
+      - run: npx tsc --noEmit

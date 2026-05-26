@@ -1,0 +1,59 @@
+{
+  "description": "Anti-drift coding squad with hierarchical coordination and raft consensus",
+  "topology": "hierarchical",
+  "consensus": "raft",
+  "max_agents": 8,
+  "strategy": "specialized",
+  "anti_drift": true,
+  "checkpoint_interval_minutes": 15,
+  "panes": [
+    {
+      "name": "Coordinator",
+      "agent": "claude",
+      "role": "coordinator",
+      "focus": "Maintain authoritative state, resolve conflicts, enforce scope. CHECK: Is each worker still aligned with their original mission?"
+    },
+    {
+      "name": "Researcher",
+      "agent": "claude",
+      "role": "researcher",
+      "focus": "Gather requirements, analyze existing code, study patterns. Signal findings via .claude/vp-signals/"
+    },
+    {
+      "name": "Architect",
+      "agent": "claude",
+      "role": "architect",
+      "focus": "Design system components, typed interfaces, ADRs. Depends on Researcher findings."
+    },
+    {
+      "name": "Coder-1",
+      "agent": "claude",
+      "role": "coder",
+      "focus": "Implement features following Architect's design. Short TDD cycles."
+    },
+    {
+      "name": "Coder-2",
+      "agent": "claude",
+      "role": "coder",
+      "focus": "Parallel implementation of independent module. Coordinate with Coder-1 on shared interfaces."
+    },
+    {
+      "name": "Tester",
+      "agent": "claude",
+      "role": "tester",
+      "focus": "Write unit + integration tests. Track coverage. Signal blockers."
+    },
+    {
+      "name": "Reviewer",
+      "agent": "claude",
+      "role": "reviewer",
+      "focus": "Code review for quality, security, architecture alignment. Gate merge decisions."
+    },
+    {
+      "name": "QA",
+      "agent": "claude",
+      "role": "qa",
+      "focus": "End-to-end user testing with screenshots. Launch app, click every button. ZERO tolerance."
+    }
+  ]
+}

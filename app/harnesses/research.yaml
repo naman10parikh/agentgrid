@@ -1,0 +1,34 @@
+name: research
+description: Deep research team for investigation tasks
+version: 1
+grid:
+  rows: 2
+  cols: 2
+roles:
+  - label: Lead Researcher
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Coordinate research. Synthesize findings. Write report."
+  - label: Web Researcher
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 1]
+    mission: "Search web, read docs, gather data points."
+  - label: Code Analyst
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 0]
+    mission: "Read repos, analyze architectures, extract patterns."
+  - label: Writer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 1]
+    mission: "Write research reports, summaries, comparisons."
+tags:
+  - research
+  - analysis

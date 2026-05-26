@@ -1,0 +1,206 @@
+@import "@xterm/xterm/css/xterm.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ─── Color aliases (map to Tailwind @theme tokens in index.css) ─── */
+  --grid-bg: var(--color-grid-bg);
+  --grid-bg-raised: var(--color-grid-surface);
+  --grid-bg-elevated: var(--color-grid-surface-hover);
+  --grid-border: var(--color-grid-border);
+  --grid-border-subtle: rgba(255, 255, 255, 0.04);
+  --grid-fg: var(--color-grid-fg);
+  --grid-fg-muted: var(--color-grid-fg-muted);
+  --grid-fg-dim: var(--color-grid-fg-dim);
+  --grid-accent: var(--color-grid-accent);
+  --grid-accent-hover: var(--color-grid-accent-hover);
+  --grid-accent-muted: rgba(139, 92, 246, 0.15);
+
+  /* Status colors */
+  --status-idle: #6b665c;
+  --status-working: #3b82f6;
+  --status-waiting: #eab308;
+  --status-done: #22c55e;
+  --status-error: #ef4444;
+  --status-spawning: #a78bfa;
+  --status-stuck: #f97316;
+  --status-migrating: #06b6d4;
+
+  /* Spacing */
+  --sidebar-width: 260px;
+  --controlbar-height: 56px;
+  --pane-header-height: 24px;
+  --pane-gap: 1px;
+
+  /* Typography */
+  --font-display: "Instrument Serif", serif;
+  --font-body: "Poppins", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: var(--grid-bg);
+  color: var(--grid-fg);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Electron drag region */
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--grid-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--grid-fg-dim);
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--grid-accent);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+/* Selection */
+::selection {
+  background: var(--grid-accent-muted);
+  color: var(--grid-fg);
+}
+
+/* Sidebar collapsed icon hover */
+.sidebar-icon-btn:hover {
+  background: var(--grid-bg-elevated);
+}
+
+/* xterm.js overrides — edge-to-edge, minimal padding */
+.xterm {
+  padding: 1px 3px;
+}
+
+.xterm-viewport::-webkit-scrollbar {
+  width: 6px;
+}
+
+.xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* ─── Agent Graph — Futuristic Theme ─── */
+
+.graph-view-container {
+  background: #141312;
+}
+
+/* Scanline overlay effect */
+.graph-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(139, 92, 246, 0.015) 2px,
+    rgba(139, 92, 246, 0.015) 4px
+  );
+  pointer-events: none;
+}
+
+/* Animated grid background */
+.agent-graph {
+  background:
+    linear-gradient(rgba(139, 92, 246, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139, 92, 246, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+}
+
+/* Node glow pulse */
+.graph-node-glow {
+  transition: opacity 200ms ease-out;
+}
+
+/* Particle glow */
+@keyframes particle-travel {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+/* Timeline row hover */
+.agent-timeline .flex:hover {
+  background: rgba(139, 92, 246, 0.05);
+}
+
+/* Minimap hover glow */
+.absolute.bottom-3.right-3:hover {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 12px rgba(139, 92, 246, 0.2);
+  transition:
+    border-color 200ms,
+    box-shadow 200ms;
+}
+
+/* Neon accent line at top of graph toolbar */
+.graph-view-container > div:first-child {
+  border-top: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Topology button active glow */
+.graph-view-container button.bg-grid-accent {
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
+}

@@ -1,0 +1,42 @@
+name: research-swarm
+description: 9-pane deep research team
+version: 1
+grid:
+  rows: 3
+  cols: 3
+roles:
+  - label: LEAD
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Lead researcher. Synthesize findings."
+  - label: ANALYST-1
+    agent: claude
+    position: [0, 1]
+  - label: ANALYST-2
+    agent: claude
+    position: [0, 2]
+  - label: ANALYST-3
+    agent: claude
+    position: [1, 0]
+  - label: ANALYST-4
+    agent: claude
+    position: [1, 1]
+  - label: SYNTHESIZER
+    agent: claude
+    position: [1, 2]
+    mission: "Combine findings into coherent analysis."
+  - label: WRITER
+    agent: claude
+    position: [2, 0]
+    mission: "Write final report from synthesis."
+  - label: REVIEWER
+    agent: claude
+    position: [2, 1]
+    mission: "Fact-check and review written output."
+  - label: EDITOR
+    agent: claude
+    position: [2, 2]
+    mission: "Final editing pass. Polish prose."
+tags: [research, analysis, deep-dive]

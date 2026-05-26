@@ -1,0 +1,64 @@
+{
+  "description": "CEO-of-CEOs earning factory — 7 earning agents with dashboard and QA",
+  "topology": "hierarchical",
+  "consensus": "raft",
+  "max_agents": 10,
+  "strategy": "specialized",
+  "anti_drift": true,
+  "panes": [
+    {
+      "name": "CEO",
+      "agent": "claude",
+      "role": "coordinator",
+      "focus": "Orchestrate all earning agents, unblock, aggregate results, signal the maintainer"
+    },
+    {
+      "name": "Mercury",
+      "agent": "claude",
+      "role": "trader",
+      "focus": "Weather prediction trading on Kalshi. Edge detection, position sizing, risk management."
+    },
+    {
+      "name": "Venus",
+      "agent": "claude",
+      "role": "bounty-hunter",
+      "focus": "Bug bounty hunting. Scan programs, find vulnerabilities, write reports."
+    },
+    {
+      "name": "Jupiter",
+      "agent": "claude",
+      "role": "freelancer",
+      "focus": "GitHub bounties and freelance gigs. Find opportunities, submit proposals."
+    },
+    {
+      "name": "Saturn",
+      "agent": "claude",
+      "role": "product-builder",
+      "focus": "Build and list digital products. Gumroad listings, landing pages, marketing copy."
+    },
+    {
+      "name": "Neptune",
+      "agent": "claude",
+      "role": "content-creator",
+      "focus": "Write monetizable technical articles. SEO optimization, DEV.to/Hashnode publishing."
+    },
+    {
+      "name": "Pluto",
+      "agent": "claude",
+      "role": "outreach",
+      "focus": "Voice calls and email outreach. Lead generation, follow-ups, closing."
+    },
+    {
+      "name": "Dashboard",
+      "agent": "claude",
+      "role": "dashboard",
+      "focus": "Real-time earning dashboard. Aggregate all agent results, track P&L, surface opportunities."
+    },
+    {
+      "name": "QA",
+      "agent": "claude",
+      "role": "qa",
+      "focus": "Verify every earning claim. Check that trades executed, bounties submitted, products listed."
+    }
+  ]
+}

@@ -24,7 +24,7 @@ cat << 'SPLASH'
    / /| |/ __ `/ _ \/ __ \/ __/ / __/ ___/ / __  /
   / ___ / /_/ /  __/ / / / /_/ /_/ / /  / / /_/ /
  /_/  |_\__, /\___/_/ /_/\__/\____/_/  /_/\__,_/
-       /____/                                v0.1.0
+       /____/                                v0.7.0
 SPLASH
 echo -e "${NC}"
 echo -e "  ${DIM}Spawn a grid of AI coding agents in one command${NC}"
@@ -220,7 +220,7 @@ with open(path,"w") as f: json.dump(s,f,indent=2)
 print("  Hooks installed")
 PYEOF
 else
-    log "Claude Code not detected (install hooks later with: agentgrid install-hooks)"
+    log "Claude Code not detected (install hooks later by re-running: install.sh)"
 fi
 
 # ─── Done ───
@@ -229,7 +229,7 @@ echo -e "  ${GREEN}${BOLD}✅ agentgrid installed!${NC}"
 echo ""
 echo -e "  ${BOLD}Quick start:${NC}"
 echo -e "    ${CYAN}agentgrid start${NC}             Start a tmux session"
-echo -e "    ${CYAN}agentgrid grid 2x3 claude${NC}   6 Claude Code instances"
+echo -e "    ${CYAN}agentgrid 2x3 claude${NC}        6 Claude Code instances"
 echo -e "    ${CYAN}agentgrid sound test${NC}         Preview your alert sounds"
 echo ""
 echo -e "  ${BOLD}Custom sounds:${NC}"

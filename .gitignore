@@ -1,6 +1,29 @@
+# OS / editor
 .DS_Store
 *.swp
 *.swo
 *~
+
+# Secrets / env
 .env
+.env.*
+!.env.example
+
+# Dependencies
 node_modules/
+
+# Build output (CLI)
+dist/
+*.tsbuildinfo
+
+# Build output (Electron app)
+app/node_modules/
+app/out/
+app/release/
+app/build/
+app/test-results/
+app/tests/screenshots/
+app/playwright-report/
+
+# Logs
+*.log

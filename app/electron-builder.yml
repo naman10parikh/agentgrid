@@ -1,0 +1,23 @@
+appId: com.energy.agentgrid
+productName: AgentGrid
+directories:
+  output: release
+asarUnpack:
+  - "node_modules/node-pty/**"
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch: [arm64, x64]
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Development
+win:
+  target:
+    - nsis
+  sign: false

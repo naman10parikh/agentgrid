@@ -1,0 +1,123 @@
+@import "tailwindcss";
+@import "@xterm/xterm/css/xterm.css";
+
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  --color-grid-bg: #141312;
+  --color-grid-surface: #1c1b19;
+  --color-grid-surface-hover: #242320;
+  --color-grid-border: rgba(255, 255, 255, 0.07);
+  --color-grid-border-hover: rgba(255, 255, 255, 0.13);
+  --color-grid-fg: #f5f4f1;
+  --color-grid-fg-secondary: #a8a5a0;
+  --color-grid-fg-muted: #6e6b66;
+  --color-grid-fg-dim: #4a4843;
+  --color-grid-accent: #8b5cf6;
+  --color-grid-accent-hover: #7c3aed;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-grid-bg);
+  color: var(--color-grid-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular numbers for metrics/counts */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Drag region for frameless window */
+.titlebar-drag {
+  -webkit-app-region: drag;
+}
+.titlebar-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* ── xterm.js overrides ── */
+.xterm {
+  height: 100%;
+  padding: 2px 0;
+}
+.xterm-viewport {
+  overflow-y: auto !important;
+}
+/* Thin scrollbar — subtle, appears on hover */
+.xterm-viewport::-webkit-scrollbar {
+  width: 4px;
+}
+.xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.xterm-viewport::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  transition: background 150ms;
+}
+.xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Cursor glow for focused terminal */
+.xterm-cursor-layer {
+  filter: drop-shadow(0 0 2px rgba(139, 92, 246, 0.4));
+}
+
+/* Selection color override */
+.xterm .xterm-selection div {
+  background: rgba(139, 92, 246, 0.25) !important;
+}
+
+/* ── Status dot pulse ── */
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ── Smooth transitions for layout changes ── */
+@media (prefers-reduced-motion: no-preference) {
+  .transition-grid {
+    transition:
+      grid-template-rows 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      grid-template-columns 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* ── Focus ring for keyboard navigation ── */
+*:focus-visible {
+  outline: 2px solid rgba(139, 92, 246, 0.5);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+/* ── Zen mode transition ── */
+@media (prefers-reduced-motion: no-preference) {
+  [data-zen-transition] {
+    transition:
+      opacity 150ms ease,
+      max-height 200ms ease;
+  }
+}

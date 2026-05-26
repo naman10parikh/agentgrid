@@ -1,35 +1,42 @@
 {
   "name": "agentgrid",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Spawn a grid of AI coding agents in one command",
+  "type": "module",
   "bin": {
-    "agentgrid": "./agentgrid"
+    "agentgrid": "./dist/index.js"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
-    "postinstall": "chmod +x agentgrid pane-status.sh install.sh 2>/dev/null || true",
-    "test": "bash test.sh"
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "prepublishOnly": "pnpm build && pnpm test"
   },
   "files": [
-    "agentgrid",
-    "pane-status.sh",
-    "install.sh",
+    "dist/",
     "presets/",
-    "examples/",
     "README.md",
     "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
-    "cli",
-    "terminal",
-    "tmux",
-    "agents",
-    "grid",
-    "claude",
-    "codex",
     "ai",
+    "agent",
+    "orchestration",
+    "terminal",
+    "claude",
     "multi-agent",
-    "developer-tools"
+    "ide",
+    "tmux",
+    "cli",
+    "codex",
+    "gemini",
+    "developer-tools",
+    "grid"
   ],
   "author": "Naman Parikh",
   "license": "MIT",
@@ -43,5 +50,15 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "yaml": "^2.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
   }
 }

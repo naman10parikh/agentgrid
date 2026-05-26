@@ -1,0 +1,48 @@
+{
+  "description": "Design sprint: discovery brief, visual composition, implementation, and user testing in 4 parallel tracks",
+  "topology": "ring",
+  "consensus": "majority",
+  "max_agents": 4,
+  "category": "design",
+  "anti_drift": true,
+  "phase_gating": true,
+  "missions": {
+    "Discovery": "Research the problem space. Analyze competitors, user needs, and constraints. Produce a discovery brief with requirements.",
+    "Composer": "Design the visual system. Define layout, typography, color palette, component hierarchy. Create mockups as ASCII or code.",
+    "Builder": "Implement the designs in React + Tailwind. Pixel-perfect translation. Dark mode. Responsive. Animations with Framer Motion.",
+    "Customer-Zero": "Test every screen as the first user. Click every button. Check mobile. Check dark mode. File bugs with screenshots."
+  },
+  "panes": [
+    {
+      "name": "Discovery",
+      "agent": "claude",
+      "role": "researcher",
+      "phase": 1,
+      "focus": "Problem space research, competitor analysis, discovery brief"
+    },
+    {
+      "name": "Composer",
+      "agent": "claude",
+      "role": "designer",
+      "phase": 2,
+      "depends_on": ["Discovery"],
+      "focus": "Visual system, layout, typography, color, component hierarchy"
+    },
+    {
+      "name": "Builder",
+      "agent": "claude",
+      "role": "frontend",
+      "phase": 3,
+      "depends_on": ["Composer"],
+      "focus": "React + Tailwind implementation, dark mode, responsive, animations"
+    },
+    {
+      "name": "Customer-Zero",
+      "agent": "claude",
+      "role": "qa",
+      "phase": 4,
+      "depends_on": ["Builder"],
+      "focus": "User testing, click every button, mobile check, bug filing"
+    }
+  ]
+}

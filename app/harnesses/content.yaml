@@ -1,0 +1,35 @@
+name: content
+description: Content creation and distribution pipeline
+version: 1
+grid:
+  rows: 2
+  cols: 2
+roles:
+  - label: Content Strategist
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Plan content calendar. Identify topics. Set direction."
+  - label: Writer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 1]
+    mission: "Write articles, threads, posts. Anti-slop quality."
+  - label: Editor
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 0]
+    mission: "Review, fact-check, polish. Ensure voice consistency."
+  - label: Publisher
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 1]
+    mission: "Format for platforms. Schedule publishing. Track metrics."
+tags:
+  - content
+  - writing
+  - distribution

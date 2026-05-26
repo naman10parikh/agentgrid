@@ -1,0 +1,41 @@
+{
+  "description": "Focused research sprint: lead researcher coordinates web intel, repo scouting, and synthesis",
+  "topology": "star",
+  "consensus": "queen-decides",
+  "max_agents": 4,
+  "category": "research",
+  "anti_drift": true,
+  "checkpoint_interval_minutes": 15,
+  "missions": {
+    "Lead-Researcher": "Coordinate the research team. Define questions, assign angles, synthesize findings into actionable recommendations.",
+    "Web-Intel": "Search the web for current information. Use WebSearch and WebFetch. Find articles, docs, blog posts. Report raw findings.",
+    "Repo-Scout": "Explore GitHub repos relevant to the topic. Read READMEs, check stars/activity, extract patterns and code examples.",
+    "Synthesizer": "Take raw findings from Web-Intel and Repo-Scout. Cross-reference, identify patterns, write the final research report."
+  },
+  "panes": [
+    {
+      "name": "Lead-Researcher",
+      "agent": "claude",
+      "role": "coordinator",
+      "focus": "Define research questions, coordinate team, synthesize final output"
+    },
+    {
+      "name": "Web-Intel",
+      "agent": "claude",
+      "role": "researcher",
+      "focus": "Web search, article extraction, current information gathering"
+    },
+    {
+      "name": "Repo-Scout",
+      "agent": "claude",
+      "role": "researcher",
+      "focus": "GitHub exploration, repo analysis, code pattern extraction"
+    },
+    {
+      "name": "Synthesizer",
+      "agent": "claude",
+      "role": "analyst",
+      "focus": "Cross-reference findings, identify patterns, write research report"
+    }
+  ]
+}

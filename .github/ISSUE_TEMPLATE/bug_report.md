@@ -9,11 +9,13 @@ labels: bug
 **What did you expect?**
 
 **Steps to reproduce:**
+
 1.
 2.
 3.
 
 **Environment:**
+
 - OS: (e.g., macOS 15.3, Ubuntu 24.04)
 - tmux version: (run `tmux -V`)
 - Terminal: (e.g., Ghostty, iTerm2, Terminal.app)

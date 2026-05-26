@@ -1,0 +1,26 @@
+name: content-engine
+description: Content creation and distribution team
+version: 1
+grid:
+  rows: 2
+  cols: 2
+roles:
+  - label: CEO
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Direct content strategy. Review all outputs."
+  - label: WRITER
+    agent: claude
+    position: [0, 1]
+    mission: "Write articles, blog posts, documentation."
+  - label: EDITOR
+    agent: claude
+    position: [1, 0]
+    mission: "Edit for clarity, grammar, SEO optimization."
+  - label: PUBLISHER
+    agent: claude
+    position: [1, 1]
+    mission: "Format for platforms. Prepare social media hooks."
+tags: [content, writing, marketing]

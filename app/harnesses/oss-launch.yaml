@@ -1,0 +1,47 @@
+name: oss-launch
+description: Open source project launch team
+version: 1
+grid:
+  rows: 2
+  cols: 3
+roles:
+  - label: Project Lead
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Coordinate launch. README, package.json, CI/CD."
+  - label: Core Developer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 1]
+    mission: "Build the core library. Write clean, documented code."
+  - label: Test Writer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 2]
+    mission: "Write comprehensive tests. >80% coverage target."
+  - label: Docs Writer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 0]
+    mission: "README, API docs, examples, CONTRIBUTING.md."
+  - label: Content Writer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 1]
+    mission: "Launch blog post, Twitter thread, HN submission."
+  - label: QA
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 2]
+    mission: "Fresh install test. npm pack. Verify everything works."
+tags:
+  - oss
+  - launch
+  - npm

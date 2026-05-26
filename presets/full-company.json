@@ -1,0 +1,76 @@
+{
+  "description": "Full AI company: CEO orchestrates 8 specialists across engineering, design, content, and QA",
+  "topology": "hierarchical",
+  "consensus": "queen-decides",
+  "max_agents": 9,
+  "category": "engineering",
+  "anti_drift": true,
+  "checkpoint_interval_minutes": 10,
+  "missions": {
+    "CEO": "You are the CEO. Orchestrate all 8 workers. Monitor signals, re-assign idle panes, maintain quality. Use /status every 3 min.",
+    "Architect": "Design the system architecture. Define interfaces, data flow, and component boundaries before builders start.",
+    "Frontend": "Build all UI components. Use React, TypeScript, Tailwind. Test visually with screenshots.",
+    "Backend": "Build API routes, database schemas, and server logic. TypeScript strict, Zod validation at boundaries.",
+    "QA": "Test EVERYTHING as a user. Take screenshots. File bugs as blockers. Zero tolerance for untested work.",
+    "Content": "Write documentation, README, changelog, and marketing copy. Clear, concise, non-technical where possible.",
+    "Research": "Deep research on tools, patterns, competitors. Report findings to Architect and CEO.",
+    "DevOps": "Set up CI/CD, deployment pipelines, monitoring. Ensure builds pass and deploys succeed.",
+    "Designer": "Define the design system, color palette, typography, and component patterns. Review all UI work."
+  },
+  "panes": [
+    {
+      "name": "CEO",
+      "agent": "claude",
+      "role": "coordinator",
+      "focus": "Orchestrate team, monitor progress, re-assign workers, maintain quality"
+    },
+    {
+      "name": "Architect",
+      "agent": "claude",
+      "role": "architect",
+      "focus": "System design, interfaces, data flow, component boundaries"
+    },
+    {
+      "name": "Frontend",
+      "agent": "claude",
+      "role": "frontend",
+      "focus": "React components, UI, Tailwind styling, visual testing"
+    },
+    {
+      "name": "Backend",
+      "agent": "claude",
+      "role": "backend",
+      "focus": "API routes, database, server logic, Zod validation"
+    },
+    {
+      "name": "QA",
+      "agent": "claude",
+      "role": "qa",
+      "focus": "End-to-end testing, screenshots, bug filing, zero tolerance"
+    },
+    {
+      "name": "Content",
+      "agent": "claude",
+      "role": "content",
+      "focus": "Documentation, README, changelog, marketing copy"
+    },
+    {
+      "name": "Research",
+      "agent": "claude",
+      "role": "researcher",
+      "focus": "Tool research, competitor analysis, pattern discovery"
+    },
+    {
+      "name": "DevOps",
+      "agent": "claude",
+      "role": "devops",
+      "focus": "CI/CD, deployment, monitoring, build pipelines"
+    },
+    {
+      "name": "Designer",
+      "agent": "claude",
+      "role": "designer",
+      "focus": "Design system, colors, typography, component patterns"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+name: oss-launch
+description: Open source project launch team
+version: 1
+grid:
+  rows: 2
+  cols: 3
+roles:
+  - label: CEO
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Coordinate launch. Ensure quality bar."
+  - label: BUILDER
+    agent: claude
+    position: [0, 1]
+    mission: "Build the project. Write code. Add tests."
+  - label: DOCS
+    agent: claude
+    position: [0, 2]
+    mission: "Write README, API docs, examples."
+  - label: QA
+    agent: claude
+    position: [1, 0]
+    mission: "Test everything. Fresh install. Edge cases."
+  - label: CONTENT
+    agent: claude
+    position: [1, 1]
+    mission: "Write launch article. Prepare HN/Reddit posts."
+  - label: DESIGNER
+    agent: claude
+    position: [1, 2]
+    mission: "Build landing page. Create visual assets."
+tags: [oss, launch, open-source]

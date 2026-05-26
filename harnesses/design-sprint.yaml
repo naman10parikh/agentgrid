@@ -1,0 +1,32 @@
+name: design-sprint
+description: Design team with research, UI, and review roles
+version: 1
+grid:
+  rows: 2
+  cols: 2
+roles:
+  - label: CEO
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Direct design vision. Review all outputs."
+  - label: VP-RESEARCH
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 1]
+    mission: "Research competitors. Analyze UX patterns."
+  - label: VP-DESIGNER
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 0]
+    mission: "Build UI components. Implement design system."
+  - label: VP-REVIEW
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 1]
+    mission: "Review accessibility. Test responsiveness."
+tags: [design, ui, ux]

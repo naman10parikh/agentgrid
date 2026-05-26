@@ -1,5 +1,38 @@
 # Changelog
 
+## v2.0.0 (2026-03-24)
+
+### Added
+
+- **Electron desktop app** — full GUI with xterm.js terminals, drag-to-reorder, split panes, zoom
+- **30 built-in agent personas** — Coder, Architect, QA, Security Analyst, SPARC pipeline agents, and more
+- **Persona picker** — assign specialized roles to each pane with system prompt injection
+- **Terminal themes** — 5 built-in themes (dark, light, dracula, solarized-dark, nord)
+- **Compaction detection** — monitors Claude context compaction, auto-saves scrollback, warns on high memory
+- **Session persistence** — saves/restores terminal scrollback across app restarts
+- **Memory indicator** — color-coded bar showing estimated context usage per pane
+- **Copy-on-select** — auto-copies selected terminal text to clipboard
+- **50K scrollback** — increased from 10K, with search (Cmd+F) and WebGL rendering
+- **Unicode11 + Sixel image support** — proper emoji/CJK rendering and inline images
+- **Swarm topology** — hierarchical, mesh, ring, star topologies for agent coordination
+- **LLM Council** — multi-agent debate/voting before critical decisions
+- **Cost tracking** — per-pane token estimation and cost timeline
+- **MCP server** — expose AgentGrid as an MCP tool for external orchestration
+- **Preset system** — save/restore/export grid configurations with one click
+- **Broadcast** — send prompts to all panes simultaneously
+- **Status dashboard** — real-time grid health, latency, model info
+
+### Changed
+
+- Rewritten from bash to TypeScript with Electron + React + xterm.js
+- CLI (`agentgrid` command) still works as before — desktop app is optional
+- Package renamed from `@namanparikh/agentgrid` to `agentgrid` for simpler `npx` usage
+
+### Breaking
+
+- TypeScript source in `src/`, compiled output in `dist/` (was single bash script)
+- Presets now stored as JSON in `~/.agentgrid/presets/` (previously `~/.agentgrid/saves/`)
+
 ## v1.0.0 (2026-03-20)
 
 ### Added

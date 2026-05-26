@@ -1,0 +1,35 @@
+name: design
+description: Design team for UI/UX work
+version: 1
+grid:
+  rows: 2
+  cols: 2
+roles:
+  - label: Design Lead
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Design system, wireframes, component architecture."
+  - label: Frontend Builder
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 1]
+    mission: "Implement designs in React/Tailwind. Pixel-perfect."
+  - label: UX Reviewer
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 0]
+    mission: "Audit accessibility, responsiveness, interaction patterns."
+  - label: Visual QA
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 1]
+    mission: "Screenshot testing. Visual regression. Cross-browser."
+tags:
+  - design
+  - ui
+  - ux

@@ -1,6 +1,6 @@
 {
   "name": "agentgrid",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Spawn a grid of AI coding agents in one command. Grid layouts, colored status labels, sound alerts.",
   "author": "naman10parikh",
   "license": "MIT",

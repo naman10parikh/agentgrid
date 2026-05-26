@@ -1,0 +1,44 @@
+name: engineering-sprint
+description: Full dev team for parallel feature work
+version: 1
+grid:
+  rows: 2
+  cols: 3
+roles:
+  - label: CEO
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 0]
+    mission: "Orchestrate the team. Monitor signals. Assign tasks."
+  - label: VP-ARCHITECT
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 1]
+    mission: "Design architecture. Write specs. Review PRs."
+  - label: VP-BUILDER-1
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [0, 2]
+    mission: "Build features. Write code. Fix bugs."
+  - label: VP-BUILDER-2
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 0]
+    mission: "Build features. Write code. Fix bugs."
+  - label: VP-QA
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 1]
+    mission: "Test all outputs. File bugs. Verify fixes."
+  - label: VP-DOCS
+    agent: claude
+    model: claude-opus-4-6
+    effort: max
+    position: [1, 2]
+    mission: "Write documentation. Update README. Create guides."
+tags: [engineering, development, full-team]

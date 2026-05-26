@@ -1,0 +1,10 @@
+node_modules/
+.next/
+build/
+dist/
+*.log
+.env*
+.git/
+.DS_Store
+resources/read/
+docs/vision/VISION.md

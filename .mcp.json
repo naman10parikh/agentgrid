@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "github":          { "command": "npx", "args": ["-y","@modelcontextprotocol/server-github"], "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_PERSONAL_ACCESS_TOKEN}" } },
+    "context7":        { "command": "npx", "args": ["-y","@upstash/context7-mcp"] },
+    "memory":          { "command": "npx", "args": ["-y","@modelcontextprotocol/server-memory"], "env": { "MEMORY_FILE_PATH": "./memory/MEMORY.md" } },
+    "obsidian":        { "command": "npx", "args": ["-y","@bitbonsai/mcpvault"], "env": { "VAULT_PATH": "./brain" } }
+  }
+}

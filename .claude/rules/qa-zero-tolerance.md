@@ -1,0 +1,8 @@
+- ZERO TOLERANCE for shipping untested work. Every product, OSS project, agent, article, or feature MUST be tested end-to-end as a USER before shipping.
+- "It compiles" means NOTHING. "It passes tests" means NOTHING. Test as a user: install it fresh, try every feature, take screenshots, document results.
+- Every company spawned via /ceo-launch MUST include a QA persona as the FINAL VP. QA runs AFTER all other VPs and tests their combined output.
+- QA must produce a test report (.claude/vp-outputs/qa-report.md) with: test table, bugs found, bugs fixed, screenshots.
+- Any bug found by QA is a BLOCKER. Fix it before shipping. No exceptions.
+- Only the maintainer (the user) can override this policy by explicitly saying "bypass QA" or "ship without testing."
+- This applies to: OSS projects, consumer agents, earning agents, articles, documentation, scripts, skills — EVERYTHING.
+- Testing checklist (minimum): fresh install, structure validation, every feature exercised, edge cases, user experience review, screenshot evidence.

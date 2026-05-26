@@ -4,7 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-blue.svg)](#works-with)
 [![Tests](https://img.shields.io/badge/tests-30%2B%20passing-brightgreen.svg)](#tests)
-[![No Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen.svg)](#how-it-works)
+[![Downloads](https://img.shields.io/npm/dm/agentgrid.svg)](https://www.npmjs.com/package/agentgrid)
 
 **Your AI agents deserve a proper office.**
 
@@ -385,6 +385,12 @@ cd tools/agentgrid && bash test.sh
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## See Also
+
+- **[agentbench](https://github.com/naman10parikh/agentbench)** — Benchmark AI coding agents head-to-head on real tasks
+- **[agentmoney](https://github.com/naman10parikh/agentmoney)** — Track what your AI agents cost across providers
+- **[claude-harness](https://github.com/naman10parikh/claude-harness)** — Production-grade Claude Code setup with hooks, skills, and memory
 
 ## License
 

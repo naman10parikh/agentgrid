@@ -1,0 +1,55 @@
+{
+  "description": "SPARC 5-phase TDD pipeline: Specification → Pseudocode → Architecture → Refinement → Completion",
+  "topology": "hierarchical",
+  "consensus": "raft",
+  "max_agents": 6,
+  "anti_drift": true,
+  "phase_gating": true,
+  "panes": [
+    {
+      "name": "CEO",
+      "agent": "claude",
+      "role": "coordinator",
+      "focus": "Orchestrate SPARC phases, gate between phases, aggregate outputs"
+    },
+    {
+      "name": "Specification",
+      "agent": "claude",
+      "role": "specification",
+      "phase": 1,
+      "focus": "Define testable requirements, acceptance criteria, edge cases"
+    },
+    {
+      "name": "Pseudocode",
+      "agent": "claude",
+      "role": "pseudocode",
+      "phase": 2,
+      "depends_on": ["Specification"],
+      "focus": "Design algorithms and data structures, validate feasibility"
+    },
+    {
+      "name": "Architecture",
+      "agent": "claude",
+      "role": "architect",
+      "phase": 3,
+      "depends_on": ["Pseudocode"],
+      "focus": "Define system components, service boundaries, typed interfaces"
+    },
+    {
+      "name": "Refinement",
+      "agent": "claude",
+      "role": "coder",
+      "phase": 4,
+      "depends_on": ["Architecture"],
+      "focus": "TDD implementation — red-green-refactor cycles, >80% coverage"
+    },
+    {
+      "name": "Completion",
+      "agent": "claude",
+      "role": "qa",
+      "phase": 5,
+      "depends_on": ["Refinement"],
+      "focus": "E2E tests, security hardening, performance, deployment readiness"
+    }
+  ]
+}
