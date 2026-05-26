@@ -28,6 +28,10 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y tmux
 
+      - name: Install tmux (macOS)
+        if: runner.os == 'macOS'
+        run: brew install tmux
+
       - name: Verify dependencies
         run: |
           echo "--- bash ---"

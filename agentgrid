@@ -1,11 +1,11 @@
 #!/bin/bash
 # agentgrid — Spawn a grid of AI coding agents in one command
 # https://github.com/naman10parikh/agentgrid
-# MIT License | v1.0.0
+# MIT License | v2.0.0
 
 set -euo pipefail
 
-VERSION="1.0.0"
+VERSION="2.0.0"
 CONFIG_DIR="${HOME}/.agentgrid"
 CONFIG_FILE="${CONFIG_DIR}/config.json"
 SOUNDS_DIR="${CONFIG_DIR}/sounds"
