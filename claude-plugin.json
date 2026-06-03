@@ -14,6 +14,16 @@
       "name": "agentgrid",
       "description": "Create grids of AI coding agents with status indicators and sound alerts",
       "trigger": "When user wants to run multiple agent sessions in parallel, create grid layouts, or manage multi-agent terminal workflows"
+    },
+    {
+      "name": "agentgrid-orchestrate",
+      "description": "Orchestrate missions across a running agentgrid — inject tasks, broadcast to all panes, monitor live status, and read pane output",
+      "trigger": "When user wants to send missions to panes, broadcast to all workers, monitor a running grid, or inject a task file"
+    },
+    {
+      "name": "agentgrid-sessions",
+      "description": "Save, restore, and manage agentgrid sessions and presets — persist grid layouts and replay company configurations",
+      "trigger": "When user wants to save a grid, restore a session, load a preset, or replay a company configuration"
     }
   ],
   "hooks": {
