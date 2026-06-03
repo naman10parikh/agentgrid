@@ -1,0 +1,24 @@
+# agentgrid
+
+> Your AI agents deserve a proper office.
+
+## Documentation
+
+- [README.md](README.md): Your AI agents deserve a proper office.
+- [AGENTS.md](AGENTS.md): > How AI coding agents (and the humans steering them) should work inside this repo.
+- [CLAUDE.md](CLAUDE.md): > Forged from Energy via harness-forge (CP103). One repo = one recursively self-improving
+- [QUICKSTART.md](QUICKSTART.md): Spawn a grid of AI coding agents in one command. agentgrid is a TypeScript CLI plus an
+- [CONTRIBUTING.md](CONTRIBUTING.md): Thanks for wanting to help! Here's how.
+- [docs/APP-USER-GUIDE.md](docs/APP-USER-GUIDE.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/CLI-REFERENCE.md](docs/CLI-REFERENCE.md)
+- [docs/COLLABORATOR-ANALYSIS.md](docs/COLLABORATOR-ANALYSIS.md)
+- [docs/COMPARISON.md](docs/COMPARISON.md)
+- [docs/EXTENSION-GUIDE.md](docs/EXTENSION-GUIDE.md)
+- [docs/FAQ.md](docs/FAQ.md)
+- [docs/HARNESS-GUIDE.md](docs/HARNESS-GUIDE.md)
+
+## Notes
+
+- This file follows the llms.txt convention (https://llmstxt.org) so AI agents can
+  discover this repo's docs without scraping. Generated from the README + key docs.
