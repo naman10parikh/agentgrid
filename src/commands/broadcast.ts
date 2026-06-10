@@ -6,8 +6,10 @@ import {
   tmuxRunRaw,
 } from "../lib/tmux.js";
 import { SESSION_NAME } from "../lib/constants.js";
+import { recordRun } from "../lib/run-log.js";
 
 export function cmdBroadcast(text: string): void {
+  const start = Date.now();
   ensureInsideTmux(SESSION_NAME);
 
   if (!text) {

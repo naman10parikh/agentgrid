@@ -11,12 +11,14 @@ import {
 } from "../lib/tmux.js";
 import { checkAgentInstalled, installAgent } from "../lib/agents.js";
 import { SESSION_NAME } from "../lib/constants.js";
+import { recordRun } from "../lib/run-log.js";
 
 export function cmdGrid(
   grid: string,
   command?: string,
   opts?: { model?: string; effort?: string },
 ): void {
+  const gridStart = Date.now();
   ensureInsideTmux(SESSION_NAME);
 
   const match = grid.match(/^(\d+)x(\d+)$/);
@@ -110,4 +112,13 @@ export function cmdGrid(
       chalk.magenta("[agentgrid]") + ` Running: ${chalk.bold(command)}`,
     );
   }
+
+  // Observability: record this state-mutating grid creation to the audit trail.
+  recordRun({
+    command: "grid",
+    args: [grid, command ?? ""].filter(Boolean),
+    durationMs: Date.now() - gridStart,
+    outcome: "ok",
+    note: `${rows}x${cols} = ${totalPanes} panes`,
+  });
 }

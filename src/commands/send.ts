@@ -11,9 +11,11 @@ import {
   tmuxRun,
 } from "../lib/tmux.js";
 import { SESSION_NAME } from "../lib/constants.js";
+import { recordRun } from "../lib/run-log.js";
 
 /** Send a message to a specific pane */
 export function cmdSend(pane: string, message: string): void {
+  const start = Date.now();
   ensureInsideTmux(SESSION_NAME);
 
   if (!pane || !message) {
@@ -29,6 +31,14 @@ export function cmdSend(pane: string, message: string): void {
     chalk.magenta("[agentgrid]") +
       ` Sent to ${chalk.bold(pane)}: ${chalk.dim(message.slice(0, 60))}${message.length > 60 ? "..." : ""}`,
   );
+  // Observability: a send injects a prompt into an agent pane — record it.
+  recordRun({
+    command: "send",
+    args: [pane],
+    durationMs: Date.now() - start,
+    outcome: "ok",
+    note: `${message.length} chars`,
+  });
 }
 
 /** Read/capture output from a specific pane */
@@ -57,6 +67,7 @@ export function cmdInject(
   pane: string,
   opts: { file?: string; message?: string },
 ): void {
+  const start = Date.now();
   ensureInsideTmux(SESSION_NAME);
 
   if (!pane) {
@@ -110,4 +121,11 @@ export function cmdInject(
     chalk.magenta("[agentgrid]") +
       ` Injected ${chalk.bold(label)} into ${chalk.bold(pane)}`,
   );
+  // Observability: injecting a task file/prompt into a pane is state-mutating.
+  recordRun({
+    command: "inject",
+    args: [pane, label],
+    durationMs: Date.now() - start,
+    outcome: "ok",
+  });
 }

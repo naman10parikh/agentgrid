@@ -22,6 +22,9 @@ import { cmdMonitor, cmdLogs } from "./commands/monitor.js";
 import { cmdHarness } from "./commands/harness.js";
 import { cmdInit } from "./commands/init.js";
 import { cmdHarnessGen } from "./commands/harness-gen.js";
+import { cmdMemorySearch } from "./commands/memory.js";
+import { cmdSandboxRun } from "./commands/sandbox.js";
+import { readRuns } from "./lib/run-log.js";
 import {
   cmdStart,
   cmdDetach,
@@ -280,6 +283,44 @@ program
   .action((name: string, opts: { template?: string; agent?: string }) =>
     cmdHarnessGen(name, opts),
   );
+
+// ─── Memory search (BM25 over the agentgrid corpus) ───
+program
+  .command("memory-search <query...>")
+  .alias("mem")
+  .description("Search agentgrid's own docs/brain/memory corpus (BM25 ranked)")
+  .option("-n, --limit <n>", "Max results to return", parseInt)
+  .action((query: string[], opts) =>
+    cmdMemorySearch(query.join(" "), { limit: opts.limit }),
+  );
+
+// ─── Observability (read the append-only run-log audit trail) ───
+program
+  .command("runs")
+  .description("Show recent state-mutating actions from the run-log audit trail")
+  .option("-n, --limit <n>", "Number of entries to show", parseInt)
+  .action((opts) => {
+    const entries = readRuns(opts.limit ?? 20);
+    if (entries.length === 0) {
+      console.log("(no runs recorded yet — logs/runs.jsonl is empty)");
+      return;
+    }
+    for (const e of entries) {
+      const mark = e.outcome === "ok" ? "✅" : "❌";
+      const note = e.note ? ` — ${e.note}` : e.error ? ` — ${e.error}` : "";
+      console.log(
+        `${mark} ${e.ts}  ${e.command} ${e.args.join(" ")} (${e.durationMs}ms)${note}`,
+      );
+    }
+  });
+
+// ─── Sandbox (run the core action inside an isolated E2B microVM) ───
+program
+  .command("sandbox-run [command...]")
+  .description("Run a command inside an isolated E2B sandbox (untrusted-code escape hatch)")
+  .action(async (command?: string[]) => {
+    await cmdSandboxRun(command?.join(" "));
+  });
 
 // ─── MCP Server ───
 program
