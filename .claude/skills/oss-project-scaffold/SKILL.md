@@ -55,7 +55,7 @@ description: Scaffold a new OSS CLI project with package.json, tsconfig, README 
   "license": "MIT",
   "engines": { "node": ">=18" },
   "keywords": ["ai", "claude", "agent", "{category}"],
-  "author": "Energy Platform <naman@energy.dev>",
+  "author": "Naman Parikh",
   "repository": {
     "type": "git",
     "url": "https://github.com/naman10parikh/{project-name}"
