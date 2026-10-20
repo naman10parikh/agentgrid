@@ -1,4 +1,4 @@
 {
-  "golden_seconds": 15,
-  "measured": "2026-10-19, macOS, k=3, 21 of 21 tasks passed"
+  "golden_seconds": 8,
+  "measured": "2026-10-20, GitHub Actions ubuntu-latest, k=3, 21 of 21 tasks passed (Improve run 39356222664)"
 }
