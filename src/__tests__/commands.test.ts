@@ -72,6 +72,8 @@ vi.mock("../lib/agents.js", () => ({
   checkAgentInstalled: vi.fn(() => true),
   installAgent: vi.fn(() => true),
   getAgentInstallCmd: vi.fn(() => "npm install -g test"),
+  getAgentInstallHint: vi.fn(() => "npm install -g test"),
+  getAgentInstallPage: vi.fn(() => ""),
   getAgentVersion: vi.fn(() => "1.0.0"),
   listKnownAgents: vi.fn(() => [
     { name: "claude", installed: true, version: "2.1.0" },

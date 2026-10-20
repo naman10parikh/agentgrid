@@ -229,18 +229,20 @@ agentgrid install-all         # Install everything that's missing
 
 Install commands per agent:
 
-| Agent       | Install command                            |
-| ----------- | ------------------------------------------ |
-| Claude Code | `npm install -g @anthropic-ai/claude-code` |
-| Codex       | `npm install -g @openai/codex`             |
-| Gemini CLI  | `npm install -g @google/gemini-cli`        |
-| Aider       | `pip install aider-chat`                   |
-| OpenCode    | `npm install -g opencode`                  |
-| Goose       | `brew install goose`                       |
-| Cline       | `npm install -g @anthropic-ai/cline`       |
-| Hermes      | `npm install -g hermes-cli`                |
-| Copilot     | `npm install -g @github/copilot`           |
-| Cursor      | `brew install --cask cursor`               |
+| Agent       | Install command                                                         |
+| ----------- | ----------------------------------------------------------------------- |
+| Claude Code | `npm install -g @anthropic-ai/claude-code`                              |
+| Codex       | `npm install -g @openai/codex`                                          |
+| Gemini CLI  | `npm install -g @google/gemini-cli`                                     |
+| Aider       | `pip install aider-chat`                                                |
+| OpenCode    | `npm install -g opencode-ai`                                            |
+| Goose       | `brew install block-goose-cli`                                          |
+| Cline       | `npm install -g cline`                                                  |
+| Hermes      | no verified package: see https://github.com/NousResearch/hermes-agent   |
+| Copilot     | `npm install -g @github/copilot`                                        |
+| Cursor      | no verified package: see https://cursor.com/docs/cli/installation       |
+
+Each command is checked against its registry; [install-allowlist.json](../install-allowlist.json) gives the source.
 
 ### Claude Code Terminal Setup
 

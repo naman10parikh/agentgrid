@@ -61,5 +61,15 @@ script cannot find TypeScript.
 **Rule:** document `npx -y -p github:...` for one-off runs and `git clone ... && npm install && npm install -g .` for a
 kept copy. Never advertise an install line that was not run from an empty folder.
 
+## 2026-10-19 — install-all could install a stranger's package
+
+**What broke:** four agent install commands pointed at the wrong thing: `npm i -g opencode` and
+`@anthropic-ai/cline` do not exist, `hermes-cli` on npm is an unrelated tool, `brew install goose` is a database
+migration tool, and the `cursor` cask is the editor, not its agent CLI.
+**Root cause:** the commands were written from memory, never checked against npm or Homebrew.
+**Rule:** an install command is added only after `npm view` or `brew info` shows the vendor's package, and it goes
+into `install-allowlist.json` with its source; a test fails for any command not listed. An agent with no verifiable
+package gets its vendor's install page instead of a command.
+
 > Inherited cross-cutting rules live in `.claude/rules/` and are glob-loaded every session.
 > Append new entries above this line as they are discovered.

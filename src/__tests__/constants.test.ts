@@ -9,6 +9,7 @@ import {
   SESSION_NAME,
   KNOWN_AGENTS,
   AGENT_INSTALL_COMMANDS,
+  AGENT_INSTALL_PAGES,
 } from "../lib/constants.js";
 
 describe("constants", () => {
@@ -37,9 +38,9 @@ describe("constants", () => {
     expect(KNOWN_AGENTS).toContain("aider");
   });
 
-  it("has install commands for all known agents", () => {
+  it("has an install command or a vendor install page for every known agent", () => {
     for (const agent of KNOWN_AGENTS) {
-      expect(AGENT_INSTALL_COMMANDS[agent]).toBeTruthy();
+      expect(AGENT_INSTALL_COMMANDS[agent] || AGENT_INSTALL_PAGES[agent]).toBeTruthy();
     }
   });
 

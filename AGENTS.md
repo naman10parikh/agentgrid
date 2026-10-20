@@ -49,6 +49,8 @@ stuck pane, read-only.
 - Never spawn a grid in a hidden or detached session the person cannot see.
 - Never pass text from a tool call or a user to a shell string: use argument arrays (`execFileSync`).
 - Never count with `((x++))` under `set -e`: bash 4.1 and newer exit when `x` is 0. Use `x=$((x+1))`.
+- Never add an agent install command without checking the registry (`npm view`, `brew info`) and adding it, with its
+  source, to `install-allowlist.json`; a test fails otherwise.
 - Never commit a key, a home path or a run log (`logs/`, `.claude/audit.jsonl`).
 - Never merge a change that fails `pnpm test` or `pnpm eval`.
 

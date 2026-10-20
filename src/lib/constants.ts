@@ -25,15 +25,20 @@ export const KNOWN_AGENTS = [
 
 export type AgentName = (typeof KNOWN_AGENTS)[number];
 
+/** Only packages checked against their registry; install-allowlist.json gives each one's source. */
 export const AGENT_INSTALL_COMMANDS: Record<string, string> = {
   claude: "npm install -g @anthropic-ai/claude-code",
   codex: "npm install -g @openai/codex",
   gemini: "npm install -g @google/gemini-cli",
   aider: "pip install aider-chat",
-  opencode: "npm install -g opencode",
-  goose: "brew install goose",
-  cline: "npm install -g @anthropic-ai/cline",
-  hermes: "npm install -g hermes-cli",
+  opencode: "npm install -g opencode-ai",
+  goose: "brew install block-goose-cli",
+  cline: "npm install -g cline",
   copilot: "npm install -g @github/copilot",
-  cursor: "brew install --cask cursor",
+};
+
+/** Agents with no package we could verify: agentgrid shows the vendor's own install page and runs nothing. */
+export const AGENT_INSTALL_PAGES: Record<string, string> = {
+  hermes: "https://github.com/NousResearch/hermes-agent",
+  cursor: "https://cursor.com/docs/cli/installation",
 };

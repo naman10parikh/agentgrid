@@ -1,5 +1,5 @@
 import { execSync } from "node:child_process";
-import { KNOWN_AGENTS, AGENT_INSTALL_COMMANDS } from "./constants.js";
+import { KNOWN_AGENTS, AGENT_INSTALL_COMMANDS, AGENT_INSTALL_PAGES } from "./constants.js";
 
 export function checkAgentInstalled(agent: string): boolean {
   try {
@@ -26,9 +26,25 @@ export function getAgentInstallCmd(agent: string): string {
   return AGENT_INSTALL_COMMANDS[agent] ?? "";
 }
 
+export function getAgentInstallPage(agent: string): string {
+  return AGENT_INSTALL_PAGES[agent] ?? "";
+}
+
+/** How to install an agent, for display: the command, or the vendor's page. */
+export function getAgentInstallHint(agent: string): string {
+  const cmd = getAgentInstallCmd(agent);
+  if (cmd) return cmd;
+  const page = getAgentInstallPage(agent);
+  return page ? `install from ${page}` : "";
+}
+
 export function installAgent(agent: string): boolean {
   const cmd = getAgentInstallCmd(agent);
-  if (!cmd) return false;
+  if (!cmd) {
+    const page = getAgentInstallPage(agent);
+    if (page) console.log(`[agentgrid] No verified package for ${agent}. Install it from ${page}`);
+    return false;
+  }
   try {
     execSync(cmd, { stdio: "inherit" });
     return true;

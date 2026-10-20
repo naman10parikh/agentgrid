@@ -72,13 +72,13 @@ agentgrid is built on tmux. No daemon, no server, no Electron.
 | Codex           | `codex`      | `npm install -g @openai/codex`       | Yes (hooks) |
 | Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`  | Exit code   |
 | Aider           | `aider`      | `pip install aider-chat`             | Exit code   |
-| OpenCode        | `opencode`   | `npm install -g opencode`            | Exit code   |
-| Goose           | `goose`      | `brew install goose`                 | Exit code   |
-| Cline           | `cline`      | `npm install -g @anthropic-ai/cline` | Exit code   |
-| Hermes          | `hermes`     | `npm install -g hermes-cli`          | Exit code   |
+| OpenCode        | `opencode`   | `npm install -g opencode-ai`         | Exit code   |
+| Goose           | `goose`      | `brew install block-goose-cli`       | Exit code   |
+| Cline           | `cline`      | `npm install -g cline`               | Exit code   |
+| Hermes          | `hermes`     | [vendor installer](https://github.com/NousResearch/hermes-agent) | Exit code   |
 | Copilot         | `copilot`    | `npm install -g @github/copilot`     | Exit code   |
-| Cursor          | `cursor`     | `brew install --cask cursor`         | Exit code   |
-| **Any command** | `<your-cmd>` | —                                    | Exit code   |
+| Cursor          | `cursor`     | [vendor installer](https://cursor.com/docs/cli/installation) | Exit code   |
+| **Any command** | `<your-cmd>` | none                                 | Exit code   |
 
 Custom agents: use literally any terminal command. agentgrid doesn't restrict what you run.
 

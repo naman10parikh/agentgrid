@@ -21,7 +21,7 @@ once, and for lead agents that hand work to other agents. It runs on plain tmux 
 │ fixing auth  │ writing tests│ updating docs│
 ├──────────────┼──────────────┼──────────────┤
 │ ✅ Agent 4    │ ⏳ Agent 5    │ ⚡ Agent 6    │
-│ done — 3min  │ needs input  │ refactoring  │
+│ done · 3min  │ needs input  │ refactoring  │
 └──────────────┴──────────────┴──────────────┘
 ```
 
@@ -147,7 +147,7 @@ optional Electron desktop app lives in `app/`.
 ```
 ┌─────────────────────────────────────────────────┐
 │                   agentgrid CLI                  │
-│  (1,400 lines of bash — no daemon, no server)   │
+│  (about 1,440 lines of bash, no daemon/server)   │
 ├────────────┬────────────┬───────────────────────┤
 │  Grid      │  Session   │  Status               │
 │  Engine    │  Manager   │  System               │
@@ -172,7 +172,7 @@ You have 6 tasks. You could run them sequentially in one Claude session (slow), 
 - **Color-coded status** so you know who needs attention at a glance
 - **Sound alerts** when an agent finishes or needs input (works through DND)
 - **Save & restore** entire grid configurations with conversation history
-- **Zero dependencies** — built on tmux, the tool you already have
+- **Few dependencies**: tmux, bash and python3, plus Node 18 for the MCP server and the per-pane commands
 
 ## Features
 
@@ -203,7 +203,7 @@ Visual wizard with grid preview. 4 steps:
 
 | Status      | Label      | Color  | Sound |
 | ----------- | ---------- | ------ | ----- |
-| Working     | ⚡ WORKING | Blue   | —     |
+| Working     | ⚡ WORKING | Blue   | none  |
 | Needs input | ⏳ WAITING | Yellow | Tink  |
 | Done        | ✅ DONE    | Green  | Glass |
 
@@ -226,7 +226,7 @@ agentgrid restore my-grid                 # Restore + resume conversations
 agentgrid restore my-grid --no-start      # Layout only, no agents
 ```
 
-Save captures each pane's agent, directory, name, and **conversation session ID**. Restore resumes the exact conversation — not just the most recent one.
+Save captures each pane's agent, directory, name, and **conversation session ID**. Restore resumes the exact conversation, not just the most recent one.
 
 Per-agent resume: Claude (`--resume <id>`), Codex (`codex resume <id>`), Gemini (`--resume latest`), Goose (`session resume --last`).
 
@@ -290,19 +290,23 @@ agentgrid install-all                # Install all missing
 
 ## Supported Agents
 
-| Agent           | Command      | Install                              | Auto Status |
-| --------------- | ------------ | ------------------------------------ | ----------- |
-| Claude Code     | `claude`     | `npm i -g @anthropic-ai/claude-code` | Yes (hooks) |
-| Codex           | `codex`      | `npm i -g @openai/codex`             | Yes (hooks) |
-| Gemini CLI      | `gemini`     | `npm i -g @google/gemini-cli`        | Exit code   |
-| Aider           | `aider`      | `pip install aider-chat`             | Exit code   |
-| OpenCode        | `opencode`   | `npm i -g opencode`                  | Yes (hooks) |
-| Goose           | `goose`      | `brew install goose`                 | Exit code   |
-| Cline           | `cline`      | `npm i -g @anthropic-ai/cline`       | Exit code   |
-| Hermes          | `hermes`     | `npm i -g hermes-cli`                | Exit code   |
-| Copilot         | `copilot`    | `npm i -g @github/copilot`           | Exit code   |
-| Cursor          | `cursor`     | `brew install --cask cursor`         | Exit code   |
-| **Any command** | `<your-cmd>` | —                                    | Exit code   |
+| Agent           | Command      | Install                                                                        | Auto Status |
+| --------------- | ------------ | ------------------------------------------------------------------------------ | ----------- |
+| Claude Code     | `claude`     | `npm install -g @anthropic-ai/claude-code`                                     | Yes (hooks) |
+| Codex           | `codex`      | `npm install -g @openai/codex`                                                 | Yes (hooks) |
+| Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`                                            | Exit code   |
+| Aider           | `aider`      | `pip install aider-chat`                                                       | Exit code   |
+| OpenCode        | `opencode`   | `npm install -g opencode-ai`                                                   | Yes (hooks) |
+| Goose           | `goose`      | `brew install block-goose-cli`                                                 | Exit code   |
+| Cline           | `cline`      | `npm install -g cline`                                                         | Exit code   |
+| Hermes          | `hermes`     | the vendor's installer: [hermes-agent](https://github.com/NousResearch/hermes-agent) | Exit code   |
+| Copilot         | `copilot`    | `npm install -g @github/copilot`                                               | Exit code   |
+| Cursor          | `cursor`     | the vendor's installer: [Cursor CLI](https://cursor.com/docs/cli/installation) | Exit code   |
+| **Any command** | `<your-cmd>` | none                                                                           | Exit code   |
+
+`agentgrid install <agent>` and `agentgrid install-all` run only the commands above, each checked against its
+registry and listed with its source in [install-allowlist.json](install-allowlist.json). For Hermes and Cursor they
+print the vendor's page instead, because neither has a package agentgrid could verify.
 
 agentgrid doesn't restrict what you run. Any terminal command works as an agent.
 
@@ -464,9 +468,9 @@ no secret and never pushes or merges.
 
 ## See Also
 
-- **[agentbench](https://github.com/naman10parikh/agentbench)** — Benchmark AI coding agents head-to-head on real tasks
-- **[agentmoney](https://github.com/naman10parikh/agentmoney)** — Track what your AI agents cost across providers
-- **[claude-harness](https://github.com/naman10parikh/claude-harness)** — Production-grade Claude Code setup with hooks, skills, and memory
+- **[agentbench](https://github.com/naman10parikh/agentbench)**: Lighthouse for coding-agent harnesses: score your setup out of 100
+- **[agentmoney](https://github.com/naman10parikh/agentmoney)**: know what your AI costs: pricing and spend for Claude, GPT and Gemini
+- **[claude-harness](https://github.com/naman10parikh/claude-harness)**: a production-grade Claude Code setup with hooks, skills and memory
 
 <!-- fleet:anatomy:start -->
 ## What it is made of
@@ -514,4 +518,4 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md); AI-assisted pull requests are welcome. 
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).

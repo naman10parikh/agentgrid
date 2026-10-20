@@ -4,6 +4,8 @@ import {
   checkAgentInstalled,
   installAgent,
   getAgentInstallCmd,
+  getAgentInstallHint,
+  getAgentInstallPage,
 } from "../lib/agents.js";
 import { KNOWN_AGENTS } from "../lib/constants.js";
 
@@ -17,7 +19,7 @@ export function cmdAgents(): void {
       );
     } else {
       console.log(
-        `  ${chalk.red("○")} ${a.name} ${chalk.dim(getAgentInstallCmd(a.name))}`,
+        `  ${chalk.red("○")} ${a.name} ${chalk.dim(getAgentInstallHint(a.name))}`,
       );
     }
   }
@@ -53,6 +55,13 @@ export function cmdInstall(agent: string): void {
   }
 
   const cmd = getAgentInstallCmd(agent);
+  const page = getAgentInstallPage(agent);
+  if (!cmd && page) {
+    console.log(
+      chalk.magenta("[agentgrid]") + ` No verified package for ${chalk.bold(agent)}. Install it from ${page}`,
+    );
+    return;
+  }
   if (!cmd) {
     console.error(
       chalk.red("[agentgrid]") +

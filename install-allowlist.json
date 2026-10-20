@@ -1,0 +1,67 @@
+{
+  "about": "Every command agentgrid can run to install an agent, each checked against its registry on the date shown. A test (src/__tests__/install-allowlist.test.ts) fails if the script or src/lib/constants.ts holds a command that is not here.",
+  "commands": [
+    {
+      "agent": "claude",
+      "command": "npm install -g @anthropic-ai/claude-code",
+      "source": "npm @anthropic-ai/claude-code, published by Anthropic maintainers",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "codex",
+      "command": "npm install -g @openai/codex",
+      "source": "npm @openai/codex, repository github.com/openai/codex",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "gemini",
+      "command": "npm install -g @google/gemini-cli",
+      "source": "npm @google/gemini-cli, repository github.com/google-gemini/gemini-cli",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "aider",
+      "command": "pip install aider-chat",
+      "source": "PyPI aider-chat, home page github.com/Aider-AI/aider",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "opencode",
+      "command": "npm install -g opencode-ai",
+      "source": "npm opencode-ai, the package opencode.ai/docs names",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "goose",
+      "command": "brew install block-goose-cli",
+      "source": "Homebrew core block-goose-cli, built from github.com/aaif-goose/goose, home page goose-docs.ai",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "cline",
+      "command": "npm install -g cline",
+      "source": "npm cline, repository github.com/cline/cline",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "copilot",
+      "command": "npm install -g @github/copilot",
+      "source": "npm @github/copilot, repository github.com/github/copilot-cli",
+      "checked": "2026-10-19"
+    }
+  ],
+  "pages": [
+    {
+      "agent": "hermes",
+      "page": "https://github.com/NousResearch/hermes-agent",
+      "why": "Hermes Agent installs through Nous Research's own script; npm hermes-cli is an unrelated tool",
+      "checked": "2026-10-19"
+    },
+    {
+      "agent": "cursor",
+      "page": "https://cursor.com/docs/cli/installation",
+      "why": "the Cursor CLI installs through Cursor's own script; the cursor cask is the editor and npm cursor-agent is a third party's package",
+      "checked": "2026-10-19"
+    }
+  ]
+}
