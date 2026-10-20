@@ -468,27 +468,6 @@ no secret and never pushes or merges.
 - **[agentmoney](https://github.com/naman10parikh/agentmoney)** — Track what your AI agents cost across providers
 - **[claude-harness](https://github.com/naman10parikh/claude-harness)** — Production-grade Claude Code setup with hooks, skills, and memory
 
-<!-- fleet:footer:start -->
-## How it improves itself
-
-It carries its own evals and a self-improvement contract, [`dsip.json`](dsip.json) (level L2). A scheduled loop runs the evals, tries a change in a sandbox and opens it for review. A change that lowers a score is not merged, and a person merges every change. Lessons it learns are kept as rules in its memory files.
-
-## Part of a fleet
-
-One of the agent-native, recursively self-improving open-source projects by [Naman Parikh](https://github.com/naman10parikh). Each one is an agent employee that owns one part of an agent's harness or of the product around it.
-
-Siblings: [agentdial](https://github.com/naman10parikh/agentdial) (identity) · [wikimem](https://github.com/naman10parikh/wikimem) (memory) · [skillsmith](https://github.com/naman10parikh/skillsmith) (skills) · [agent-booster](https://github.com/naman10parikh/agent-booster) (tools / CLIs) · [armory](https://github.com/naman10parikh/armory) (MCPs and the component registry) · [agentswarm](https://github.com/naman10parikh/agentswarm) (dispatch) · [agentbench](https://github.com/naman10parikh/agentbench) (evals) · [agentmoney](https://github.com/naman10parikh/agentmoney) (observability) · [claude-harness](https://github.com/naman10parikh/claude-harness) (the whole harness, as a template).
-
-## Contributing and security
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md); AI-assisted pull requests are welcome. Report a vulnerability privately, as [SECURITY.md](SECURITY.md) explains.
-
-## Star history
-
-[![Star history chart](https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date)](https://star-history.com/#naman10parikh/agentgrid&Date)
-<!-- fleet:footer:end -->
-
-
 <!-- fleet:anatomy:start -->
 ## What it is made of
 
@@ -511,6 +490,27 @@ Every project in this fleet is graded on the same 11 harness components and on s
 
 ✅ real and tested · 🟡 partial, with the reason in the row · ❌ absent
 <!-- fleet:anatomy:end -->
+
+<!-- fleet:footer:start -->
+## How it improves itself
+
+It carries its own evals and a self-improvement contract, [`dsip.json`](dsip.json) (level L2). A scheduled loop runs the evals, tries a change in a sandbox and opens it for review. A change that lowers a score is not merged, and a person merges every change. Lessons it learns are kept as rules in its memory files.
+
+## Part of a fleet
+
+One of the agent-native, recursively self-improving open-source projects by [Naman Parikh](https://github.com/naman10parikh). Each one is an agent employee that owns one part of an agent's harness or of the product around it.
+
+Siblings: [agentdial](https://github.com/naman10parikh/agentdial) (identity) · [wikimem](https://github.com/naman10parikh/wikimem) (memory) · [skillsmith](https://github.com/naman10parikh/skillsmith) (skills) · [agent-booster](https://github.com/naman10parikh/agent-booster) (tools / CLIs) · [armory](https://github.com/naman10parikh/armory) (MCPs and the component registry) · [agentswarm](https://github.com/naman10parikh/agentswarm) (dispatch) · [agentbench](https://github.com/naman10parikh/agentbench) (evals) · [agentmoney](https://github.com/naman10parikh/agentmoney) (observability) · [claude-harness](https://github.com/naman10parikh/claude-harness) (the whole harness, as a template).
+
+## Contributing and security
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md); AI-assisted pull requests are welcome. Report a vulnerability privately, as [SECURITY.md](SECURITY.md) explains.
+
+## Star history
+
+[![Star history chart](https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date)](https://star-history.com/#naman10parikh/agentgrid&Date)
+<!-- fleet:footer:end -->
+
 
 ## License
 
