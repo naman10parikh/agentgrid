@@ -34,7 +34,7 @@
 
 - [ ] **AG-40** Submit agentgrid to `awesome-mcp-servers` once MCP server (`src/mcp-server.ts`) is verified against the latest MCP spec
 - [ ] **AG-41** Homebrew tap formula (`Formula/agentgrid.rb`) — update SHA256 after next npm publish
-- [ ] **AG-42** Add `agentgrid` to Quartermaster catalog (`/Users/naman/quartermaster`) with measured eval_score
+- [ ] **AG-42** Add `agentgrid` to the Quartermaster catalog with a measured eval_score
 
 ---
 

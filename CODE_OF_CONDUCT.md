@@ -20,6 +20,7 @@ We pledge to make participation in our project a harassment-free experience for 
 
 ## Enforcement
 
-Project maintainers may remove, edit, or reject contributions that violate this code. Report issues to naman10parikh@gmail.com.
+Project maintainers may remove, edit, or reject contributions that violate this code. Report issues privately: open an issue titled "Conduct contact" with no details, and the maintainer will reply with a
+private channel.
 
 Adapted from the [Contributor Covenant](https://www.contributor-covenant.org/), version 2.1.
