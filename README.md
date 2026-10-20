@@ -1,15 +1,27 @@
 # agentgrid
 
 <!-- fleet:header:start -->
-[![CI](https://img.shields.io/github/actions/workflow/status/naman10parikh/agentgrid/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/naman10parikh/agentgrid/actions) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Agent-native](https://img.shields.io/badge/agent--native-yes-2f5d8a?style=flat-square)](AGENTS.md) [![MCP server](https://img.shields.io/badge/MCP-server-1e3f60?style=flat-square)](#use-it-from-any-coding-agent) [![Skills](https://img.shields.io/badge/skills-3-2f6b4f?style=flat-square)](skills/) [![Stars](https://img.shields.io/github/stars/naman10parikh/agentgrid?style=flat-square)](https://github.com/naman10parikh/agentgrid/stargazers)
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/banner-dark.svg"><img alt="AgentGrid: Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command." src="assets/banner.svg" width="100%"></picture></p>
+
+<p align="center">
+<a href="https://github.com/naman10parikh/agentgrid/actions"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/naman10parikh/agentgrid/ci.yml?branch=main&amp;style=flat-square&amp;label=ci"></a>
+<a href="https://github.com/naman10parikh/agentgrid/releases"><img alt="Version" src="https://img.shields.io/badge/version-2.0.0-2f5d8a?style=flat-square"></a>
+<a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-green?style=flat-square"></a>
+<a href="AGENTS.md"><img alt="Agent-native" src="https://img.shields.io/badge/agent--native-yes-2f5d8a?style=flat-square"></a>
+<a href="#use-it-from-any-coding-agent"><img alt="MCP server" src="https://img.shields.io/badge/MCP-server-1e3f60?style=flat-square"></a>
+<a href="skills/"><img alt="Skills" src="https://img.shields.io/badge/skills-3-2f6b4f?style=flat-square"></a>
+<a href="https://github.com/naman10parikh/agentgrid/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/naman10parikh/agentgrid?style=flat-square"></a>
+<a href="https://x.com/naman10parikh"><img alt="Follow on X" src="https://img.shields.io/badge/X-%40naman10parikh-000000?style=flat-square&amp;logo=x&amp;logoColor=white"></a>
+<a href="https://www.linkedin.com/in/naman-parikh1/"><img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-Naman%20Parikh-0a66c2?style=flat-square&amp;logo=linkedin&amp;logoColor=white"></a>
+</p>
+
+<p align="center"><a href="AGENTS.md">AGENTS.md</a> · <a href="llms.txt">llms.txt</a> · <a href="skills/">Skills</a> · <a href="docs/">Docs</a> · <a href="https://github.com/naman10parikh/agentgrid/discussions">Discussions</a> · <a href="SECURITY.md">Security</a> · <a href="CONTRIBUTING.md">Contributing</a> · <a href="https://x.com/naman10parikh">X</a> · <a href="https://github.com/naman10parikh">All projects</a></p>
 
 **Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command.**
 
 AgentGrid is an agent employee, a packaged specialist agent with its own skills, memory and tests. It owns one job: dispatch. Its persona is Lattice. Coding agents use it through its skills, its MCP server and its command line. A scheduled job runs its evals and proposes fixes. A person makes every change.
 
 _AgentGrid is part of an agent-native play for agent-native systems that can eventually be recursively self-improving and evolving, operated by agent employees._
-
-[AGENTS.md](AGENTS.md) · [llms.txt](llms.txt) · [Skills](skills/) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [All projects](https://github.com/naman10parikh)
 <!-- fleet:header:end -->
 
 agentgrid splits your terminal into a grid of AI coding agents, one per tmux pane, and shows who is working (blue),
@@ -512,13 +524,23 @@ One of the projects by [Naman Parikh](https://github.com/naman10parikh). Each ow
 
 Siblings: [agentdial](https://github.com/naman10parikh/agentdial) (identity) · [wikimem](https://github.com/naman10parikh/wikimem) (memory) · [skillsmith](https://github.com/naman10parikh/skillsmith) (skills) · [agent-booster](https://github.com/naman10parikh/agent-booster) (tools / CLIs) · [armory](https://github.com/naman10parikh/armory) (MCPs and the component registry) · [agentswarm](https://github.com/naman10parikh/agentswarm) (dispatch) · [agentbench](https://github.com/naman10parikh/agentbench) (evals) · [agentmoney](https://github.com/naman10parikh/agentmoney) (observability) · [claude-harness](https://github.com/naman10parikh/claude-harness) (the whole harness, as a template).
 
+## Community
+
+Questions and ideas go to [Discussions](https://github.com/naman10parikh/agentgrid/discussions); bugs go to [issues](https://github.com/naman10parikh/agentgrid/issues/new/choose). Follow the work on [X](https://x.com/naman10parikh) and [LinkedIn](https://www.linkedin.com/in/naman-parikh1/).
+
 ## Contributing and security
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md). AI-assisted pull requests are welcome. Report a vulnerability privately, as [SECURITY.md](SECURITY.md) explains.
 
 ## Star history
 
-[![Star history chart](https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date)](https://star-history.com/#naman10parikh/agentgrid&Date)
+If it is useful to you, a star helps other people find it.
+
+<a href="https://star-history.com/#naman10parikh/agentgrid&Date"><picture><source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date&theme=dark"><img alt="Star history chart" src="https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date" width="640"></picture></a>
+
+## Contributors
+
+<a href="https://github.com/naman10parikh/agentgrid/graphs/contributors"><img alt="Contributors" src="https://contrib.rocks/image?repo=naman10parikh/agentgrid"></a>
 <!-- fleet:footer:end -->
 
 
