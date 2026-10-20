@@ -502,7 +502,7 @@ Every project in this fleet is graded on the same 11 harness components and on s
 | Identity | ✅ | identity/SOUL.md:1 (Lattice; BRAND, HEARTBEAT, bootstrap MEMORY, no template slots) |
 | Memory | ✅ | memory/MEMORY.md:1 (about 785 tokens) + BM25 index src/lib/memory-index.ts:47 (agentgrid memory-search) + memory/LEARNINGS.md (7 rules) |
 | Skills | ✅ | skills/agentgrid/SKILL.md:1, skills/agentgrid-orchestrate/SKILL.md:1, skills/agentgrid-sessions/SKILL.md:1 |
-| Tools/CLIs | ✅ | package.json:7 (bins agentgrid, agentgrid-mcp); agentgrid:1432 (--version) |
+| Tools/CLIs | ✅ | package.json:7 (bins agentgrid, agentgrid-mcp); agentgrid:1459 (--version) |
 | Hooks | ✅ | .claude/settings.json:4 (SessionStart, PostToolUse) + hooks/hooks.json:4 (plugin pane-status hooks) |
 | Sub-agents | ✅ | .claude/agents/grid-operator.md:1, .claude/agents/pane-doctor.md:1 (flat, bundled in .claude-plugin/plugin.json) |
 | MCPs | ✅ | src/mcp-server.ts:36 (own stdio server, 15 tools; bin agentgrid-mcp) + .mcp.json:3 |
