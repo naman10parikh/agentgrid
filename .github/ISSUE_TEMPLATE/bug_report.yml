@@ -1,0 +1,47 @@
+name: Bug report
+description: Something isn't working.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1.
+        2.
+        3.
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: macOS 15.3, Ubuntu 24.04
+  - type: input
+    id: tmux
+    attributes:
+      label: tmux version
+      description: Run `tmux -V`.
+  - type: input
+    id: terminal
+    attributes:
+      label: Terminal
+      placeholder: Ghostty, iTerm2, Terminal.app
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Agent
+      options: [Claude Code, Codex, Gemini CLI, Cursor, Other]
+  - type: input
+    id: version
+    attributes:
+      label: agentgrid version
+      description: Run `agentgrid version`.
