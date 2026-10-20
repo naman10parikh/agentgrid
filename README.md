@@ -19,6 +19,8 @@
 AgentGrid is an agent employee, a packaged specialist agent with its own skills, memory and tests. It owns one job: dispatch. Its persona is Lattice. Coding agents use it through its skills, its MCP server and its command line. A scheduled job runs its evals and proposes fixes. A person makes every change.
 
 _AgentGrid is part of an agent-native play for agent-native systems that can eventually be recursively self-improving and evolving, operated by agent employees._
+
+<p align="center"><img alt="AgentGrid: a real task, run offline" src="assets/demo.svg" width="880"></p>
 <!-- fleet:header:end -->
 
 agentgrid splits your terminal into a grid of AI coding agents, one per tmux pane, and shows who is working (blue),
