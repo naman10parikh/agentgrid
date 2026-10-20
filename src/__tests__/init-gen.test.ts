@@ -36,9 +36,18 @@ describe("agentgrid init", () => {
       readFileSync(join(testDir, ".agentgrid.json"), "utf-8"),
     );
     expect(config.defaultAgent).toBe("claude");
-    expect(config.defaultModel).toBe("claude-opus-4-6");
+    expect(config.defaultModel).toBeUndefined();
     expect(config.defaultEffort).toBe("max");
     expect(config.defaultGrid).toBe("2x3");
+  });
+
+  it("the example harness names no model, so Claude Code picks its own", () => {
+    execSync(`node ${CLI} init`, { cwd: testDir });
+    const content = readFileSync(
+      join(testDir, ".agentgrid", "harnesses", "example.yaml"),
+      "utf-8",
+    );
+    expect(content).not.toContain("model:");
   });
 
   it("--force overwrites existing config", () => {
@@ -77,6 +86,15 @@ describe("agentgrid generate", () => {
     expect(content).toContain("Builder");
     expect(content).toContain("QA");
     expect(content).toContain("Docs");
+  });
+
+  it("names no model, so Claude Code picks its own", () => {
+    execSync(`node ${CLI} gen no-model --template squad`, { cwd: testDir });
+    const content = readFileSync(
+      join(testDir, ".agentgrid", "harnesses", "no-model.yaml"),
+      "utf-8",
+    );
+    expect(content).not.toContain("model:");
   });
 
   it("company template has 6 roles", () => {

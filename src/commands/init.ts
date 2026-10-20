@@ -4,7 +4,6 @@ import { join } from "path";
 
 const DEFAULT_CONFIG = {
   defaultAgent: "claude",
-  defaultModel: "claude-opus-4-6",
   defaultEffort: "max",
   defaultGrid: "2x3",
   mcpServers: [],
@@ -21,7 +20,6 @@ grid:
 roles:
   - label: Builder 1
     agent: claude
-    model: claude-opus-4-6
     effort: max
     position: [0, 0]
   - label: Builder 2

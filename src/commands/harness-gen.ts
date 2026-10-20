@@ -78,7 +78,6 @@ export function cmdHarnessGen(
   const roles: HarnessRole[] = tmpl.roles.map((label, i) => ({
     label,
     agent,
-    model: "claude-opus-4-6",
     effort: "max",
     position: [Math.floor(i / cols), i % cols] as [number, number],
   }));

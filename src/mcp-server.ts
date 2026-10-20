@@ -52,7 +52,7 @@ const TOOLS = [
         },
         model: {
           type: "string",
-          description: "Model override, e.g. claude-opus-4-6",
+          description: "Model override, e.g. opus",
         },
         effort: {
           type: "string",

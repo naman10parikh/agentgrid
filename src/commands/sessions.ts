@@ -162,7 +162,7 @@ export function cmdRestore(name?: string, opts?: { noStart?: boolean }): void {
     if (!opts?.noStart && p.command && p.command !== "shell") {
       let resumeCmd = p.command;
       if (p.command === "claude") {
-        resumeCmd = "claude --model claude-opus-4-6 --effort max";
+        resumeCmd = "claude --effort max";
       }
       sendKeys(target, resumeCmd, true);
       started.push(`    Pane ${p.pane}: ${p.label} -> ${p.command}`);

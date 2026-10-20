@@ -49,7 +49,7 @@ program
 program
   .command("grid <size> [agent]")
   .description("Create a grid (e.g. 2x3 claude)")
-  .option("--model <model>", "Model for Claude (default: claude-opus-4-6)")
+  .option("--model <model>", "Model for Claude (default: Claude Code's own)")
   .option("--effort <level>", "Effort level (default: max)")
   .option("--tool <agent>", "Agent binary to use")
   .action((size: string, agent: string | undefined, opts) => {

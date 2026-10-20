@@ -171,7 +171,7 @@ export function cmdHelp(): void {
 
   ${chalk.bold("GRIDS")}
     agentgrid ROWSxCOLS [agent]         Create grid (e.g. 2x3 claude)
-      --model <model>                   ${chalk.dim("Model for Claude (default: claude-opus-4-6)")}
+      --model <model>                   ${chalk.dim("Model for Claude (default: Claude Code's own)")}
       --effort <level>                  ${chalk.dim("Effort level (default: max)")}
       --tool <agent>                    ${chalk.dim("Agent binary to use")}
     agentgrid setup                     Visual wizard with grid preview
