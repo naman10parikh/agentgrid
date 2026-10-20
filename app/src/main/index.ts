@@ -68,7 +68,7 @@ import {
 } from "./store";
 import { IPC } from "../shared/types";
 import type { CliTool, PaneStatus } from "../shared/types";
-import { normalizeModel } from "../shared/models";
+import { estimateCostUsd, normalizeModel } from "../shared/models";
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
@@ -321,9 +321,10 @@ function registerIpcHandlers(): void {
     return true;
   });
 
-  ipcMain.handle(IPC.PANE_SET_MODEL, (_e, args: { paneId: string; model: string }) =>
-    gridManager.setPaneModel(args.paneId, args.model),
-  );
+  ipcMain.handle(IPC.PANE_SET_MODEL, (_e, args: { paneId: string; model: string }) => {
+    terminalManager.setModel(args.paneId, args.model);
+    return gridManager.setPaneModel(args.paneId, args.model);
+  });
 
   ipcMain.handle(IPC.PANE_SET_EFFORT, (_e, args: { paneId: string; effort: string }) =>
     gridManager.setPaneEffort(args.paneId, args.effort as import("../shared/types").EffortLevel),
@@ -1447,9 +1448,9 @@ function trackPaneBytes(paneId: string, bytes: number): void {
   }
   pane.metrics.bytesReceived += bytes;
   pane.metrics.lastActivityAt = Date.now();
-  // Rough estimate: ~4 chars per token, $15/MTok for Opus output
+  // Rough estimate: ~4 chars per token, at the price of the pane's model
   pane.metrics.estimatedTokens = Math.floor(pane.metrics.bytesReceived / 4);
-  pane.metrics.estimatedCostUsd = (pane.metrics.estimatedTokens / 1_000_000) * 15;
+  pane.metrics.estimatedCostUsd = estimateCostUsd(pane.metrics.estimatedTokens, pane.model);
 }
 
 function clearPaneTimer(paneId: string): void {
@@ -1465,6 +1466,7 @@ function clearPaneTimer(paneId: string): void {
 function spawnTerminalForPane(paneId: string, cwd: string, agent: CliTool): void {
   const paneConfig = gridManager.findPane(paneId);
   terminalManager.spawn(paneId, cwd, 80, 24, paneConfig?.env);
+  terminalManager.setModel(paneId, paneConfig?.model ?? "");
 
   // Forward PTY data directly to renderer — TerminalManager already batches at 5ms
   // (Previous double-buffer added another 16ms on top — removed per architect review)

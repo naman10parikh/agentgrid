@@ -45,3 +45,9 @@ export const PRICE_PER_MTOK: Record<string, number> = {
   sonnet: 6,
   haiku: 0.3,
 };
+
+/** Estimated US dollars for a number of tokens on a pane's model, saved under any version's name. */
+export function estimateCostUsd(tokens: number, model: string | undefined): number {
+  const usdPerMTok = PRICE_PER_MTOK[normalizeModel(model) ?? ""] ?? PRICE_PER_MTOK.opus;
+  return (tokens / 1_000_000) * usdPerMTok;
+}

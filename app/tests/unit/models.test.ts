@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import {
   CLAUDE_MODEL_OPTIONS,
   PRICE_PER_MTOK,
+  estimateCostUsd,
   modelOptionsFor,
   normalizeModel,
 } from "../../src/shared/models";
@@ -69,5 +70,13 @@ describe("prices", () => {
   it("the cost tracker compares by alias only", () => {
     const comparison = new TerminalManager().getCostComparison();
     expect(Object.keys(comparison)).toEqual(["opus", "sonnet", "haiku"]);
+  });
+
+  it("estimate a pane's cost at its own model's price, and Default or an unknown model as Opus", () => {
+    expect(estimateCostUsd(1_000_000, "sonnet")).toBe(PRICE_PER_MTOK.sonnet);
+    expect(estimateCostUsd(1_000_000, "claude-haiku-4-5")).toBe(PRICE_PER_MTOK.haiku);
+    expect(estimateCostUsd(1_000_000, "")).toBe(PRICE_PER_MTOK.opus);
+    expect(estimateCostUsd(1_000_000, undefined)).toBe(PRICE_PER_MTOK.opus);
+    expect(estimateCostUsd(500_000, "opus")).toBe(PRICE_PER_MTOK.opus / 2);
   });
 });
