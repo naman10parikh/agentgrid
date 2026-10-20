@@ -27,5 +27,30 @@ hand-write a channel string elsewhere.
 **Rule:** Banned in agentgrid code and scripts. Read panes with `tmux capture-pane`; drive
 them with `tmux send-keys`.
 
+
+## 2026-10-19 — `((c++))` stops a bash 5 script under `set -e`
+
+**What:** `agentgrid broadcast` reached only the first pane on Linux, and `agentgrid status` stopped after the first
+idle pane. macOS (bash 3.2) hid it.
+**Root cause:** from bash 4.1, `set -e` treats `((expr))` that evaluates to 0 as a failure, and `c++` evaluates to the
+old value, 0, on the first pass. The golden eval proved it inside a Linux sandbox.
+**Rule:** count with `c=$((c+1))`, never `((c++))`, in any script that runs under `set -e`. Run the golden eval on
+Linux (CI does) before calling a shell change done.
+
+## 2026-10-19 — Claude Code hooks read JSON from stdin
+
+**What:** the PostToolUse audit hook logged nothing in real sessions.
+**Root cause:** it read `CLAUDE_TOOL_NAME`, which Claude Code does not set; the payload arrives as JSON on stdin
+(`tool_name`, `tool_input.file_path`).
+**Rule:** a hook reads its stdin payload first and falls back to environment variables. Test a hook by piping a real
+payload into it and checking the side effect.
+
+## 2026-10-19 — Tool input never reaches a shell
+
+**What:** the MCP server built shell strings (`execSync("agentgrid send ... \"msg\"")`), escaping only double quotes,
+so a message holding `$(...)` or backticks would have run on the host.
+**Root cause:** string commands go through `/bin/sh`.
+**Rule:** pass tool input to commands as an argument array (`execFileSync(cmd, args)`), never inside a command string.
+
 > Inherited cross-cutting rules live in `.claude/rules/` and are glob-loaded every session.
 > Append new entries above this line as they are discovered.

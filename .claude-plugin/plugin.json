@@ -1,0 +1,14 @@
+{
+  "name": "agentgrid",
+  "version": "2.0.0",
+  "description": "Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command.",
+  "author": {
+    "name": "Naman Parikh",
+    "url": "https://github.com/naman10parikh"
+  },
+  "homepage": "https://github.com/naman10parikh/agentgrid",
+  "repository": "https://github.com/naman10parikh/agentgrid",
+  "license": "MIT",
+  "keywords": ["agent-native", "self-improving", "agent-employee", "claude-code", "multi-agent", "tmux", "orchestration"],
+  "agents": ["./.claude/agents/grid-operator.md", "./.claude/agents/pane-doctor.md"]
+}

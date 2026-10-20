@@ -1,0 +1,17 @@
+{
+  "name": "agentgrid",
+  "version": "2.0.0",
+  "description": "Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "agentgrid": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "github:naman10parikh/agentgrid",
+        "agentgrid-mcp"
+      ]
+    }
+  }
+}

@@ -1,18 +1,19 @@
 # agentgrid
 
-[![npm version](https://img.shields.io/npm/v/agentgrid.svg)](https://www.npmjs.com/package/agentgrid)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20WSL-blue.svg)](#works-with)
-[![Tests](https://img.shields.io/badge/tests-30%2B%20passing-brightgreen.svg)](#tests)
-[![Downloads](https://img.shields.io/npm/dm/agentgrid.svg)](https://www.npmjs.com/package/agentgrid)
+<!-- fleet:header:start -->
+[![CI](https://img.shields.io/github/actions/workflow/status/naman10parikh/agentgrid/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/naman10parikh/agentgrid/actions) [![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Agent-native](https://img.shields.io/badge/agent--native-yes-2f5d8a?style=flat-square)](AGENTS.md) [![MCP server](https://img.shields.io/badge/MCP-server-1e3f60?style=flat-square)](#use-it-from-any-coding-agent) [![Skills](https://img.shields.io/badge/skills-3-2f6b4f?style=flat-square)](skills/) [![Stars](https://img.shields.io/github/stars/naman10parikh/agentgrid?style=flat-square)](https://github.com/naman10parikh/agentgrid/stargazers)
 
-**Your AI agents deserve a proper office.**
+**Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command.**
 
-One command. Six agents. All working in parallel.
+Lattice is an agent-native, recursively self-improving agent employee whose job is dispatch. Coding agents use it through its skills, its MCP server and its command line. It improves itself through its own evals and a scheduled improvement loop, and a person reviews every change.
 
-```bash
-npx agentgrid 2x3 claude
-```
+[AGENTS.md](AGENTS.md) · [llms.txt](llms.txt) · [Skills](skills/) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [All projects](https://github.com/naman10parikh)
+<!-- fleet:header:end -->
+
+agentgrid splits your terminal into a grid of AI coding agents, one per tmux pane, and shows who is working (blue),
+who needs you (yellow) and who is done (green), with sound alerts. It is for anyone who runs several coding agents at
+once, and for lead agents that hand work to other agents. It runs on plain tmux with no daemon, and works with
+**Claude Code, Codex, Gemini CLI, Aider, Goose, Cline, Hermes, Copilot, Cursor**, or any terminal command.
 
 ```
 ┌──────────────┬──────────────┬──────────────┐
@@ -24,54 +25,123 @@ npx agentgrid 2x3 claude
 └──────────────┴──────────────┴──────────────┘
 ```
 
-agentgrid creates grids of terminal panes, launches your AI coding agent in each one, and shows you who's working (blue), who's done (green), and who needs you (yellow) — with sound alerts.
+<!-- fleet:use:start -->
+## Use it from any coding agent
 
-Works with **Claude Code, Codex, Gemini CLI, Aider, Goose, Cline, Hermes, Copilot, Cursor**, or literally any terminal command.
+**Claude Code**: the plugin brings the skills, sub-agents, hooks and MCP server.
 
-<!-- GIF demo: agentgrid 2x3 claude spawning 6 panes, tasks injected, status colors updating -->
-
-## Install
-
-```bash
-npm install -g agentgrid
+```
+/plugin marketplace add naman10parikh/agentgrid
+/plugin install agentgrid@agentgrid
 ```
 
-Or with curl:
+**Its MCP server**, in any MCP client:
+
+```bash
+claude mcp add --transport stdio agentgrid -- npx -y -p github:naman10parikh/agentgrid agentgrid-mcp
+codex mcp add agentgrid -- npx -y -p github:naman10parikh/agentgrid agentgrid-mcp
+```
+
+Cursor (`.cursor/mcp.json`), Gemini CLI (`.gemini/settings.json`) and most other clients take the same command as JSON:
+
+```json
+{
+  "mcpServers": {
+    "agentgrid": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "github:naman10parikh/agentgrid",
+        "agentgrid-mcp"
+      ]
+    }
+  }
+}
+```
+
+**Gemini CLI**: the extension brings the context and the MCP server.
+
+```bash
+gemini extensions install https://github.com/naman10parikh/agentgrid
+```
+
+**One skill** (3 in all, in [skills/](skills/)), in any agent that reads Agent Skills:
+
+```bash
+gemini skills install https://github.com/naman10parikh/agentgrid --path skills/agentgrid
+git clone --depth 1 https://github.com/naman10parikh/agentgrid /tmp/agentgrid && cp -r /tmp/agentgrid/skills/agentgrid ~/.claude/skills/
+```
+
+**The command line:**
+
+```bash
+npx -y -p github:naman10parikh/agentgrid agentgrid --help
+```
+
+Codex, Cursor, OpenCode, GitHub Copilot and other agents read [AGENTS.md](AGENTS.md); Claude Code reads [CLAUDE.md](CLAUDE.md) and Gemini CLI reads [GEMINI.md](GEMINI.md), which import it. [llms.txt](llms.txt) maps every surface for agents that read first.
+<!-- fleet:use:end -->
+
+## Quick start
+
+You need bash, tmux and python3, on macOS, Linux or Windows (WSL). The MCP server and the per-pane commands also need
+Node 18 or newer.
+
+### Install
+
+agentgrid is not on the npm registry yet, so it runs and installs from GitHub:
+
+```bash
+# Run it straight from GitHub, nothing installed
+npx -y -p github:naman10parikh/agentgrid agentgrid --help
+
+# Or install the command from GitHub
+npm install -g github:naman10parikh/agentgrid
+```
+
+### Your first grid
+
+```bash
+# Inside tmux: a 2x2 grid; the last word is the agent every pane runs
+agentgrid 2x2 claude      # or codex, gemini, aider, or any command: agentgrid 2x2 sh
+
+# See every pane, send them all one line, clear the grid
+agentgrid status --json
+agentgrid broadcast "pull main and run the tests"
+agentgrid kill
+```
+
+Not inside tmux? agentgrid opens a tmux session for you first. The interactive wizard is `agentgrid setup`, and
+`agentgrid launch dev-sprint` starts a saved team layout.
+
+The one-line installer copies the command to `~/.local/bin`, installs tmux if it is missing, adds the presets and a
+tmux config, and adds the pane-status hooks to Claude Code's settings:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
 ```
 
-Installs tmux (if needed), configures hooks, sets up sounds. 60 seconds.
+## How it works
 
-**Requirements:** bash, tmux, python3 &middot; **Supports:** macOS &middot; Linux &middot; Windows (WSL)
+The command line is about 1,440 lines of bash on top of tmux: no daemon, no server, no background process. The
+per-pane commands, the MCP server, memory search and the sandbox run from a small TypeScript build in `dist/`. An
+optional Electron desktop app lives in `app/`.
 
-## Quick Start
+1. **Grid engine:** creates tmux panes with `split-window` and `select-layout tiled`.
+2. **Status system:** custom tmux options (`@pane_status`, `@pane_label`) hold each pane's state and name.
+3. **Agent hooks:** Claude Code, Codex and OpenCode hooks call `pane-status.sh` when an agent starts, needs input
+   and stops. The Claude Code plugin ships these hooks in [`hooks/hooks.json`](hooks/hooks.json).
+4. **Sound alerts:** `afplay` (macOS) or `paplay` (Linux), which play through Do Not Disturb and Focus.
+5. **Session persistence:** JSON snapshots of the layout, each pane's agent, directory and conversation id.
+6. **Agent detection:** walks the process tree (`ps -o args`) to find the agent behind a `node` process.
+7. **MCP server:** `agentgrid-mcp` exposes 15 tools, so another coding agent can create, drive and read a grid. Tool
+   input goes to the CLI as an argument array, never through a shell.
+8. **Run log:** every state-changing command (grid, broadcast, send, inject, kill, sandbox) appends one line to
+   `logs/runs.jsonl`; `agentgrid runs` shows them.
+9. **Sandbox:** `agentgrid sandbox-run "<command>"` runs a command in a fresh E2B microVM, with your own
+   `E2B_API_KEY`. Measured boot: 263 to 348 ms.
 
-```bash
-# Same agent in every pane
-agentgrid 2x3 claude
-
-# Interactive wizard — pick agents per pane, save as preset
-agentgrid setup
-
-# Launch a saved configuration
-agentgrid launch dev-sprint
-```
-
-agentgrid auto-detects tmux. If you're not inside a tmux session, it creates one for you.
-
-## Why agentgrid?
-
-You have 6 tasks. You could run them sequentially in one Claude session (slow), or open 6 terminal tabs manually (tedious). agentgrid gives you:
-
-- **One command** to spawn any grid layout (2x2, 3x5, 5x5)
-- **Color-coded status** so you know who needs attention at a glance
-- **Sound alerts** when an agent finishes or needs input (works through DND)
-- **Save & restore** entire grid configurations with conversation history
-- **Zero dependencies** — built on tmux, the tool you already have
-
-## Architecture
+### Architecture
 
 ```
 ┌─────────────────────────────────────────────────┐
@@ -93,7 +163,15 @@ You have 6 tasks. You could run them sequentially in one Claude session (slow), 
 └─────────────────────────────────────────────────┘
 ```
 
-No Electron. No WebSocket server. No process manager. Just tmux — the battle-tested terminal multiplexer that's already on your machine.
+## Why agentgrid?
+
+You have 6 tasks. You could run them sequentially in one Claude session (slow), or open 6 terminal tabs manually (tedious). agentgrid gives you:
+
+- **One command** to spawn any grid layout (2x2, 3x5, 5x5)
+- **Color-coded status** so you know who needs attention at a glance
+- **Sound alerts** when an agent finishes or needs input (works through DND)
+- **Save & restore** entire grid configurations with conversation history
+- **Zero dependencies** — built on tmux, the tool you already have
 
 ## Features
 
@@ -160,7 +238,7 @@ agentgrid preset show mixed-agents        # View details
 agentgrid preset delete old-setup         # Remove
 ```
 
-3 built-in: `dev-sprint` (4 panes), `mixed-agents` (6 panes), `research-swarm` (9 panes).
+9 built-in presets ship in `presets/`, from `dev-sprint` (4 panes) and `mixed-agents` (6 panes) to `research-swarm` (9 panes); the `agentgrid-sessions` skill lists them all.
 
 ### Broadcast
 
@@ -190,6 +268,15 @@ agentgrid equalize                   # Even out sizes
 agentgrid kill                       # Clear to 1 pane
 agentgrid status                     # All pane statuses
 agentgrid status --json              # Machine-readable (for scripts)
+```
+
+### Per-pane work
+
+```bash
+agentgrid send %3 "Write the tests for src/auth/"   # one prompt to one pane
+agentgrid inject %3 --file missions/tests.md        # a long mission file
+agentgrid read %3 -n 40                             # the pane's last 40 lines
+agentgrid monitor                                   # every pane's status and output, live
 ```
 
 ### Agent Detection & Installation
@@ -255,6 +342,18 @@ PANES
   agentgrid equalize                  Even out sizes
   agentgrid kill                      Clear to 1 pane
 
+PER PANE
+  agentgrid send <pane> <text>        Send a prompt to one pane
+  agentgrid read <pane> [-n N]        Read a pane's recent output
+  agentgrid inject <pane> --file F    Inject a long mission file
+  agentgrid monitor                   Live monitor with pane output
+
+HARNESS
+  agentgrid mcp-serve                 Start the MCP server (stdio)
+  agentgrid memory-search "<query>"   BM25 search over memory and docs
+  agentgrid sandbox-run [command]     Run a command in an E2B microVM
+  agentgrid runs                      Recent run-log entries
+
 SOUNDS
   agentgrid sound                     Show current sounds
   agentgrid sound <event> <file>      Set sound
@@ -267,8 +366,8 @@ SETUP
   agentgrid tips                      Usage tips
   agentgrid update                    Self-update from GitHub
   agentgrid detach                    Exit (grid keeps running)
-  agentgrid version                   Show version
-  agentgrid help                      Show help
+  agentgrid --version                 Show version
+  agentgrid --help                    Show help
 ```
 
 ## Keyboard Shortcuts
@@ -315,34 +414,6 @@ Example `config.json`:
 }
 ```
 
-## How It Works
-
-agentgrid is ~1,400 lines of bash. No daemon, no server, no background process.
-
-1. **Grid engine** — creates tmux panes using `split-window` + `select-layout tiled`
-2. **Status system** — custom tmux options (`@pane_status`, `@pane_label`) for per-pane metadata
-3. **Agent hooks** — Claude Code/Codex hooks call `pane-status.sh` on start/stop/input-needed
-4. **Sound alerts** — `afplay` (macOS) or `paplay` (Linux), works through DND/Focus mode
-5. **Session persistence** — JSON snapshots of pane layout, agent type, directory, conversation ID
-6. **Agent detection** — walks process tree (`ps -o args`) to identify agents behind `node` processes
-
-## Claude Code Plugin
-
-agentgrid ships as a Claude Code plugin. Add it to any project:
-
-```json
-{
-  "name": "agentgrid",
-  "hooks": {
-    "UserPromptSubmit": { "command": "agentgrid-pane-status running" },
-    "PermissionRequest": { "command": "agentgrid-pane-status needs-input" },
-    "Stop": { "command": "agentgrid-pane-status done" }
-  }
-}
-```
-
-This enables automatic status updates — panes turn blue when working, yellow when waiting for permission, green when done.
-
 ## Works With
 
 **Terminals:** Ghostty, iTerm2, Terminal.app, Kitty, WezTerm, Alacritty, Windows Terminal (WSL)
@@ -374,23 +445,47 @@ A: 10x10 (100 panes). In practice, 3x3 or 4x4 is the sweet spot for most monitor
 **Q: Does it work in VS Code / Cursor terminal?**
 A: Yes. The integrated terminal supports tmux. Run `agentgrid 2x2 claude` directly.
 
-## Tests
+## Tests and evals
 
 ```bash
-cd tools/agentgrid && bash test.sh
+bash test.sh     # 30+ smoke checks: files, versions, help output, presets, security
+pnpm test        # 48 vitest tests of the TypeScript CLI
+pnpm eval        # smoke, 44 surface checks, and 7 golden tasks run 3 times on a private tmux server
 ```
 
-30+ tests covering file structure, version consistency, help output, preset validation, package.json fields, grid pattern matching, security (no eval injection), and command execution.
+The golden tasks drive the real CLI, the MCP server and the plugin hooks: spawn a 2x2 grid, list it as JSON, broadcast
+to every pane, color a pane through the hooks, read status and send to one pane over MCP, clear the grid, and find
+every action in the run log. CI runs the tests and the evals on every push and pull request.
 
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+The self-improvement loop (`.github/workflows/improve.yml`, nightly) runs the same evals, then compares the live
+command list and MCP tools with the docs, skills and memory, and writes what to improve to the run summary. It needs
+no secret and never pushes or merges.
 
 ## See Also
 
 - **[agentbench](https://github.com/naman10parikh/agentbench)** — Benchmark AI coding agents head-to-head on real tasks
 - **[agentmoney](https://github.com/naman10parikh/agentmoney)** — Track what your AI agents cost across providers
 - **[claude-harness](https://github.com/naman10parikh/claude-harness)** — Production-grade Claude Code setup with hooks, skills, and memory
+
+<!-- fleet:footer:start -->
+## How it improves itself
+
+It carries its own evals and a self-improvement contract, [`dsip.json`](dsip.json) (level L2). A scheduled loop runs the evals, tries a change in a sandbox and opens it for review. A change that lowers a score is not merged, and a person merges every change. Lessons it learns are kept as rules in its memory files.
+
+## Part of a fleet
+
+One of the agent-native, recursively self-improving open-source projects by [Naman Parikh](https://github.com/naman10parikh). Each one is an agent employee that owns one part of an agent's harness or of the product around it.
+
+Siblings: [agentdial](https://github.com/naman10parikh/agentdial) (identity) · [wikimem](https://github.com/naman10parikh/wikimem) (memory) · [skillsmith](https://github.com/naman10parikh/skillsmith) (skills) · [agent-booster](https://github.com/naman10parikh/agent-booster) (tools / CLIs) · [armory](https://github.com/naman10parikh/armory) (MCPs and the component registry) · [agentswarm](https://github.com/naman10parikh/agentswarm) (dispatch) · [agentbench](https://github.com/naman10parikh/agentbench) (evals) · [agentmoney](https://github.com/naman10parikh/agentmoney) (observability) · [claude-harness](https://github.com/naman10parikh/claude-harness) (the whole harness, as a template).
+
+## Contributing and security
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md); AI-assisted pull requests are welcome. Report a vulnerability privately, as [SECURITY.md](SECURITY.md) explains.
+
+## Star history
+
+[![Star history chart](https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date)](https://star-history.com/#naman10parikh/agentgrid&Date)
+<!-- fleet:footer:end -->
 
 ## License
 

@@ -1,0 +1,45 @@
+name: Test
+
+# Red-blocking gate on every push and pull request: the TypeScript build, the vitest suite, and the evals
+# (L1 smoke and surfaces, L2 golden tasks on a private tmux server, pass^3). A failing test or eval fails the job.
+# The bash smoke and version checks live separately in ci.yml.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install tmux
+        run: sudo apt-get update && sudo apt-get install -y tmux
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (tsc)
+        run: pnpm build
+
+      - name: Test (vitest run)
+        run: pnpm test
+
+      - name: Eval (smoke, surfaces, golden tasks)
+        run: pnpm eval

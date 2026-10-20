@@ -268,7 +268,7 @@ echo "— README quality"
 README="${SCRIPT_DIR}/README.md"
 grep -q "## Install" "$README" && pass "README has Install section" || fail "README missing Install"
 grep -q "## FAQ" "$README" && pass "README has FAQ section" || fail "README missing FAQ"
-grep -q "npm install -g agentgrid" "$README" && pass "README has npm install command" || fail "README missing npm install"
+grep -q "npm install -g github:naman10parikh/agentgrid" "$README" && pass "README has npm install command" || fail "README missing npm install"
 grep -q "Architecture" "$README" && pass "README has Architecture section" || fail "README missing Architecture"
 grep -q "## All Commands" "$README" && pass "README has All Commands" || fail "README missing All Commands"
 

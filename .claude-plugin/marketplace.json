@@ -1,0 +1,15 @@
+{
+  "name": "agentgrid",
+  "description": "agentgrid's plugin: spawn and run grids of coding agents from Claude Code.",
+  "owner": {
+    "name": "Naman Parikh",
+    "url": "https://github.com/naman10parikh"
+  },
+  "plugins": [
+    {
+      "name": "agentgrid",
+      "source": "./",
+      "description": "Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command."
+    }
+  ]
+}

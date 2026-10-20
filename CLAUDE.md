@@ -1,30 +1,32 @@
-# agentgrid — Agent-Native Harness
+@AGENTS.md
 
-> Forged from Energy via harness-forge (CP103). One repo = one recursively self-improving
-> agent-native harness. Energy is the control center; this is a self-contained flavor.
+# Claude Code in agentgrid
 
-## What this is
-agentgrid spawns a grid of AI coding agents (Claude, Codex, Gemini, aider, …) in one
-command — each in its own tmux pane — plus a visual Electron desktop app for orchestrating
-them. The CLI lives in `src/` (TypeScript → `dist/index.js`); the desktop app lives in
-`app/` (Electron + electron-vite, a separate workspace). This is also a self-contained
-agent-native harness: it carries its own inherited rules, skills, hooks, sub-agents,
-memory, and brain so the maintainer's coding agent can improve agentgrid itself.
+Everything any coding agent needs is in `AGENTS.md`, imported above. This file holds only what is specific to Claude
+Code.
 
-## Harness components (the formula)
-identity/ · memory/ + brain/ · tools/ · skills/ + .claude/skills · hooks/ + .claude/hooks ·
-.claude/agents (subagents) · .mcp.json (plugins/MCP) · src/ (the CLI) + app/ (desktop app) ·
-eval/ (CLI smoke + regression eval). Same formula as every Energy harness, different data.
+## What loads when you open this repository
 
-## Build & test
-- CLI: `pnpm install && pnpm build && pnpm test` (vitest, scoped to `src/`).
-- Desktop app: `pnpm --dir app install && pnpm --dir app test` (separate workspace; needs
-  the native `node-pty` module built by its own postinstall).
-- Smoke: `node dist/index.js --version` and `--help`. Eval: `bash eval/smoke.sh`.
+- **Hooks** (`.claude/settings.json`): `SessionStart` runs `.claude/hooks/session-context.sh`, which prints the memory
+  bootstrap and the newest rules; `PostToolUse` on Write, Edit and Bash runs `.claude/hooks/audit-log.sh`, which
+  appends one line per change to `.claude/audit.jsonl` (gitignored).
+- **Sub-agents** (`.claude/agents/`): `grid-operator` and `pane-doctor` are agentgrid's own; the other seven
+  (`architect`, `code-reviewer`, `test-writer` and the rest) are general reviewers for work on this codebase.
+- **MCP** (`.mcp.json`): only agentgrid's own server, `agentgrid-mcp`. The inherited development servers (GitHub,
+  Context7, a file-backed memory and an Obsidian vault) need a token or a relative path, so they live in
+  `.mcp.dev.json`. Load them with `claude --mcp-config .mcp.dev.json`.
+- **Rules** (`.claude/rules/`) are glob-loaded every session.
 
-## Operating model
-You are the user's co-founder. Act, don't ask. Self-improve every session. Test as a user.
-Inherited rules in .claude/rules/ are glob-loaded every session.
+## The plugin
 
-## Commit convention
-feat(skill): · feat(employee): · feat(company): — so git snap-back works at all 3 granularities.
+`.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` make this repository a Claude Code plugin:
+the skills in `skills/`, the two sub-agents, the MCP server and the pane-status hooks in `hooks/hooks.json`.
+Check it with `claude plugin validate .` before you change any of those files.
+
+## Working here
+
+- You operate inside the person's tmux. Never run `agentgrid ROWSxCOLS` in your own pane to test it: it splits the
+  window the person is watching. Use `pnpm eval`, which runs every grid on a private tmux server.
+- Follow the commit grammar in `AGENTS.md` (`feat(cli):`, `fix(app):`, `docs:` and the rest).
+- Act, then test as a user: `pnpm build && pnpm test && pnpm eval`, then the command you changed.
+- When you fix an error, add it to `memory/LEARNINGS.md` as what broke, the root cause, and the rule.

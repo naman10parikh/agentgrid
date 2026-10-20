@@ -27,3 +27,8 @@ app/playwright-report/
 
 # Logs
 *.log
+
+# Runtime trails (written by the CLI run-log + audit-log hook — never committed)
+logs/
+.claude/audit.jsonl
+.claude/audit.jsonl.lock

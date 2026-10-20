@@ -150,6 +150,23 @@ ensure_inside_tmux() {
     fi
 }
 
+# ─── Run log: an append-only JSONL trail of state-changing commands ───
+# The same file the TypeScript commands write (logs/runs.jsonl beside this script, or $AGENTGRID_RUN_LOG).
+# Best effort by design: a log write must never break a grid operation.
+ag_record_run() {  # ag_record_run <command> <outcome> <note> <start-epoch-seconds>
+    local self="${BASH_SOURCE[0]}" root log link
+    if [ -L "$self" ]; then
+        link="$(readlink "$self")"
+        case "$link" in /*) self="$link" ;; *) self="$(dirname "$self")/${link}" ;; esac
+    fi
+    root="$(cd "$(dirname "$self")" && pwd)"
+    log="${AGENTGRID_RUN_LOG:-${root}/logs/runs.jsonl}"
+    local ms=$(( ($(date +%s) - ${4:-$(date +%s)}) * 1000 ))
+    { mkdir -p "$(dirname "$log")" &&
+      printf '{"ts":"%s","command":"%s","args":[],"durationMs":%s,"outcome":"%s","note":"%s"}\n' \
+        "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$1" "$ms" "$2" "$3" >> "$log"; } 2>/dev/null || true
+}
+
 # ─── Visual TUI helpers ───
 draw_box() {
     local width=$1 title="$2"
@@ -243,7 +260,7 @@ cmd_start() {
 
 cmd_grid() {
     ensure_inside_tmux
-    local grid="${1:-2x2}" command="${2:-}"
+    local grid="${1:-2x2}" command="${2:-}" started="$(date +%s)"
 
     local rows=${grid%%x*} cols=${grid##*x}
 
@@ -312,6 +329,7 @@ cmd_grid() {
     tmux select-pane -t "${window}.1"
     log "${GREEN}✅ ${rows}x${cols} = ${total_panes} panes${NC}"
     [ -n "$command" ] && log "Running: ${BOLD}${command}${NC}"
+    ag_record_run grid ok "${rows}x${cols} = ${total_panes} panes" "$started"
 }
 
 # ─── Visual Setup Wizard ───
@@ -1117,8 +1135,9 @@ cmd_broadcast() {
     local w=$(tmux display-message -p '#{window_id}') t="$*" c=0
     local panes=$(tmux list-panes -t "$w" -F '#{pane_id}' 2>/dev/null)
     [ -z "$panes" ] && { err "No panes found in current window"; return 1; }
-    for p in $panes; do tmux send-keys -t "$p" "$t" Enter 2>/dev/null; ((c++)); done
+    for p in $panes; do tmux send-keys -t "$p" "$t" Enter 2>/dev/null; c=$((c+1)); done
     log "Broadcast to ${BOLD}${c}${NC} panes"
+    ag_record_run broadcast ok "${c} panes" "$(date +%s)"
 }
 cmd_equalize() { ensure_inside_tmux; tmux select-layout tiled; log "Equalized"; }
 
@@ -1232,7 +1251,7 @@ cmd_detach() {
         log "Not in tmux — nothing to detach from"
     fi
 }
-cmd_kill_grid() { ensure_inside_tmux; local c=$(tmux list-panes | wc -l | tr -d ' '); while [ $(tmux list-panes | wc -l | tr -d ' ') -gt 1 ]; do tmux kill-pane -t ":.$(tmux list-panes -F '#{pane_index}' | tail -1)"; done; log "Cleared (was ${c} panes)"; }
+cmd_kill_grid() { ensure_inside_tmux; local c=$(tmux list-panes | wc -l | tr -d ' '); while [ $(tmux list-panes | wc -l | tr -d ' ') -gt 1 ]; do tmux kill-pane -t ":.$(tmux list-panes -F '#{pane_index}' | tail -1)"; done; log "Cleared (was ${c} panes)"; ag_record_run kill ok "was ${c} panes" "$(date +%s)"; }
 
 cmd_status() {
     local json_mode=false
@@ -1271,10 +1290,10 @@ cmd_status() {
         local ref=$(echo "$line" | cut -d'|' -f1) st=$(echo "$line" | cut -d'|' -f2) lb=$(echo "$line" | cut -d'|' -f3)
         [ -z "$lb" ] && lb="(unnamed)"
         case "$st" in
-            done)        echo -e "  ${GREEN}✅ DONE${NC}     $lb ${DIM}[$ref]${NC}"; ((cd++)) ;;
-            needs-input) echo -e "  ${YELLOW}⏳ WAITING${NC}  $lb ${DIM}[$ref]${NC}"; ((cw++)) ;;
-            running)     echo -e "  ${BLUE}⚡ WORKING${NC}  $lb ${DIM}[$ref]${NC}"; ((cr++)) ;;
-            *)           echo -e "  ${DIM}   IDLE${NC}     $lb ${DIM}[$ref]${NC}"; ((ci++)) ;;
+            done)        echo -e "  ${GREEN}✅ DONE${NC}     $lb ${DIM}[$ref]${NC}"; cd=$((cd+1)) ;;
+            needs-input) echo -e "  ${YELLOW}⏳ WAITING${NC}  $lb ${DIM}[$ref]${NC}"; cw=$((cw+1)) ;;
+            running)     echo -e "  ${BLUE}⚡ WORKING${NC}  $lb ${DIM}[$ref]${NC}"; cr=$((cr+1)) ;;
+            *)           echo -e "  ${DIM}   IDLE${NC}     $lb ${DIM}[$ref]${NC}"; ci=$((ci+1)) ;;
         esac
     done < <(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index}|#{@pane_status}|#{@pane_label}' 2>/dev/null)
     echo -e "\n  ${GREEN}Done:${NC} $cd  ${YELLOW}Waiting:${NC} $cw  ${BLUE}Working:${NC} $cr  ${DIM}Idle:${NC} $ci\n"
@@ -1323,6 +1342,18 @@ cmd_help() {
     agentgrid broadcast <text>          Send to all panes
     agentgrid equalize                  Even sizes
     agentgrid kill                      Clear to 1 pane
+
+  ${BOLD}PER PANE${NC}
+    agentgrid send <pane> <text>        Send a prompt to one pane (e.g. %3)
+    agentgrid read <pane> [-n N]        Read a pane's recent output
+    agentgrid inject <pane> --file F    Inject a long mission file into a pane
+    agentgrid monitor                   Live monitor with pane output
+
+  ${BOLD}HARNESS${NC}
+    agentgrid mcp-serve                 Start the MCP server (stdio) for coding agents
+    agentgrid memory-search "<query>"   BM25 search over MEMORY.md + memory/ + brain/ + docs/
+    agentgrid sandbox-run [command]     Run a command in an isolated E2B microVM
+    agentgrid runs                      Recent run-log entries (logs/runs.jsonl)
 
   ${BOLD}SETUP${NC}
     agentgrid terminal-setup            Configure all Claude panes (Option+Enter etc.)
@@ -1378,7 +1409,27 @@ case "$COMMAND" in
     broadcast)   cmd_broadcast "$@" ;;
     equalize)    cmd_equalize ;;
     kill)        cmd_kill_grid ;;
-    version)     cmd_version ;;
+    send|read|inject|monitor|logs|mcp-serve|mcp|memory-search|sandbox-run|runs)
+                 # v2 TypeScript-CLI subcommands (per-pane send/read/inject, live monitor,
+                 # MCP server, BM25 memory search, E2B sandbox exec, run-log audit trail)
+                 # — delegate to the built dist/index.js. The MCP server calls these too.
+                 AG_SELF="${BASH_SOURCE[0]}"
+                 if [ -L "$AG_SELF" ]; then
+                     AG_LINK="$(readlink "$AG_SELF")"
+                     case "$AG_LINK" in
+                         /*) AG_SELF="$AG_LINK" ;;
+                         *)  AG_SELF="$(dirname "$AG_SELF")/${AG_LINK}" ;;
+                     esac
+                 fi
+                 AG_ROOT="$(cd "$(dirname "$AG_SELF")" && pwd)"
+                 if [ -f "${AG_ROOT}/dist/index.js" ]; then
+                     exec node "${AG_ROOT}/dist/index.js" "$COMMAND" "$@"
+                 else
+                     err "'${COMMAND}' needs the TypeScript CLI build (dist/index.js missing)."
+                     echo -e "  ${DIM}Run 'pnpm build' in the agentgrid repo first${NC}" >&2
+                     exit 1
+                 fi ;;
+    version|--version|-v|-V) cmd_version ;;
     help|--help|-h) cmd_help ;;
     [0-9]*x[0-9]*) cmd_grid "$COMMAND" "$@" ;;
     *)           err "Unknown command: ${BOLD}${COMMAND}${NC}"

@@ -1,0 +1,36 @@
+{
+  "name": "Lattice",
+  "description": "Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command.",
+  "url": "https://github.com/naman10parikh/agentgrid",
+  "version": "2.0.0",
+  "provider": {
+    "organization": "Naman Parikh",
+    "url": "https://github.com/naman10parikh"
+  },
+  "capabilities": {
+    "streaming": false
+  },
+  "defaultInputModes": [
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "agentgrid",
+      "name": "agentgrid",
+      "description": "Spawn a visible grid of coding agents, one per tmux pane."
+    },
+    {
+      "id": "agentgrid-orchestrate",
+      "name": "agentgrid-orchestrate",
+      "description": "Hand out and track work across a running grid: send, inject, broadcast, read, monitor."
+    },
+    {
+      "id": "agentgrid-sessions",
+      "name": "agentgrid-sessions",
+      "description": "Save, restore and replay grids, and launch the built-in team presets."
+    }
+  ]
+}

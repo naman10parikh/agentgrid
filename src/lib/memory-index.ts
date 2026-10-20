@@ -124,14 +124,25 @@ function idf(n: number, docFreq: number): number {
   return Math.log((n - docFreq + 0.5) / (docFreq + 0.5) + 1);
 }
 
-/** Extract the first line of `doc` containing any query term, trimmed for display. */
+/**
+ * Extract the most informative line of `doc` for display: the line that
+ * contains the MOST distinct query terms (first such line on ties). This
+ * favors the actual matching content over an early heading that happens to
+ * share one common term.
+ */
 function snippetFor(doc: IndexedDoc, terms: string[]): string {
+  let best = "";
+  let bestCount = 0;
   for (const line of doc.lines) {
     const lower = line.toLowerCase();
-    if (terms.some((t) => lower.includes(t))) {
-      const trimmed = line.trim();
-      return trimmed.length > 140 ? trimmed.slice(0, 137) + "..." : trimmed;
+    const count = terms.filter((t) => lower.includes(t)).length;
+    if (count > bestCount) {
+      bestCount = count;
+      best = line.trim();
     }
+  }
+  if (bestCount > 0) {
+    return best.length > 140 ? best.slice(0, 137) + "..." : best;
   }
   // Fall back to the first non-empty line.
   const first = doc.lines.find((l) => l.trim().length > 0)?.trim() ?? "";

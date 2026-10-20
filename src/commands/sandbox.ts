@@ -26,6 +26,8 @@ export interface SandboxRunResult {
   stdout: string;
   stderr: string;
   exitCode: number;
+  /** Time to boot the microVM (the cold start), milliseconds. */
+  bootMs: number;
   durationMs: number;
 }
 
@@ -52,6 +54,7 @@ export async function runInSandbox(
     timeoutMs: opts?.timeoutMs ?? 60_000,
     metadata: { tool: "agentgrid", action: "sandbox-run" },
   });
+  const bootMs = Date.now() - start;
 
   try {
     const result = await sandbox.commands.run(command, { timeoutMs: 30_000 });
@@ -60,6 +63,7 @@ export async function runInSandbox(
       stdout: result.stdout,
       stderr: result.stderr,
       exitCode: result.exitCode,
+      bootMs,
       durationMs: Date.now() - start,
     };
     recordRun({
@@ -67,7 +71,7 @@ export async function runInSandbox(
       args: [command],
       durationMs: out.durationMs,
       outcome: out.exitCode === 0 ? "ok" : "error",
-      note: `e2b ${sandbox.sandboxId} exit=${out.exitCode}`,
+      note: `e2b ${sandbox.sandboxId} exit=${out.exitCode} boot=${bootMs}ms`,
     });
     return out;
   } finally {
@@ -92,7 +96,7 @@ export async function cmdSandboxRun(command?: string): Promise<void> {
     const res = await runInSandbox(cmd);
     console.log(
       chalk.magenta("[agentgrid]") +
-        ` ${chalk.green(`✅ sandbox ${res.sandboxId}`)} (exit ${res.exitCode}, ${res.durationMs}ms)`,
+        ` ${chalk.green(`✅ sandbox ${res.sandboxId}`)} (exit ${res.exitCode}, boot ${res.bootMs}ms, total ${res.durationMs}ms)`,
     );
     if (res.stdout.trim()) console.log(res.stdout.trimEnd());
     if (res.stderr.trim())

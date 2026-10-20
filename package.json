@@ -4,16 +4,19 @@
   "description": "Spawn a grid of AI coding agents in one command",
   "type": "module",
   "bin": {
-    "agentgrid": "./agentgrid"
+    "agentgrid": "./agentgrid",
+    "agentgrid-mcp": "./dist/mcp-server.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "prepare": "tsc",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "eval": "bash eval/run.sh",
     "prepublishOnly": "pnpm build && pnpm test"
   },
   "files": [
@@ -25,7 +28,14 @@
     "examples/",
     "README.md",
     "CHANGELOG.md",
-    "LICENSE"
+    "LICENSE",
+    "AGENTS.md",
+    "llms.txt",
+    "skills/",
+    "hooks/",
+    "identity/",
+    "memory/MEMORY.md",
+    "memory/LEARNINGS.md"
   ],
   "keywords": [
     "ai",
@@ -40,7 +50,11 @@
     "codex",
     "gemini",
     "developer-tools",
-    "grid"
+    "grid",
+    "agent-native",
+    "mcp",
+    "agent-skills",
+    "self-improving"
   ],
   "author": "Naman Parikh",
   "license": "MIT",

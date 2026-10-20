@@ -12,7 +12,7 @@
  *   node dist/mcp-server.js
  */
 
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { PRESETS_DIR, SESSIONS_DIR, CONFIG_DIR } from "./lib/constants.js";
@@ -229,9 +229,11 @@ const TOOLS = [
   },
 ];
 
-function runAgentgrid(args: string): string {
+// Arguments go to the CLI as an array (execFileSync, no shell), so text from a tool call
+// (a message, a pane name, a file path) can never be run as a shell command on the host.
+function runAgentgrid(args: string[]): string {
   try {
-    const result = execSync(`agentgrid ${args}`, {
+    const result = execFileSync("agentgrid", args, {
       encoding: "utf-8",
       timeout: 30000,
       env: { ...process.env },
@@ -254,39 +256,39 @@ function handleToolCall(
       const size = args["size"] as string;
       const agent = (args["agent"] as string) ?? "claude";
       const flags: string[] = [];
-      if (args["model"]) flags.push(`--model ${args["model"]}`);
-      if (args["effort"]) flags.push(`--effort ${args["effort"]}`);
-      result = runAgentgrid(`grid ${size} ${agent} ${flags.join(" ")}`);
+      if (args["model"]) flags.push("--model", String(args["model"]));
+      if (args["effort"]) flags.push("--effort", String(args["effort"]));
+      result = runAgentgrid(["grid", size, agent, ...flags]);
       break;
     }
 
     case "grid_status": {
-      result = runAgentgrid("status --json");
+      result = runAgentgrid(["status", "--json"]);
       break;
     }
 
     case "grid_broadcast": {
       const message = args["message"] as string;
-      result = runAgentgrid(`broadcast "${message.replace(/"/g, '\\"')}"`);
+      result = runAgentgrid(["broadcast", message]);
       break;
     }
 
     case "grid_kill": {
-      result = runAgentgrid("kill");
+      result = runAgentgrid(["kill"]);
       break;
     }
 
     case "pane_send": {
       const pane = args["pane"] as string;
       const msg = args["message"] as string;
-      result = runAgentgrid(`send ${pane} "${msg.replace(/"/g, '\\"')}"`);
+      result = runAgentgrid(["send", pane, msg]);
       break;
     }
 
     case "pane_read": {
       const pane = args["pane"] as string;
       const lines = (args["lines"] as number) ?? 50;
-      result = runAgentgrid(`read ${pane} -n ${lines}`);
+      result = runAgentgrid(["read", pane, "-n", String(lines)]);
       break;
     }
 
@@ -295,12 +297,12 @@ function handleToolCall(
       const newName = args["name"] as string;
       // Use tmux directly for non-current pane naming
       try {
-        execSync(`tmux set-option -p -t ${pane} @pane_label "${newName}"`, {
+        execFileSync("tmux", ["set-option", "-p", "-t", pane, "@pane_label", newName], {
           encoding: "utf-8",
         });
         result = `Renamed pane ${pane} to "${newName}"`;
       } catch {
-        result = runAgentgrid(`name "${newName}"`);
+        result = runAgentgrid(["name", newName]);
       }
       break;
     }
@@ -308,42 +310,40 @@ function handleToolCall(
     case "pane_add": {
       const dir = (args["direction"] as string) ?? "right";
       const agent = (args["agent"] as string) ?? "claude";
-      result = runAgentgrid(`add ${dir} ${agent}`);
+      result = runAgentgrid(["add", dir, agent]);
       break;
     }
 
     case "preset_list": {
-      result = runAgentgrid("preset list");
+      result = runAgentgrid(["preset", "list"]);
       break;
     }
 
     case "preset_load": {
       const presetName = args["name"] as string;
-      result = runAgentgrid(`launch ${presetName}`);
+      result = runAgentgrid(["launch", presetName]);
       break;
     }
 
     case "session_save": {
       const sessionName = args["name"] as string | undefined;
-      result = runAgentgrid(sessionName ? `save ${sessionName}` : "save");
+      result = runAgentgrid(sessionName ? ["save", sessionName] : ["save"]);
       break;
     }
 
     case "session_restore": {
       const restoreName = args["name"] as string;
-      result = runAgentgrid(`restore ${restoreName}`);
+      result = runAgentgrid(["restore", restoreName]);
       break;
     }
 
     case "pane_inject": {
       const targetPane = args["pane"] as string;
       if (args["file"]) {
-        result = runAgentgrid(`inject ${targetPane} --file "${args["file"]}"`);
+        result = runAgentgrid(["inject", targetPane, "--file", String(args["file"])]);
       } else if (args["message"]) {
         const injectMsg = args["message"] as string;
-        result = runAgentgrid(
-          `inject ${targetPane} --message "${injectMsg.replace(/"/g, '\\"')}"`,
-        );
+        result = runAgentgrid(["inject", targetPane, "--message", injectMsg]);
       } else {
         result = "ERROR: Must provide either 'file' or 'message' parameter";
       }
@@ -351,12 +351,12 @@ function handleToolCall(
     }
 
     case "grid_equalize": {
-      result = runAgentgrid("equalize");
+      result = runAgentgrid(["equalize"]);
       break;
     }
 
     case "grid_dashboard": {
-      result = runAgentgrid("status");
+      result = runAgentgrid(["status"]);
       break;
     }
 

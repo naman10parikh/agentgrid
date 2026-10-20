@@ -1,0 +1,26 @@
+{
+  "description": "agentgrid pane status: a pane turns blue while its agent works, yellow when it needs input, green when it is done.",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/pane-status.sh\" running" }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/pane-status.sh\" needs-input" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "bash \"${CLAUDE_PLUGIN_ROOT}/pane-status.sh\" done" }
+        ]
+      }
+    ]
+  }
+}

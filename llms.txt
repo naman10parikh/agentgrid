@@ -1,24 +1,48 @@
 # agentgrid
 
-> Your AI agents deserve a proper office.
+> Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command. agentgrid is an agent-native,
+> self-improving agent employee, Lattice, whose job is dispatch: it splits work across agents in tmux panes, hands
+> out missions and tracks each pane to done. Use it from any coding agent through its MCP server, its skills, its
+> Claude Code plugin or its command line.
 
-## Documentation
+## Start here
 
-- [README.md](README.md): Your AI agents deserve a proper office.
-- [AGENTS.md](AGENTS.md): > How AI coding agents (and the humans steering them) should work inside this repo.
-- [CLAUDE.md](CLAUDE.md): > Forged from Energy via harness-forge (CP103). One repo = one recursively self-improving
-- [QUICKSTART.md](QUICKSTART.md): Spawn a grid of AI coding agents in one command. agentgrid is a TypeScript CLI plus an
-- [CONTRIBUTING.md](CONTRIBUTING.md): Thanks for wanting to help! Here's how.
-- [docs/APP-USER-GUIDE.md](docs/APP-USER-GUIDE.md)
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- [docs/CLI-REFERENCE.md](docs/CLI-REFERENCE.md)
-- [docs/COLLABORATOR-ANALYSIS.md](docs/COLLABORATOR-ANALYSIS.md)
-- [docs/COMPARISON.md](docs/COMPARISON.md)
-- [docs/EXTENSION-GUIDE.md](docs/EXTENSION-GUIDE.md)
-- [docs/FAQ.md](docs/FAQ.md)
-- [docs/HARNESS-GUIDE.md](docs/HARNESS-GUIDE.md)
+- [AGENTS.md](AGENTS.md): what it does, every tool and how to call it, what not to do
+- [README.md](README.md): install, quick start, how it works
+- [identity/SOUL.md](identity/SOUL.md): Lattice, the agent employee: mission, personality, boundaries
 
-## Notes
+## Skills
 
-- This file follows the llms.txt convention (https://llmstxt.org) so AI agents can
-  discover this repo's docs without scraping. Generated from the README + key docs.
+- [skills/agentgrid/SKILL.md](skills/agentgrid/SKILL.md): spawn a grid of coding agents
+- [skills/agentgrid-orchestrate/SKILL.md](skills/agentgrid-orchestrate/SKILL.md): hand out and track work across a running grid
+- [skills/agentgrid-sessions/SKILL.md](skills/agentgrid-sessions/SKILL.md): save, restore and replay grids and presets
+
+## MCP tools
+
+- [src/mcp-server.ts](src/mcp-server.ts): the `agentgrid-mcp` server, 15 tools: grid_create, grid_status, grid_broadcast, grid_kill, grid_equalize, grid_dashboard, pane_send, pane_read, pane_rename, pane_add, pane_inject, preset_list, preset_load, session_save, session_restore
+- [.mcp.json](.mcp.json): the server's one-line config for any MCP client
+
+## Plugin and sub-agents
+
+- [.claude-plugin/plugin.json](.claude-plugin/plugin.json): the Claude Code plugin (skills, sub-agents, MCP server, hooks)
+- [hooks/hooks.json](hooks/hooks.json): hooks that color each pane by its agent's status
+- [.claude/agents/grid-operator.md](.claude/agents/grid-operator.md): sub-agent that runs a grid for a plan
+- [.claude/agents/pane-doctor.md](.claude/agents/pane-doctor.md): sub-agent that diagnoses a stuck pane
+- [gemini-extension.json](gemini-extension.json): the Gemini CLI extension
+- [.well-known/agent-card.json](.well-known/agent-card.json): the A2A agent card
+
+## How it improves itself
+
+- [dsip.json](dsip.json): the self-improvement contract and its honest level
+- [eval/run.sh](eval/run.sh): the evals (smoke, surfaces, golden tasks with pass^3)
+- [scripts/improve.mjs](scripts/improve.mjs): one turn of the nightly improvement loop
+- [memory/MEMORY.md](memory/MEMORY.md): the memory index
+- [memory/LEARNINGS.md](memory/LEARNINGS.md): every correction, kept as a rule
+
+## Docs
+
+- [docs/CLI-REFERENCE.md](docs/CLI-REFERENCE.md): every command
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): how the CLI, the app and tmux fit together
+- [docs/HARNESS-GUIDE.md](docs/HARNESS-GUIDE.md): harness files for teams of agents
+- [docs/FAQ.md](docs/FAQ.md): common questions
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to contribute

@@ -1,0 +1,50 @@
+name: Improve
+
+# agentgrid's self-improvement loop. Nightly (and on demand), it runs the evals, measures the live CLI and MCP surface
+# against the docs, skills and memory, and writes a proposal to the run summary and an artifact. It needs no secret,
+# it never pushes, and it never merges: a person reviews every change. A failing eval turns the run red.
+
+on:
+  schedule:
+    - cron: "23 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install tmux
+        run: sudo apt-get update && sudo apt-get install -y tmux
+
+      - name: Install and build
+        run: pnpm install --frozen-lockfile && pnpm build
+
+      - name: One turn of the loop
+        run: node scripts/improve.mjs
+
+      - name: Proposal to the run summary
+        if: always()
+        run: cat logs/proposal.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Keep the proposal
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: proposal
+          path: logs/proposal.md
+          if-no-files-found: ignore
