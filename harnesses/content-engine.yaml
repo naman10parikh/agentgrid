@@ -7,7 +7,6 @@ grid:
 roles:
   - label: CEO
     agent: claude
-    model: claude-opus-4-6
     effort: max
     position: [0, 0]
     mission: "Direct content strategy. Review all outputs."

@@ -166,7 +166,6 @@ grid:
 roles:
   - label: CEO
     agent: claude
-    model: claude-opus-4-6
     effort: max
     position: [0, 0]
   - label: Builder-1

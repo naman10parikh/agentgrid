@@ -21,7 +21,6 @@ roles:
   - name: VP-ARCHITECT
     position: "0,0"
     cliTool: claude
-    model: claude-opus-4-6
     effort: max
     systemPrompt: "You are the system architect. Design before building."
     skills:
@@ -32,7 +31,6 @@ roles:
   - name: VP-FRONTEND
     position: "0,1"
     cliTool: claude
-    model: claude-opus-4-6
     effort: max
     systemPrompt: "You are the frontend engineer. Build React components."
     skills:
@@ -45,7 +43,6 @@ roles:
   - name: VP-BACKEND
     position: "1,0"
     cliTool: claude
-    model: claude-opus-4-6
     effort: max
     systemPrompt: "You are the backend engineer. Build APIs and services."
     phase: 1
@@ -55,7 +52,6 @@ roles:
   - name: ANVIL-QA
     position: "1,1"
     cliTool: claude
-    model: claude-opus-4-6
     effort: max
     systemPrompt: "You are QA. Test everything. Zero tolerance for bugs."
     skills:
@@ -102,7 +98,7 @@ Each role maps to one pane in the grid. Roles have:
 - **name** — displayed as the pane label
 - **position** — `"row,col"` in the grid
 - **cliTool** — which AI CLI to use (claude, codex, gemini, etc.)
-- **model** — specific model (claude-opus-4-6, gpt-4.1, etc.)
+- **model** — optional; leave it out and the CLI uses its own default model (for Claude Code an alias such as `opus` also works)
 - **effort** — thinking effort level (low, medium, high, max)
 - **systemPrompt** — injected as the initial prompt
 - **skills** — additional capabilities to load
