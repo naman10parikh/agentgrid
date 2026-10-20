@@ -14,26 +14,18 @@ type Step = "welcome" | "api-key" | "model" | "tutorial";
 
 const STEPS: Step[] = ["welcome", "api-key", "model", "tutorial"];
 
+// "" is Default: no --model flag, so Claude Code picks its own model
 const MODELS = [
-  {
-    id: "claude-opus-4-6",
-    label: "Claude Opus 4.6",
-    desc: "Most capable, deepest reasoning",
-    badge: "Recommended",
-  },
-  { id: "claude-sonnet-4-6", label: "Claude Sonnet 4.6", desc: "Fast and capable", badge: null },
-  {
-    id: "claude-haiku-4-5",
-    label: "Claude Haiku 4.5",
-    desc: "Fastest, most affordable",
-    badge: null,
-  },
+  { id: "", label: "Default", desc: "Claude Code picks its own model", badge: "Recommended" },
+  { id: "opus", label: "Opus", desc: "Most capable, deepest reasoning", badge: null },
+  { id: "sonnet", label: "Sonnet", desc: "Fast and capable", badge: null },
+  { id: "haiku", label: "Haiku", desc: "Fastest, most affordable", badge: null },
 ];
 
 export function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState<Step>("welcome");
   const [apiKey, setApiKey] = useState("");
-  const [selectedModel, setSelectedModel] = useState("claude-opus-4-6");
+  const [selectedModel, setSelectedModel] = useState("");
   const [saving, setSaving] = useState(false);
 
   const stepIndex = STEPS.indexOf(step);

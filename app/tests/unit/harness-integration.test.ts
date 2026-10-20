@@ -18,7 +18,7 @@ grid:
 roles:
   - label: CEO
     agent: claude
-    model: claude-opus-4-6
+    model: opus
     effort: max
     position: [0, 0]
   - label: Architect
@@ -50,7 +50,7 @@ grid:
 roles:
   - label: Agent
     agent: claude
-    model: claude-opus-4-6
+    model: opus
     position: [0, 0]
 `;
 

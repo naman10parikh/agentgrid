@@ -94,10 +94,10 @@ describe("Harness E2E lifecycle", () => {
       description: "4 Claude agents for parallel dev",
       grid: { rows: 2, cols: 2 },
       roles: [
-        { name: "VP-ARCHITECT", agent: "claude", model: "claude-opus-4-6", effort: "max" },
-        { name: "VP-BUILDER-1", agent: "claude", model: "claude-opus-4-6", effort: "max" },
-        { name: "VP-BUILDER-2", agent: "claude", model: "claude-opus-4-6", effort: "max" },
-        { name: "VP-QA", agent: "claude", model: "claude-opus-4-6", effort: "max" },
+        { name: "VP-ARCHITECT", agent: "claude", model: "opus", effort: "max" },
+        { name: "VP-BUILDER-1", agent: "claude", model: "opus", effort: "max" },
+        { name: "VP-BUILDER-2", agent: "claude", model: "opus", effort: "max" },
+        { name: "VP-QA", agent: "claude", model: "opus", effort: "max" },
       ],
     };
 
@@ -198,15 +198,15 @@ describe("Harness E2E lifecycle", () => {
       name: "opus-max",
       grid: { rows: 1, cols: 2 },
       roles: [
-        { name: "Lead", agent: "claude", model: "claude-opus-4-6", effort: "max" },
-        { name: "Support", agent: "claude", model: "claude-sonnet-4-6", effort: "high" },
+        { name: "Lead", agent: "claude", model: "opus", effort: "max" },
+        { name: "Support", agent: "claude", model: "sonnet", effort: "high" },
       ],
     };
     saveHarness(tempDir, harness);
     const loaded = loadHarness(tempDir, "opus-max");
-    expect(loaded!.roles[0]!.model).toBe("claude-opus-4-6");
+    expect(loaded!.roles[0]!.model).toBe("opus");
     expect(loaded!.roles[0]!.effort).toBe("max");
-    expect(loaded!.roles[1]!.model).toBe("claude-sonnet-4-6");
+    expect(loaded!.roles[1]!.model).toBe("sonnet");
     expect(loaded!.roles[1]!.effort).toBe("high");
   });
 });

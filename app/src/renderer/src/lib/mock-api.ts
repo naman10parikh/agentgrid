@@ -153,7 +153,6 @@ export const mockApi = {
       flags: [],
       mcps: [],
       skills: [],
-      model: "claude-opus-4-6",
       effort: "max",
     }),
     setConfig: async () => true,

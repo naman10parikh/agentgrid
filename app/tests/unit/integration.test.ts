@@ -96,7 +96,7 @@ describe("Integration: Grid + Tools + Signals + Council", () => {
     const claudeDir = join(testDir, ".claude");
     mkdirSync(claudeDir, { recursive: true });
 
-    writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "claude-sonnet-4-6" }));
+    writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "sonnet" }));
     writeFileSync(
       join(testDir, ".agentgrid.json"),
       JSON.stringify({ defaultEffort: "max", defaultAgent: "codex" }),
@@ -105,7 +105,7 @@ describe("Integration: Grid + Tools + Signals + Council", () => {
 
     const config = ti.getConfig(testDir);
     expect(config.agent).toBe("codex"); // from .agentgrid.json
-    expect(config.model).toBe("claude-sonnet-4-6"); // from .claude/settings.json (no agentgrid override)
+    expect(config.model).toBe("sonnet"); // from .claude/settings.json (no agentgrid override)
     expect(config.effort).toBe("max"); // from .agentgrid.json
     expect(config.mcps).toContain("github"); // from .mcp.json
   });

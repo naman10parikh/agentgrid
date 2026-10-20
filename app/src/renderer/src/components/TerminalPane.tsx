@@ -555,7 +555,8 @@ export function TerminalPane({
           }}
           onChangeModel={(model: string) => {
             window.api?.pane?.setModel(pane.id, model);
-            window.api?.terminal?.write(pane.id, `/model ${model}\n`);
+            // Default has no one-line command: the pane's next launch passes no --model flag
+            if (model) window.api?.terminal?.write(pane.id, `/model ${model}\n`);
             onModelChange?.(model);
           }}
           onChangeEffort={(effort: string) => {

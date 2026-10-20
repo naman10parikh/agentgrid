@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { CliTool, EffortLevel } from "../types";
+import { modelOptionsFor, normalizeModel } from "../../../shared/models";
 
 interface PersonaDef {
   id: string;
@@ -35,12 +36,6 @@ interface PaneSettingsProps {
   onChangePersona?: (personaId: string) => void;
   onClose: () => void;
 }
-
-const MODELS = [
-  { value: "claude-opus-4-6", label: "Opus 4.6" },
-  { value: "claude-sonnet-4-6", label: "Sonnet 4.6" },
-  { value: "claude-haiku-4-5-20251001", label: "Haiku 4.5" },
-];
 
 const EFFORTS: EffortLevel[] = ["low", "medium", "high", "max"];
 
@@ -218,7 +213,7 @@ export function PaneSettings({
                     name: customName,
                     icon: "user",
                     category: "custom",
-                    defaultModel: "claude-opus-4-6",
+                    defaultModel: "", // Default: the CLI picks its own model
                     defaultEffort: "high",
                     systemPrompt: customPrompt,
                     color: "#6b7280",
@@ -278,11 +273,11 @@ export function PaneSettings({
       <div className="border-b border-grid-border px-3 py-2">
         <label className="mb-1 block font-mono text-[10px] text-grid-fg-muted">Model</label>
         <select
-          value={model ?? "claude-opus-4-6"}
+          value={agent === "claude" ? (normalizeModel(model) ?? "") : ""}
           onChange={(e) => onChangeModel(e.target.value)}
           className="w-full rounded border border-grid-border bg-grid-bg px-2 py-1 font-mono text-xs text-grid-fg outline-none focus:border-grid-accent/50"
         >
-          {MODELS.map((m) => (
+          {modelOptionsFor(agent).map((m) => (
             <option key={m.value} value={m.value}>
               {m.label}
             </option>

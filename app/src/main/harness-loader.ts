@@ -12,7 +12,6 @@
  * roles:
  *   - label: CEO
  *     agent: claude
- *     model: claude-opus-4-6
  *     effort: max
  *     position: [0, 0]
  *   - label: VP-ARCHITECT
@@ -28,6 +27,7 @@ import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync, unlink
 import { join, basename } from "path";
 import { parse, stringify } from "yaml";
 import type { CliTool, EffortLevel } from "../shared/types";
+import { normalizeModel } from "../shared/models";
 
 export interface HarnessRole {
   label: string;
@@ -315,6 +315,12 @@ export class HarnessLoader {
       // Default name from filename if not in YAML
       if (!data.name) {
         data.name = basename(filePath).replace(/\.(yaml|yml)$/, "");
+      }
+      // An older harness may name an old model ID: read it as an alias or as Default
+      if (Array.isArray(data.roles)) {
+        for (const role of data.roles) {
+          if (role?.model !== undefined) role.model = normalizeModel(role.model) || undefined;
+        }
       }
       return data;
     } catch {

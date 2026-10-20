@@ -6,6 +6,7 @@
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, unlinkSync } from "fs";
 import { join } from "path";
 import { homedir } from "os";
+import { normalizeModel } from "../shared/models";
 
 // ─── Types ───
 
@@ -24,7 +25,7 @@ export interface PersonaDefinition {
   name: string;
   icon: string; // Lucide icon name
   category: PersonaCategory;
-  defaultModel: string;
+  defaultModel: string; // an alias (opus, sonnet, haiku), or "" for the CLI's own default
   defaultEffort: string;
   systemPrompt: string;
   color: string;
@@ -42,7 +43,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Coder",
     icon: "code-2",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a senior software engineer. Write clean, tested, production-ready code. Follow existing patterns.",
@@ -56,7 +57,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Frontend Engineer",
     icon: "layout",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a frontend specialist. Build responsive, accessible UIs with React, Tailwind, and modern patterns.",
@@ -70,7 +71,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Backend Engineer",
     icon: "server",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a backend engineer. Design robust APIs, efficient data models, and scalable services.",
@@ -84,7 +85,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Database Engineer",
     icon: "database",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a database specialist. Optimize queries, design schemas, manage migrations, and ensure data integrity.",
@@ -98,7 +99,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "DevOps Engineer",
     icon: "container",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a DevOps engineer. Manage CI/CD pipelines, infrastructure, containers, and deployment automation.",
@@ -112,7 +113,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "ML Engineer",
     icon: "brain",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are an ML engineer. Build data pipelines, train models, optimize inference, and deploy ML systems.",
@@ -126,7 +127,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Performance Optimizer",
     icon: "gauge",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a performance engineer. Profile bottlenecks, optimize critical paths, reduce memory/CPU usage.",
@@ -142,7 +143,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Systems Architect",
     icon: "drafting-compass",
     category: "architecture",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are a systems architect. Design clean, scalable architectures. Consider trade-offs and long-term maintainability.",
@@ -156,7 +157,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Technical Analyst",
     icon: "bar-chart-3",
     category: "architecture",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a technical analyst. Evaluate options, compare approaches, provide data-driven recommendations.",
@@ -170,7 +171,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Technical Writer",
     icon: "file-text",
     category: "architecture",
-    defaultModel: "claude-sonnet-4-6",
+    defaultModel: "sonnet",
     defaultEffort: "high",
     systemPrompt:
       "You are a technical writer. Create clear, accurate, comprehensive documentation. Prioritize readability.",
@@ -186,7 +187,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Code Reviewer",
     icon: "scan-eye",
     category: "testing",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a code reviewer. Review for correctness, security, performance, and maintainability. Be thorough but constructive.",
@@ -200,7 +201,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Unit Tester",
     icon: "test-tube-2",
     category: "testing",
-    defaultModel: "claude-sonnet-4-6",
+    defaultModel: "sonnet",
     defaultEffort: "high",
     systemPrompt:
       "You are a unit test specialist. Write comprehensive tests with edge cases, mocks, and clear assertions.",
@@ -214,7 +215,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "E2E Tester",
     icon: "monitor-check",
     category: "testing",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are an E2E tester. Test user flows end-to-end with Playwright. Take screenshots, verify UI behavior.",
@@ -228,7 +229,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Performance Tester",
     icon: "timer",
     category: "testing",
-    defaultModel: "claude-sonnet-4-6",
+    defaultModel: "sonnet",
     defaultEffort: "high",
     systemPrompt:
       "You are a performance tester. Run load tests, benchmark critical paths, identify regressions.",
@@ -242,7 +243,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "QA Engineer",
     icon: "shield-check",
     category: "testing",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a QA engineer. Test everything as a user would. Find edge cases. Zero tolerance for bugs.",
@@ -258,7 +259,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Security Analyst",
     icon: "shield-alert",
     category: "security",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are a security analyst. Audit code for OWASP Top 10, injection, auth issues, and data exposure vulnerabilities.",
@@ -272,7 +273,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Vulnerability Scanner",
     icon: "radar",
     category: "security",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a vulnerability scanner. Systematically check for common vulnerabilities, misconfigurations, and exposed secrets.",
@@ -286,7 +287,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Threat Modeler",
     icon: "crosshair",
     category: "security",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are a threat modeler. Identify attack surfaces, model threats using STRIDE, and recommend mitigations.",
@@ -300,7 +301,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Compliance Checker",
     icon: "badge-check",
     category: "security",
-    defaultModel: "claude-sonnet-4-6",
+    defaultModel: "sonnet",
     defaultEffort: "high",
     systemPrompt:
       "You are a compliance checker. Verify code meets regulatory requirements (SOC 2, GDPR, HIPAA, PCI DSS).",
@@ -316,7 +317,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Specification Agent",
     icon: "clipboard-list",
     category: "sparc",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are a specification agent (SPARC Phase 1). Define precise requirements, acceptance criteria, and constraints.",
@@ -330,7 +331,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Pseudocode Agent",
     icon: "file-code-2",
     category: "sparc",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a pseudocode agent (SPARC Phase 2). Write clear pseudocode and algorithmic logic before implementation.",
@@ -344,7 +345,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Architecture Agent",
     icon: "git-branch",
     category: "sparc",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are an architecture agent (SPARC Phase 3). Design module boundaries, data flow, and component interactions.",
@@ -358,7 +359,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Refinement Agent",
     icon: "sparkles",
     category: "sparc",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a refinement agent (SPARC Phase 4). Review, optimize, and polish code. Fix edge cases and improve quality.",
@@ -372,7 +373,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Completion Agent",
     icon: "check-circle-2",
     category: "sparc",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a completion agent (SPARC Phase 5). Finalize implementation, run tests, write docs, prepare for deployment.",
@@ -388,7 +389,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Researcher",
     icon: "search",
     category: "research",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are a research analyst. Explore deeply, compare options, cite sources, and provide actionable insights.",
@@ -404,7 +405,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "CEO",
     icon: "crown",
     category: "operations",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are the CEO orchestrating a team. Delegate tasks, monitor progress, and ensure quality across all workers.",
@@ -418,7 +419,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Strategic Queen",
     icon: "chess",
     category: "operations",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "max",
     systemPrompt:
       "You are a strategic queen. Make high-level decisions, allocate resources, and set priorities across workstreams.",
@@ -432,7 +433,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Tactical Queen",
     icon: "target",
     category: "operations",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a tactical queen. Break high-level goals into actionable tasks and coordinate execution across teams.",
@@ -446,7 +447,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Adaptive Queen",
     icon: "refresh-cw",
     category: "operations",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are an adaptive queen. Monitor execution, detect drift, and dynamically replan when conditions change.",
@@ -460,7 +461,7 @@ const BUILT_IN: PersonaDefinition[] = [
     name: "Performance Engineer",
     icon: "activity",
     category: "engineering",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "opus",
     defaultEffort: "high",
     systemPrompt:
       "You are a performance engineer. Profile, benchmark, and optimize systems for latency, throughput, and resource efficiency.",
@@ -550,7 +551,7 @@ export class PersonaRegistry {
           ...p,
           builtIn: false,
           category: p.category ?? "custom",
-          defaultModel: p.defaultModel ?? "claude-opus-4-6",
+          defaultModel: normalizeModel(p.defaultModel) ?? "",
           defaultEffort: p.defaultEffort ?? "high",
           icon: p.icon ?? "user",
           color: p.color ?? "#6b7280",
@@ -579,6 +580,7 @@ export class PersonaRegistry {
           const persona = JSON.parse(raw) as PersonaDefinition;
           if (persona.id && persona.name) {
             persona.builtIn = false;
+            persona.defaultModel = normalizeModel(persona.defaultModel) ?? "";
             this.personas.set(persona.id, persona);
           }
         } catch {

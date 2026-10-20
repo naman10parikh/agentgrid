@@ -27,13 +27,10 @@ export type CliTool =
   | "cursor"
   | "shell";
 export type Model =
+  | "" // Default: no --model flag, so the CLI picks its own
   | "opus"
   | "sonnet"
   | "haiku"
-  | "gpt-4.1"
-  | "gpt-5.3"
-  | "gemini-2.5-pro"
-  | "gemini-2.5-flash"
   | string;
 export type EffortLevel = "low" | "medium" | "high" | "max";
 export type LogLevel = "info" | "warning" | "error" | "decision" | "experiment";

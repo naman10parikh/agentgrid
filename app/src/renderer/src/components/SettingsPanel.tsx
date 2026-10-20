@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { CLAUDE_MODEL_OPTIONS, normalizeModel } from "../../../shared/models";
 
 interface SettingsState {
   defaultAgent: string;
@@ -15,7 +16,7 @@ interface SettingsState {
 
 const DEFAULTS: SettingsState = {
   defaultAgent: "claude",
-  defaultModel: "claude-opus-4-6",
+  defaultModel: "", // Default: no --model flag, so the CLI picks its own
   defaultEffort: "max",
   autoSaveInterval: 60,
   soundEnabled: true,
@@ -37,7 +38,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
     // Load from localStorage
     try {
       const stored = localStorage.getItem("agentgrid-settings");
-      if (stored) setSettings({ ...DEFAULTS, ...JSON.parse(stored) });
+      if (stored) {
+        const saved = JSON.parse(stored);
+        const defaultModel = normalizeModel(saved.defaultModel) ?? DEFAULTS.defaultModel;
+        setSettings({ ...DEFAULTS, ...saved, defaultModel });
+      }
     } catch {
       // Use defaults
     }
@@ -93,9 +98,11 @@ export function SettingsPanel({ isOpen, onClose }: SettingsPanelProps) {
               onChange={(e) => updateSetting("defaultModel", e.target.value)}
               className="w-full rounded border border-grid-border bg-grid-bg px-3 py-1.5 font-mono text-xs text-grid-fg outline-none focus:border-grid-accent/50"
             >
-              <option value="claude-opus-4-6">Opus 4.6</option>
-              <option value="claude-sonnet-4-6">Sonnet 4.6</option>
-              <option value="claude-haiku-4-5-20251001">Haiku 4.5</option>
+              {CLAUDE_MODEL_OPTIONS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
             </select>
           </div>
 

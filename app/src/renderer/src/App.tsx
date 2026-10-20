@@ -79,7 +79,8 @@ export function App() {
         // Read global settings from electron-store for defaults
         const appSettings = await loadSettings();
         const agent = (appSettings.defaultAgent || "claude") as CliTool;
-        const model = appSettings.defaultModel || "claude-opus-4-6";
+        // The default model is for Claude Code panes. "" (Default) passes no --model flag
+        const model = agent === "claude" ? appSettings.defaultModel || undefined : undefined;
         const effort = appSettings.defaultEffort || "max";
 
         // Create grid via IPC — no timeout, let it complete

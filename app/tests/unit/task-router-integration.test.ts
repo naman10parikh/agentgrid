@@ -65,9 +65,7 @@ describe("Task Router + Grid + ToolInjector Integration", () => {
   });
 
   it("cost estimation scales with token count", () => {
-    const costs = [100, 1000, 10000, 100000, 1000000].map((tokens) =>
-      estimateCost("claude-opus-4-6", tokens),
-    );
+    const costs = [100, 1000, 10000, 100000, 1000000].map((tokens) => estimateCost("opus", tokens));
 
     // Each should be greater than the last
     for (let i = 1; i < costs.length; i++) {
@@ -88,8 +86,8 @@ describe("Task Router + Grid + ToolInjector Integration", () => {
     const suggestion = ti.suggestModel("VP-RESEARCHER");
 
     // Both should pick Opus for research
-    expect(route.model).toBe("claude-opus-4-6");
-    expect(suggestion.model).toBe("claude-opus-4-6");
+    expect(route.model).toBe("opus");
+    expect(suggestion.model).toBe("opus");
   });
 
   it("grid panes can store routed model assignments", () => {
@@ -104,7 +102,7 @@ describe("Task Router + Grid + ToolInjector Integration", () => {
     }
 
     // Verify different models assigned
-    expect(grid.panes[0].model).toBe("claude-haiku-4-5-20251001"); // typo = simple
-    expect(grid.panes[2].model).toBe("claude-opus-4-6"); // architecture = complex
+    expect(grid.panes[0].model).toBe("haiku"); // typo = simple
+    expect(grid.panes[2].model).toBe("opus"); // architecture = complex
   });
 });

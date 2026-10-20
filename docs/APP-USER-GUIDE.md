@@ -99,7 +99,7 @@ Save your grid configuration as a preset to reuse later:
 Each pane can run a different agent with different settings:
 
 - **Agent** — Claude, Codex, Gemini, Aider, Goose, etc.
-- **Model** — claude-opus-4-6, claude-sonnet-4-6, gpt-4.1, etc.
+- **Model** — Default (no `--model` flag, so the CLI picks its own model), then Opus, Sonnet or Haiku for Claude Code. Other agents offer Default only.
 - **Effort** — low, medium, high, max
 - **Context window** — token limit (default: 1M)
 

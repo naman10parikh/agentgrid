@@ -61,14 +61,31 @@ describe("ToolInjector", () => {
       expect(result.command).toBe("custom");
     });
 
-    it("injects model from workspace settings", () => {
+    it("leaves a model in Claude Code's own settings to Claude Code (no --model flag)", () => {
       const claudeDir = join(testDir, ".claude");
       mkdirSync(claudeDir, { recursive: true });
-      writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "claude-opus-4-6" }));
+      writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "opus" }));
 
       const result = injector.buildCommand("claude", testDir);
-      expect(result.args).toContain("--model");
-      expect(result.args).toContain("claude-opus-4-6");
+      expect(result.args).not.toContain("--model");
+    });
+
+    it("launches Claude Code with no --model flag when a pane has no model", () => {
+      expect(injector.buildCommand("claude", testDir).args).not.toContain("--model");
+      expect(injector.buildCommand("claude", testDir, { model: "" }).args).not.toContain("--model");
+    });
+
+    it("passes a pane's alias as --model", () => {
+      const result = injector.buildCommand("claude", testDir, { model: "sonnet" });
+      expect(result.args.join(" ")).toContain("--model sonnet");
+    });
+
+    it("launches a pane saved with an old model ID on its alias, or on Default", () => {
+      const old = injector.buildCommand("claude", testDir, { model: "claude-haiku-4-5-20251001" });
+      expect(old.args.join(" ")).toContain("--model haiku");
+      expect(old.args.join(" ")).not.toContain("claude-");
+      const gpt = injector.buildCommand("claude", testDir, { model: "gpt-4.1" });
+      expect(gpt.args).not.toContain("--model");
     });
 
     it("injects MCPs from .mcp.json", () => {
@@ -91,16 +108,13 @@ describe("ToolInjector", () => {
     it("respects model override", () => {
       const claudeDir = join(testDir, ".claude");
       mkdirSync(claudeDir, { recursive: true });
-      writeFileSync(
-        join(claudeDir, "settings.json"),
-        JSON.stringify({ model: "claude-sonnet-4-6" }),
-      );
+      writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "sonnet" }));
 
       const result = injector.buildCommand("claude", testDir, {
-        model: "claude-opus-4-6",
+        model: "opus",
       });
-      expect(result.args).toContain("claude-opus-4-6");
-      expect(result.args).not.toContain("claude-sonnet-4-6");
+      expect(result.args).toContain("opus");
+      expect(result.args).not.toContain("sonnet");
     });
   });
 
@@ -120,11 +134,11 @@ describe("ToolInjector", () => {
       mkdirSync(claudeDir, { recursive: true });
       writeFileSync(
         join(claudeDir, "settings.json"),
-        JSON.stringify({ model: "claude-opus-4-6", effortLevel: "max" }),
+        JSON.stringify({ model: "opus", effortLevel: "max" }),
       );
 
       const config = injector.getConfig(testDir);
-      expect(config.model).toBe("claude-opus-4-6");
+      expect(config.model).toBe("opus");
       expect(config.effort).toBe("max");
     });
 
@@ -216,36 +230,36 @@ describe("ToolInjector", () => {
   describe("suggestModel", () => {
     it("suggests Opus max for CEO roles", () => {
       const result = injector.suggestModel("CEO");
-      expect(result.model).toBe("claude-opus-4-6");
+      expect(result.model).toBe("opus");
       expect(result.effort).toBe("max");
     });
 
     it("suggests Opus max for architect roles", () => {
       const result = injector.suggestModel("VP-ARCHITECT");
-      expect(result.model).toBe("claude-opus-4-6");
+      expect(result.model).toBe("opus");
       expect(result.effort).toBe("max");
     });
 
     it("suggests Opus high for QA roles", () => {
       const result = injector.suggestModel("VP-QA");
-      expect(result.model).toBe("claude-opus-4-6");
+      expect(result.model).toBe("opus");
       expect(result.effort).toBe("high");
     });
 
     it("suggests Sonnet for builder roles", () => {
       const result = injector.suggestModel("VP-BUILDER-1");
-      expect(result.model).toBe("claude-sonnet-4-6");
+      expect(result.model).toBe("sonnet");
       expect(result.effort).toBe("high");
     });
 
     it("suggests Sonnet for content roles", () => {
       const result = injector.suggestModel("content-writer");
-      expect(result.model).toBe("claude-sonnet-4-6");
+      expect(result.model).toBe("sonnet");
     });
 
     it("returns Opus as default for unknown roles", () => {
       const result = injector.suggestModel("mystery-agent");
-      expect(result.model).toBe("claude-opus-4-6");
+      expect(result.model).toBe("opus");
     });
 
     it("always includes a reason", () => {
@@ -260,23 +274,23 @@ describe("ToolInjector", () => {
   describe("routeTask", () => {
     it("routes research tasks to Opus", () => {
       const result = injector.routeTask("Research the best database options");
-      expect(result.model).toBe("claude-opus-4-6");
+      expect(result.model).toBe("opus");
       expect(result.effort).toBe("max");
     });
 
     it("routes architecture tasks to Opus", () => {
       const result = injector.routeTask("Design the API architecture");
-      expect(result.model).toBe("claude-opus-4-6");
+      expect(result.model).toBe("opus");
     });
 
     it("routes testing tasks to Sonnet", () => {
       const result = injector.routeTask("Write unit tests for the auth module");
-      expect(result.model).toBe("claude-sonnet-4-6");
+      expect(result.model).toBe("sonnet");
     });
 
     it("routes fix tasks to Sonnet", () => {
       const result = injector.routeTask("Fix the login bug");
-      expect(result.model).toBe("claude-sonnet-4-6");
+      expect(result.model).toBe("sonnet");
     });
 
     it("prefers Codex for generation if available", () => {
@@ -285,6 +299,7 @@ describe("ToolInjector", () => {
         { tool: "codex" },
       ]);
       expect(result.agent).toBe("codex");
+      expect(result.model).toBe(""); // Default: the app passes no model to Codex
     });
 
     it("falls back to Claude when Codex not available", () => {

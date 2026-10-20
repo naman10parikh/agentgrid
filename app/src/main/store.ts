@@ -5,6 +5,7 @@
 
 import Store from "electron-store";
 import type { GridLayout, TerminalThemeName, CouncilSession } from "../shared/types";
+import { normalizeModel } from "../shared/models";
 
 interface StoreSchema {
   // Workspace
@@ -97,7 +98,7 @@ const store = new Store<StoreSchema>({
   defaults: {
     lastWorkingDirectory: process.cwd(),
     defaultAgent: "claude",
-    defaultModel: "claude-opus-4-6",
+    defaultModel: "", // Default: no --model flag, so the CLI picks its own
     defaultEffort: "max",
     autoApprovePermissions: true,
     maxRecursionDepth: 3,
@@ -262,8 +263,10 @@ export function addRecentWorkspace(id: string): void {
 }
 
 export function getWorkspaceSettings(workspaceId: string): WorkspaceSettings {
-  const all = store.get("workspaceSettings");
-  return all[workspaceId] ?? { model: "claude-opus-4-6", effort: "max", theme: "dark" };
+  const saved = store.get("workspaceSettings")[workspaceId];
+  // A workspace saved by an older version may hold an old model ID: read it as an alias or Default
+  if (saved) return { ...saved, model: normalizeModel(saved.model) ?? "" };
+  return { model: "", effort: "max", theme: "dark" };
 }
 
 export function setWorkspaceSettings(workspaceId: string, settings: WorkspaceSettings): void {

@@ -8,6 +8,7 @@ import { join } from "path";
 import { homedir } from "os";
 import { execSync } from "child_process";
 import type { CliTool, ToolConfig } from "../shared/types";
+import { normalizeModel } from "../shared/models";
 
 interface ClaudeSettings {
   model?: string;
@@ -71,8 +72,9 @@ export class ToolInjector {
     const workspaceSettings = readJson<ClaudeSettings>(join(cwd, ".claude", "settings.json"));
     const globalSettings = readJson<ClaudeSettings>(join(homedir(), ".claude", "settings.json"));
 
-    // Model
-    const model = overrides?.model ?? workspaceSettings?.model ?? globalSettings?.model;
+    // Model: only a pane's own choice becomes a flag. With none, Claude Code picks its own model
+    // (it reads its own settings files, so the app does not repeat them as a flag).
+    const model = normalizeModel(overrides?.model);
     if (model) {
       args.push("--model", model);
     }
@@ -117,7 +119,7 @@ export class ToolInjector {
       flags: agentgridConfig?.defaultFlags ?? [],
       mcps: this.listMcps(cwd),
       skills: this.listSkills(cwd),
-      model: agentgridConfig?.defaultModel ?? workspaceSettings?.model,
+      model: normalizeModel(agentgridConfig?.defaultModel) ?? workspaceSettings?.model,
       effort: agentgridConfig?.defaultEffort ?? workspaceSettings?.effortLevel,
     };
   }
@@ -140,7 +142,7 @@ export class ToolInjector {
     // CEO/Lead roles → Opus max
     if (r.includes("ceo") || r.includes("lead") || r.includes("architect")) {
       return {
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "max",
         reason: "Orchestration/architecture role needs maximum reasoning",
       };
@@ -149,7 +151,7 @@ export class ToolInjector {
     // QA roles → Opus high (needs careful analysis)
     if (r.includes("qa") || r.includes("test") || r.includes("review")) {
       return {
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "high",
         reason: "Quality assurance needs thorough analysis",
       };
@@ -158,7 +160,7 @@ export class ToolInjector {
     // Research → Opus high
     if (r.includes("research") || r.includes("explore")) {
       return {
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "high",
         reason: "Research benefits from deep reasoning",
       };
@@ -167,7 +169,7 @@ export class ToolInjector {
     // Builder/worker → Sonnet (fast, capable enough for implementation)
     if (r.includes("builder") || r.includes("worker") || r.includes("dev")) {
       return {
-        model: "claude-sonnet-4-6",
+        model: "sonnet",
         effort: "high",
         reason: "Implementation work — Sonnet is fast and capable",
       };
@@ -176,7 +178,7 @@ export class ToolInjector {
     // Content/docs → Sonnet
     if (r.includes("content") || r.includes("doc") || r.includes("write")) {
       return {
-        model: "claude-sonnet-4-6",
+        model: "sonnet",
         effort: "medium",
         reason: "Content generation — Sonnet handles well",
       };
@@ -184,7 +186,7 @@ export class ToolInjector {
 
     // Default → Opus (safe default)
     return {
-      model: "claude-opus-4-6",
+      model: "opus",
       effort: "high",
       reason: "Default — using Opus for unknown role type",
     };
@@ -208,7 +210,7 @@ export class ToolInjector {
     ) {
       return {
         agent: "codex",
-        model: "gpt-5.3-codex",
+        model: "",
         effort: "high",
         reason: "Code generation task — Codex optimized for scaffolding",
       };
@@ -218,7 +220,7 @@ export class ToolInjector {
     if (desc.includes("research") || desc.includes("analyze") || desc.includes("investigate")) {
       return {
         agent: "claude",
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "max",
         reason: "Research task — Opus excels at deep analysis",
       };
@@ -228,7 +230,7 @@ export class ToolInjector {
     if (desc.includes("architect") || desc.includes("design") || desc.includes("plan")) {
       return {
         agent: "claude",
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "max",
         reason: "Architecture task — needs maximum reasoning depth",
       };
@@ -238,7 +240,7 @@ export class ToolInjector {
     if (desc.includes("test") || desc.includes("qa") || desc.includes("verify")) {
       return {
         agent: "claude",
-        model: "claude-sonnet-4-6",
+        model: "sonnet",
         effort: "high",
         reason: "Testing task — Sonnet is fast and thorough",
       };
@@ -248,7 +250,7 @@ export class ToolInjector {
     if (desc.includes("fix") || desc.includes("update") || desc.includes("change")) {
       return {
         agent: "claude",
-        model: "claude-sonnet-4-6",
+        model: "sonnet",
         effort: "high",
         reason: "Implementation task — Sonnet handles well",
       };
@@ -257,7 +259,7 @@ export class ToolInjector {
     // Default → Claude Opus
     return {
       agent: available.includes("claude") ? "claude" : available[0],
-      model: "claude-opus-4-6",
+      model: "opus",
       effort: "high",
       reason: "Default routing — using best available model",
     };

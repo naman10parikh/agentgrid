@@ -203,7 +203,7 @@ export function StatusBar({ grid, focusedPaneId }: StatusBarProps) {
                 className="rounded bg-grid-bg/60 px-1 py-0.5 text-grid-accent"
                 title={`Model: ${focusedPane.model}`}
               >
-                {focusedPane.model.replace("claude-", "").replace("-20251001", "")}
+                {focusedPane.model.replace("claude-", "").replace(/-\d{8}$/, "")}
               </span>
             )}
             {focusedPane.effort && (

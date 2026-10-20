@@ -80,7 +80,7 @@ describe("Stress Tests", () => {
 
     it("handles empty task description", () => {
       const route = routeTask("");
-      expect(route.model).toBe("claude-sonnet-4-6"); // default
+      expect(route.model).toBe("sonnet"); // default
     });
 
     it("handles very long task description", () => {
@@ -89,8 +89,8 @@ describe("Stress Tests", () => {
     });
 
     it("cost estimation handles huge token counts", () => {
-      const cost = estimateCost("claude-opus-4-6", 1_000_000_000);
-      expect(cost).toBe(30000); // $30K for 1B tokens
+      const cost = estimateCost("opus", 1_000_000_000);
+      expect(cost).toBe(12000); // $12K for 1B tokens
     });
   });
 

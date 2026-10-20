@@ -66,7 +66,7 @@ describe("Full CEO Workflow", () => {
 
     // 5. Route a task through task-router
     const route = routeTask("Design the new API architecture");
-    expect(route.model).toBe("claude-opus-4-6");
+    expect(route.model).toBe("opus");
     expect(route.effort).toBe("max");
 
     // 6. Estimate cost

@@ -20,7 +20,7 @@ grid:
 roles:
   - label: CEO
     agent: claude
-    model: claude-opus-4-6
+    model: opus
     effort: max
     position: [0, 0]
   - label: Builder
@@ -82,7 +82,7 @@ describe("Harness → Grid Integration", () => {
     const ceo = grid.panes.find((p) => p.label === "CEO");
     expect(ceo).toBeDefined();
     expect(ceo!.agent).toBe("claude");
-    expect(ceo!.model).toBe("claude-opus-4-6");
+    expect(ceo!.model).toBe("opus");
     expect(ceo!.effort).toBe("max");
 
     const builder = grid.panes.find((p) => p.label === "Builder");

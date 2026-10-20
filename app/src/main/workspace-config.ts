@@ -4,7 +4,6 @@
  * Example .agentgrid.json:
  * {
  *   "defaultAgent": "claude",
- *   "defaultModel": "claude-opus-4-6",
  *   "defaultEffort": "max",
  *   "defaultGrid": "2x3",
  *   "harness": "engineering-sprint",

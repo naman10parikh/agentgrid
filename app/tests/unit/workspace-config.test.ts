@@ -39,12 +39,17 @@ describe("Workspace Config (.agentgrid.json)", () => {
   });
 
   it("reads defaultModel from .agentgrid.json", () => {
-    writeFileSync(
-      join(testDir, ".agentgrid.json"),
-      JSON.stringify({ defaultModel: "claude-opus-4-6" }),
-    );
+    writeFileSync(join(testDir, ".agentgrid.json"), JSON.stringify({ defaultModel: "opus" }));
     const config = injector.getConfig(testDir);
-    expect(config.model).toBe("claude-opus-4-6");
+    expect(config.model).toBe("opus");
+  });
+
+  it("reads an old defaultModel ID in .agentgrid.json as its alias, or as Default", () => {
+    const file = join(testDir, ".agentgrid.json");
+    writeFileSync(file, JSON.stringify({ defaultModel: "claude-sonnet-4-6" }));
+    expect(injector.getConfig(testDir).model).toBe("sonnet");
+    writeFileSync(file, JSON.stringify({ defaultModel: "gemini-2.5-pro" }));
+    expect(injector.getConfig(testDir).model).toBe("");
   });
 
   it("reads defaultEffort from .agentgrid.json", () => {
@@ -65,22 +70,19 @@ describe("Workspace Config (.agentgrid.json)", () => {
   it(".agentgrid.json overrides .claude/settings.json", () => {
     const claudeDir = join(testDir, ".claude");
     mkdirSync(claudeDir, { recursive: true });
-    writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "claude-sonnet-4-6" }));
-    writeFileSync(
-      join(testDir, ".agentgrid.json"),
-      JSON.stringify({ defaultModel: "claude-opus-4-6" }),
-    );
+    writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "sonnet" }));
+    writeFileSync(join(testDir, ".agentgrid.json"), JSON.stringify({ defaultModel: "opus" }));
     const config = injector.getConfig(testDir);
-    expect(config.model).toBe("claude-opus-4-6");
+    expect(config.model).toBe("opus");
   });
 
   it("falls back to .claude/settings.json when .agentgrid.json has no model", () => {
     const claudeDir = join(testDir, ".claude");
     mkdirSync(claudeDir, { recursive: true });
-    writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "claude-sonnet-4-6" }));
+    writeFileSync(join(claudeDir, "settings.json"), JSON.stringify({ model: "sonnet" }));
     writeFileSync(join(testDir, ".agentgrid.json"), JSON.stringify({ defaultAgent: "codex" }));
     const config = injector.getConfig(testDir);
-    expect(config.model).toBe("claude-sonnet-4-6");
+    expect(config.model).toBe("sonnet");
     expect(config.agent).toBe("codex");
   });
 });

@@ -483,8 +483,8 @@ describe("GridManager", () => {
 
     it("setPaneModel updates model field", () => {
       const grid = gm.create(1, 1, "claude", "/tmp");
-      gm.setPaneModel(grid.panes[0].id, "claude-sonnet-4-6");
-      expect(gm.findPane(grid.panes[0].id)!.model).toBe("claude-sonnet-4-6");
+      gm.setPaneModel(grid.panes[0].id, "sonnet");
+      expect(gm.findPane(grid.panes[0].id)!.model).toBe("sonnet");
     });
 
     it("setPaneEffort updates effort field", () => {

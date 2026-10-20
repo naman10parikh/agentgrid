@@ -4,6 +4,7 @@
  */
 
 import type { CliTool, EffortLevel } from "../shared/types";
+import { PRICE_PER_MTOK } from "../shared/models";
 
 interface TaskRoute {
   agent: CliTool;
@@ -74,28 +75,28 @@ export function routeTask(description: string): TaskRoute {
     case "simple":
       return {
         agent: "claude",
-        model: "claude-haiku-4-5-20251001",
+        model: "haiku",
         effort: "high",
         reason: `Simple task (matched keywords). Haiku is sufficient.`,
       };
     case "medium":
       return {
         agent: "claude",
-        model: "claude-sonnet-4-6",
+        model: "sonnet",
         effort: "high",
         reason: `Medium complexity. Sonnet provides good quality/cost balance.`,
       };
     case "complex":
       return {
         agent: "claude",
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "max",
         reason: `Complex task requiring deep reasoning. Opus with max effort.`,
       };
     case "research":
       return {
         agent: "claude",
-        model: "claude-opus-4-6",
+        model: "opus",
         effort: "max",
         reason: `Research task. Opus for comprehensive analysis.`,
       };
@@ -103,12 +104,7 @@ export function routeTask(description: string): TaskRoute {
 }
 
 export function estimateCost(model: string, estimatedTokens: number): number {
-  // Approximate costs per 1M tokens (input + output blend)
-  const costs: Record<string, number> = {
-    "claude-opus-4-6": 30,
-    "claude-sonnet-4-6": 9,
-    "claude-haiku-4-5-20251001": 2,
-  };
-  const costPer1M = costs[model] ?? 15;
+  // Estimated cost per 1M tokens by alias. Default and unknown models are priced as opus
+  const costPer1M = PRICE_PER_MTOK[model] ?? PRICE_PER_MTOK.opus;
   return (estimatedTokens / 1_000_000) * costPer1M;
 }

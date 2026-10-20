@@ -68,6 +68,7 @@ import {
 } from "./store";
 import { IPC } from "../shared/types";
 import type { CliTool, PaneStatus } from "../shared/types";
+import { normalizeModel } from "../shared/models";
 
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
@@ -204,7 +205,8 @@ function registerIpcHandlers(): void {
       // Even though tmux is sequential, the PTY attach is async and needs breathing room
       for (let i = 0; i < grid.panes.length; i++) {
         const pane = grid.panes[i];
-        pane.model = args.model || "claude-opus-4-6";
+        // Only Claude Code takes a model from the app. Unset, the CLI picks its own
+        pane.model = args.agent === "claude" ? normalizeModel(args.model) || undefined : undefined;
         pane.effort = (args.effort || "max") as import("../shared/types").EffortLevel;
         setTimeout(() => {
           spawnTerminalForPane(pane.id, args.cwd, args.agent);
@@ -434,7 +436,7 @@ function registerIpcHandlers(): void {
       setActiveWorkspaceId(ws.id);
       if (args.defaultPreset) {
         setWorkspaceSettings(ws.id, {
-          model: "claude-opus-4-6",
+          model: "",
           effort: "max",
           theme: "dark",
           defaultPreset: args.defaultPreset,

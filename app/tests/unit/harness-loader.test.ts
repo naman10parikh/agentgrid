@@ -14,7 +14,7 @@ grid:
 roles:
   - label: CEO
     agent: claude
-    model: claude-opus-4-6
+    model: opus
     effort: max
     position: [0, 0]
   - label: VP-ARCHITECT
@@ -66,7 +66,7 @@ describe("HarnessLoader", () => {
       const ceo = harness!.roles[0];
       expect(ceo.label).toBe("CEO");
       expect(ceo.agent).toBe("claude");
-      expect(ceo.model).toBe("claude-opus-4-6");
+      expect(ceo.model).toBe("opus");
       expect(ceo.effort).toBe("max");
       expect(ceo.position).toEqual([0, 0]);
     });
@@ -79,6 +79,28 @@ describe("HarnessLoader", () => {
 
     it("returns null for nonexistent harness", () => {
       expect(loader.load("nonexistent")).toBeNull();
+    });
+
+    it("reads an old model ID in a saved harness as its alias, or as Default", () => {
+      const saved = SAMPLE_HARNESS.replace("model: opus", "model: claude-opus-4-6").replace(
+        "agent: codex",
+        "agent: codex\n    model: gpt-4.1",
+      );
+      writeFileSync(join(testDir, "old.yaml"), saved);
+      const harness = loader.load("old");
+      expect(harness!.roles[0].model).toBe("opus");
+      expect(harness!.roles[2].model).toBeUndefined();
+    });
+
+    it("the bundled harnesses pin no model, so each role runs on the CLI's own default", () => {
+      const bundled = new HarnessLoader(join(__dirname, "..", "..", "harnesses"));
+      const names = bundled.list().map((h) => h.name);
+      expect(names.length).toBeGreaterThanOrEqual(5);
+      for (const name of names) {
+        for (const role of bundled.load(name)!.roles) {
+          expect(role.model).toBeUndefined();
+        }
+      }
     });
 
     it("returns null for invalid YAML", () => {
@@ -211,7 +233,7 @@ describe("HarnessLoader", () => {
           {
             label: "CEO",
             agent: "claude",
-            model: "claude-opus-4-6",
+            model: "opus",
             effort: "max",
             row: 0,
             col: 0,
@@ -226,7 +248,7 @@ describe("HarnessLoader", () => {
       expect(harness.grid).toEqual({ rows: 1, cols: 2 });
       expect(harness.roles).toHaveLength(2);
       expect(harness.roles[0].label).toBe("CEO");
-      expect(harness.roles[0].model).toBe("claude-opus-4-6");
+      expect(harness.roles[0].model).toBe("opus");
       expect(harness.roles[1].agent).toBe("codex");
     });
 
@@ -295,7 +317,7 @@ describe("HarnessLoader", () => {
           {
             label: "CEO",
             agent: "claude",
-            model: "claude-opus-4-6",
+            model: "opus",
             effort: "max",
             row: 0,
             col: 0,
@@ -324,7 +346,7 @@ describe("HarnessLoader", () => {
       expect(loaded!.grid.cols).toBe(2);
       expect(loaded!.roles).toHaveLength(4);
       expect(loaded!.roles[0].label).toBe("CEO");
-      expect(loaded!.roles[0].model).toBe("claude-opus-4-6");
+      expect(loaded!.roles[0].model).toBe("opus");
       expect(loaded!.roles[1].agent).toBe("codex");
       expect(loaded!.roles[3].agent).toBe("gemini");
 

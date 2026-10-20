@@ -18,6 +18,7 @@ import {
   getTmuxBin,
   SOCKET_NAME,
 } from "./tmux-helper";
+import { PRICE_PER_MTOK } from "../shared/models";
 
 // Lazy-load node-pty to prevent crash if native module fails
 let ptyModule: typeof import("node-pty") | null = null;
@@ -33,15 +34,10 @@ export type HealthStatus = "active" | "idle" | "stuck" | "dead";
 // ─── Cost tracking constants ───
 // Heuristic: terminal output words × 1.3 ≈ tokens
 const TOKENS_PER_WORD = 1.3;
-// Model pricing per 1K tokens (input+output blended estimate)
-const MODEL_PRICING: Record<string, number> = {
-  "claude-opus-4-6": 0.015,
-  "claude-sonnet-4-6": 0.003,
-  "claude-haiku-4-5-20251001": 0.00025,
-  opus: 0.015,
-  sonnet: 0.003,
-  haiku: 0.00025,
-};
+// Estimated model pricing per 1K tokens by alias (source and date in shared/models.ts)
+const MODEL_PRICING: Record<string, number> = Object.fromEntries(
+  Object.entries(PRICE_PER_MTOK).map(([alias, usd]) => [alias, usd / 1000]),
+);
 
 function getModelPrice(model: string): number {
   // Try exact match first, then partial
@@ -227,7 +223,7 @@ export class TerminalManager extends EventEmitter {
         recentLines: [],
         wordCount: 0,
         estimatedTokens: 0,
-        model: "claude-opus-4-6",
+        model: "default",
         costTimeline: [],
         flushTimer: null,
       };

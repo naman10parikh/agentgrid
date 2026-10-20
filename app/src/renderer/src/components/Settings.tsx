@@ -12,6 +12,7 @@ import {
   Github,
   BadgeCheck,
 } from "lucide-react";
+import { CLAUDE_MODEL_OPTIONS, PRICE_PER_MTOK, normalizeModel } from "../../../shared/models";
 
 // ─── Settings Data ───
 // All settings are persisted via electron-store through window.api.settings IPC.
@@ -35,7 +36,7 @@ interface AppSettings {
 
 const DEFAULT_SETTINGS: AppSettings = {
   defaultAgent: "claude",
-  defaultModel: "claude-opus-4-6",
+  defaultModel: "", // Default: no --model flag, so the CLI picks its own
   defaultEffort: "max",
   theme: "dark",
   terminalFontSize: 13,
@@ -57,16 +58,6 @@ const CLI_TOOLS = [
   { value: "hermes", label: "Hermes" },
   { value: "cline", label: "Cline" },
   { value: "shell", label: "Shell (no agent)" },
-];
-
-const MODELS = [
-  { value: "claude-opus-4-6", label: "Claude Opus 4.6" },
-  { value: "claude-sonnet-4-6", label: "Claude Sonnet 4.6" },
-  { value: "claude-haiku-4-5", label: "Claude Haiku 4.5" },
-  { value: "gpt-4.1", label: "GPT-4.1" },
-  { value: "gpt-5.3", label: "GPT-5.3 Codex" },
-  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
-  { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
 ];
 
 const EFFORT_LEVELS = [
@@ -99,7 +90,7 @@ export function Settings({ isOpen, onClose }: SettingsProps) {
         setSettings((prev) => ({
           ...prev,
           defaultAgent: (stored.defaultAgent as string) ?? prev.defaultAgent,
-          defaultModel: (stored.defaultModel as string) ?? prev.defaultModel,
+          defaultModel: normalizeModel(stored.defaultModel as string) ?? prev.defaultModel,
           defaultEffort: (stored.defaultEffort as string) ?? prev.defaultEffort,
           theme: (stored.theme as "dark" | "light") ?? prev.theme,
           terminalFontSize: (stored.terminalFontSize as number) ?? prev.terminalFontSize,
@@ -295,10 +286,13 @@ function ModelsSection({
 }) {
   return (
     <div className="space-y-5">
-      <Field label="Default Model" desc="Model used when spawning new Claude agents">
+      <Field
+        label="Default Model"
+        desc="For new Claude Code panes. Default passes no --model flag, so Claude Code picks its own."
+      >
         <Select
           value={settings.defaultModel}
-          options={MODELS}
+          options={CLAUDE_MODEL_OPTIONS}
           onChange={(v) => update("defaultModel", v)}
         />
       </Field>
@@ -867,9 +861,11 @@ function CostBudgetSection({
       </div>
       <div>
         <p className="text-[10px] text-grid-fg-dim">
-          Model pricing (per 1K tokens, blended input+output):
+          Estimated price per 1K tokens (the mean of the input and output prices Anthropic lists,
+          read 20 October 2026):
           <br />
-          Opus: $0.015 | Sonnet: $0.003 | Haiku: $0.00025
+          Opus: ${PRICE_PER_MTOK.opus / 1000} | Sonnet: ${PRICE_PER_MTOK.sonnet / 1000} | Haiku: $
+          {PRICE_PER_MTOK.haiku / 1000}
         </p>
       </div>
     </div>
@@ -987,7 +983,8 @@ async function loadSettings(): Promise<AppSettings> {
       return {
         ...DEFAULT_SETTINGS,
         defaultAgent: (stored.defaultAgent as string) ?? DEFAULT_SETTINGS.defaultAgent,
-        defaultModel: (stored.defaultModel as string) ?? DEFAULT_SETTINGS.defaultModel,
+        defaultModel:
+          normalizeModel(stored.defaultModel as string) ?? DEFAULT_SETTINGS.defaultModel,
         defaultEffort: (stored.defaultEffort as string) ?? DEFAULT_SETTINGS.defaultEffort,
         theme: (stored.theme as "dark" | "light") ?? DEFAULT_SETTINGS.theme,
         terminalFontSize: (stored.terminalFontSize as number) ?? DEFAULT_SETTINGS.terminalFontSize,

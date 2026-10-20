@@ -338,7 +338,7 @@ describe("Concurrent-like operations", () => {
   it("preset save preserves all pane fields", () => {
     const gm = new GridManager();
     const grid = gm.create(1, 2, "claude", "/tmp");
-    grid.panes[0].model = "claude-opus-4-6";
+    grid.panes[0].model = "opus";
     grid.panes[0].effort = "max";
     grid.panes[1].agent = "codex";
 
@@ -347,7 +347,7 @@ describe("Concurrent-like operations", () => {
 
     const loaded = gm.loadPreset("full-fields");
     expect(loaded).not.toBeNull();
-    expect(loaded!.panes[0].model).toBe("claude-opus-4-6");
+    expect(loaded!.panes[0].model).toBe("opus");
     expect(loaded!.panes[0].effort).toBe("max");
     expect(loaded!.panes[1].agent).toBe("codex");
   });
