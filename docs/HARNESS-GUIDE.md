@@ -4,7 +4,7 @@ A **harness** is a reusable configuration that defines how a team of AI agents w
 
 ## Harness File Format
 
-Harnesses are YAML files stored in `~/.agentgrid/harnesses/` or `.agentgrid/harnesses/` in your project.
+Harnesses are YAML files. The desktop app reads and saves them in `.claude/harnesses/` inside the folder it was started from.
 
 ```yaml
 name: engineering-sprint
@@ -144,8 +144,8 @@ The `score` field (0-1) tracks the harness's historical success rate. AutoLab im
 
 1. Start with a built-in harness as a template
 2. Modify roles, prompts, and phases for your use case
-3. Save to `~/.agentgrid/harnesses/my-harness.yaml`
-4. Load via command palette or `agentgrid launch my-harness`
+3. Save to `.claude/harnesses/my-harness.yaml` in the folder you start the app from
+4. Load it from the app's command palette (`agentgrid launch` starts a saved preset, not a harness)
 5. After each run, review results and adjust
 
 ## Tips

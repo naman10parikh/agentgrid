@@ -70,8 +70,6 @@ export function cmdHarness(action: string, nameOrPath?: string): void {
       const config: HarnessConfig = {
         name: nameOrPath,
         description: `Harness from ${process.cwd()}`,
-        model: "claude-opus-4-6",
-        effort: "max",
         context: [],
         tools: [],
         rules: [],

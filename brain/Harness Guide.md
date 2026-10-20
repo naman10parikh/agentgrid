@@ -13,7 +13,7 @@ related: ["[[MOC - agentgrid]]", "[[Presets Guide]]", "[[ORG_CONTEXT]]"]
 Navigation note. How to author a **harness** — a reusable YAML config that defines a team of
 AI agents working together (roles, grid layout, skills, rules, evaluation criteria).
 Harness files live in `../harnesses/` (CLI-bundled) and `../app/harnesses/` (app-bundled),
-or in `~/.agentgrid/harnesses/` / `.agentgrid/harnesses/` per project.
+and the desktop app reads and saves its own in `.claude/harnesses/` inside the folder it was started from.
 
 **Read the source:** `../docs/HARNESS-GUIDE.md`.
 
