@@ -17,7 +17,6 @@
  *   agentgrid sandbox-run            # defaults to a harness self-check command
  */
 import chalk from "chalk";
-import { Sandbox } from "e2b";
 import { recordRun } from "../lib/run-log.js";
 
 /** Result of a single sandboxed command execution. */
@@ -48,6 +47,9 @@ export async function runInSandbox(
   }
 
   const start = Date.now();
+  // Loaded here, not at the top of the file: the e2b SDK needs a recent Node (it requires an ESM-only
+  // dependency), and every other agentgrid command must keep working on Node 18 without it.
+  const { Sandbox } = await import("e2b");
   // Boot a fresh Firecracker microVM. `base` is E2B's maintained default image.
   const sandbox = await Sandbox.create(opts?.template ?? "base", {
     apiKey,

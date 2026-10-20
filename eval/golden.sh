@@ -43,7 +43,8 @@ wait_for() {
 panes() { T list-panes -t "$SESSION:1" 2>/dev/null | wc -l | tr -d ' '; }
 has_panes() { [ "$(panes)" = "$1" ]; }
 file_exists() { [ -s "$1" ]; }
-pane_shows() { T capture-pane -p -t "$SESSION:1.$1" 2>/dev/null | grep -q "^$2\$"; }
+# The token is the command's output, never its typed text (the pane types `echo X_$((40+2))` and prints X_42).
+pane_shows() { T capture-pane -p -t "$SESSION:1.$1" 2>/dev/null | grep -q "$2"; }
 all_panes_show() { local p; for p in 1 2 3 4; do pane_shows "$p" "$1" || return 1; done; }
 pane_status_is() { [ "$(T display-message -p -t "$SESSION:1.$1" '#{@pane_status}' 2>/dev/null)" = "$2" ]; }
 
@@ -116,7 +117,7 @@ while [ "$ROUND" -le "$K" ]; do
   # G3: broadcast reaches every pane, and every pane's agent runs it (the output differs from the typed text).
   if run_step broadcast "'$ROOT/agentgrid' broadcast 'echo AGEVAL_\$((40+2))'" && wait_for 10 all_panes_show AGEVAL_42; then
     ok "broadcast-runs-in-all-4-panes"
-  else bad "broadcast-runs-in-all-4-panes" "$(cat "$TMP/broadcast.out" 2>/dev/null | tail -2)"; fi
+  else bad "broadcast-runs-in-all-4-panes" "$(cat "$TMP/broadcast.out" 2>/dev/null | tail -2) | $(for q in 1 2 3 4; do printf 'pane %s: %s / ' "$q" "$(T capture-pane -p -t "$SESSION:1.$q" | grep -v '^$' | tail -2 | tr '\n' ' ')"; done)"; fi
 
   # G4: the plugin's hook commands (hooks/hooks.json) color a pane: running, then done.
   # Claude Code exports CLAUDE_PLUGIN_ROOT to the hook process; the pane does the same here.
