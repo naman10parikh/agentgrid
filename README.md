@@ -31,10 +31,10 @@ once, and for lead agents that hand work to other agents. It runs on plain tmux 
 
 ```
 ┌──────────────┬──────────────┬──────────────┐
-│ ⚡ Agent 1    │ ⚡ Agent 2    │ ⚡ Agent 3    │
+│ ● Agent 1    │ ● Agent 2    │ ● Agent 3    │
 │ fixing auth  │ writing tests│ updating docs│
 ├──────────────┼──────────────┼──────────────┤
-│ ✅ Agent 4    │ ⏳ Agent 5    │ ⚡ Agent 6    │
+│ ✓ Agent 4    │ ◌ Agent 5    │ ● Agent 6    │
 │ done · 3min  │ needs input  │ refactoring  │
 └──────────────┴──────────────┴──────────────┘
 ```
