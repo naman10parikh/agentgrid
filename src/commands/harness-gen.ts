@@ -110,6 +110,8 @@ export function cmdHarnessGen(
   console.log(chalk.dim(`  Grid: ${tmpl.grid}, ${roles.length} roles`));
   console.log(chalk.dim(`  Agent: ${agent}`));
   console.log("");
-  console.log(chalk.white("Load it with:"));
-  console.log(chalk.dim(`  agentgrid harness load ${name}`));
+  console.log(
+    chalk.white("No command loads this file yet. Start a grid of the same size:"),
+  );
+  console.log(chalk.dim(`  agentgrid ${tmpl.grid} ${agent}`));
 }

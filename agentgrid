@@ -1433,9 +1433,10 @@ case "$COMMAND" in
     broadcast)   cmd_broadcast "$@" ;;
     equalize)    cmd_equalize ;;
     kill)        cmd_kill_grid ;;
-    send|read|inject|monitor|logs|mcp-serve|mcp|memory-search|sandbox-run|runs)
+    send|read|inject|monitor|logs|mcp-serve|mcp|memory-search|sandbox-run|runs|harness|init|generate|gen)
                  # v2 TypeScript-CLI subcommands (per-pane send/read/inject, live monitor,
-                 # MCP server, BM25 memory search, E2B sandbox exec, run-log audit trail)
+                 # MCP server, BM25 memory search, E2B sandbox exec, run-log audit trail,
+                 # harness snapshots, init and the harness generator)
                  # — delegate to the built dist/index.js. The MCP server calls these too.
                  AG_SELF="${BASH_SOURCE[0]}"
                  if [ -L "$AG_SELF" ]; then
@@ -1448,9 +1449,11 @@ case "$COMMAND" in
                  AG_ROOT="$(cd "$(dirname "$AG_SELF")" && pwd)"
                  if [ -f "${AG_ROOT}/dist/index.js" ]; then
                      exec node "${AG_ROOT}/dist/index.js" "$COMMAND" "$@"
+                 elif [ -f "${AG_ROOT}/src/index.ts" ]; then
+                     err "'${COMMAND}' needs the TypeScript CLI. Build it first: cd \"${AG_ROOT}\" && npm install"
+                     exit 1
                  else
-                     err "'${COMMAND}' needs the TypeScript CLI build (dist/index.js missing)."
-                     echo -e "  ${DIM}Run 'pnpm build' in the agentgrid repo first${NC}" >&2
+                     err "'${COMMAND}' needs the TypeScript CLI, which the one-line installer leaves out. Run it from GitHub: npx -y -p github:naman10parikh/agentgrid agentgrid ${COMMAND}"
                      exit 1
                  fi ;;
     version|--version|-v|-V) cmd_version ;;

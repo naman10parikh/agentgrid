@@ -62,11 +62,10 @@ export function cmdInit(opts?: { force?: boolean }): void {
   }
 
   console.log("");
-  console.log(chalk.white("AgentGrid initialized! Next steps:"));
-  console.log(chalk.dim("  1. Edit .agentgrid.json to set defaults"));
+  console.log(chalk.white("AgentGrid initialized! Next step:"));
+  console.log(chalk.dim("  Run: agentgrid 2x2 claude"));
   console.log(
-    chalk.dim("  2. Edit .agentgrid/harnesses/example.yaml for your team"),
+    chalk.dim("  No command reads .agentgrid.json or the harness files yet."),
   );
-  console.log(chalk.dim("  3. Run: agentgrid 2x2 claude"));
   console.log("");
 }

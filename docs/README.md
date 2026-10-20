@@ -39,7 +39,7 @@ flowchart LR
 
 The command you type is [agentgrid](../agentgrid), a Bash script.
 It creates grids, runs the setup wizard, launches presets, saves and restores sessions, and prints status.
-It hands `send`, `read`, `inject`, `monitor`, `logs`, `memory-search`, `sandbox-run`, `runs` and `mcp-serve` to the TypeScript CLI in [src/index.ts](../src/index.ts).
+It hands `send`, `read`, `inject`, `monitor`, `logs`, `memory-search`, `sandbox-run`, `runs`, `mcp-serve`, `harness`, `init` and `generate` to the TypeScript CLI in [src/index.ts](../src/index.ts).
 That CLI is built to `dist/index.js`, and its commands live in [src/commands/](../src/commands/).
 [src/mcp-server.ts](../src/mcp-server.ts) offers 15 tools, such as `grid_create` and `pane_send`, over MCP, the Model Context Protocol that agents use to call tools.
 Each tool calls the `agentgrid` command, or tmux itself, with its arguments as a list, so no shell ever reads the text.
@@ -131,7 +131,7 @@ Only Claude Code updates the pane colors. The hooks are written for Claude Code,
 So the status column in the Supported Agents table further down is not set for the other agents.
 It is not on the npm registry yet, so `npm install -g agentgrid` fails today.
 The install script copies only the shell script and the status script. So the commands it hands to the TypeScript CLI need a built clone.
-The `harness`, `init` and `generate` commands exist only in the TypeScript CLI. The shell script does not pass them through.
+The `harness`, `init` and `generate` commands write and show harness and settings files, but no grid command reads those files yet. So `agentgrid --help` leaves them out.
 
 ## Why agentgrid?
 
