@@ -95,8 +95,8 @@ agentgrid is not on the npm registry yet, so it runs and installs from GitHub:
 # Run it straight from GitHub, nothing installed
 npx -y -p github:naman10parikh/agentgrid agentgrid --help
 
-# Or install the command from GitHub
-npm install -g github:naman10parikh/agentgrid
+# Or keep a copy: clone, build, and put both commands on your PATH
+git clone https://github.com/naman10parikh/agentgrid && cd agentgrid && npm install && npm install -g .
 ```
 
 ### Your first grid
@@ -139,7 +139,8 @@ optional Electron desktop app lives in `app/`.
 8. **Run log:** every state-changing command (grid, broadcast, send, inject, kill, sandbox) appends one line to
    `logs/runs.jsonl`; `agentgrid runs` shows them.
 9. **Sandbox:** `agentgrid sandbox-run "<command>"` runs a command in a fresh E2B microVM, with your own
-   `E2B_API_KEY`. Measured boot: 263 to 348 ms.
+   `E2B_API_KEY`. Booting the microVM took a median of 505 ms over nine runs from a laptop (263 to 1,162 ms,
+   network included).
 
 ### Architecture
 
@@ -486,6 +487,30 @@ Read [CONTRIBUTING.md](CONTRIBUTING.md); AI-assisted pull requests are welcome. 
 
 [![Star history chart](https://api.star-history.com/svg?repos=naman10parikh/agentgrid&type=Date)](https://star-history.com/#naman10parikh/agentgrid&Date)
 <!-- fleet:footer:end -->
+
+
+<!-- fleet:anatomy:start -->
+## What it is made of
+
+Every project in this fleet is graded on the same 11 harness components and on self-improvement. Each mark is backed by a file you can open.
+
+| Component | Grade | Where |
+| --- | --- | --- |
+| Identity | ✅ | identity/SOUL.md:1 (Lattice; BRAND, HEARTBEAT, bootstrap MEMORY, no template slots) |
+| Memory | ✅ | memory/MEMORY.md:1 (about 785 tokens) + BM25 index src/lib/memory-index.ts:47 (agentgrid memory-search) + memory/LEARNINGS.md (7 rules) |
+| Skills | ✅ | skills/agentgrid/SKILL.md:1, skills/agentgrid-orchestrate/SKILL.md:1, skills/agentgrid-sessions/SKILL.md:1 |
+| Tools/CLIs | ✅ | package.json:7 (bins agentgrid, agentgrid-mcp); agentgrid:1432 (--version) |
+| Hooks | ✅ | .claude/settings.json:4 (SessionStart, PostToolUse) + hooks/hooks.json:4 (plugin pane-status hooks) |
+| Sub-agents | ✅ | .claude/agents/grid-operator.md:1, .claude/agents/pane-doctor.md:1 (flat, bundled in .claude-plugin/plugin.json) |
+| MCPs | ✅ | src/mcp-server.ts:36 (own stdio server, 15 tools; bin agentgrid-mcp) + .mcp.json:3 |
+| Dispatch | ✅ | agentgrid:261 (grid) and agentgrid:1132 (broadcast); scheduled run .github/workflows/improve.yml:9 |
+| Evals | ✅ | eval/run.sh:1 (smoke, surfaces 44, golden 7 tasks pass^3) gating CI .github/workflows/test.yml:45 |
+| Observability | ✅ | src/lib/run-log.ts:52 + agentgrid:156 (append-only logs/runs.jsonl) + .claude/hooks/audit-log.sh |
+| Sandbox/Infra | ✅ | src/commands/sandbox.ts:52 (E2B microVM, e2b dependency package.json:75) |
+| RSI / open-endedness | ✅ | dsip.json:1 (L2) + .github/workflows/improve.yml (nightly loop) + scripts/improve.mjs |
+
+✅ real and tested · 🟡 partial, with the reason in the row · ❌ absent
+<!-- fleet:anatomy:end -->
 
 ## License
 

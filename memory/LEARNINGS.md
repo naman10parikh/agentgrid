@@ -52,5 +52,14 @@ so a message holding `$(...)` or backticks would have run on the host.
 **Root cause:** string commands go through `/bin/sh`.
 **Rule:** pass tool input to commands as an argument array (`execFileSync(cmd, args)`), never inside a command string.
 
+## 2026-10-19 — `npm install -g github:...` cannot build a TypeScript package
+
+**What:** `npm install -g github:naman10parikh/agentgrid` failed with `tsc: command not found`, while
+`npx -y -p github:naman10parikh/agentgrid` worked.
+**Root cause:** for a global install, npm prepares a git dependency without its dev dependencies, so the `prepare`
+script cannot find TypeScript.
+**Rule:** document `npx -y -p github:...` for one-off runs and `git clone ... && npm install && npm install -g .` for a
+kept copy. Never advertise an install line that was not run from an empty folder.
+
 > Inherited cross-cutting rules live in `.claude/rules/` and are glob-loaded every session.
 > Append new entries above this line as they are discovered.
