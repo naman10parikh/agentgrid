@@ -37,6 +37,29 @@ describe("LicenseManager", () => {
     expect(lm.getTrialDaysRemaining()).toBeGreaterThan(0);
   });
 
+  it("gives a new trial 14 days of 24 hours when a clock change falls inside it", async () => {
+    const tz = process.env.TZ;
+    process.env.TZ = "America/Los_Angeles"; // clocks go back an hour on 1 November 2026
+    vi.useFakeTimers({ toFake: ["Date"] });
+    try {
+      vi.setSystemTime(new Date("2026-10-20T12:00:00-07:00"));
+      const { LicenseManager } = await import("../../src/main/license");
+      const lm = new LicenseManager();
+      lm.startTrial();
+      expect(lm.getTrialDaysRemaining()).toBe(14);
+      vi.setSystemTime(new Date("2026-11-03T10:59:59-08:00")); // one second before 14 x 24 hours
+      expect(lm.isTrialActive()).toBe(true);
+      expect(lm.getTrialDaysRemaining()).toBe(1);
+      vi.setSystemTime(new Date("2026-11-03T11:00:00-08:00"));
+      expect(lm.isTrialActive()).toBe(false);
+      expect(lm.getTrialDaysRemaining()).toBe(0);
+    } finally {
+      vi.useRealTimers();
+      if (tz === undefined) delete process.env.TZ;
+      else process.env.TZ = tz;
+    }
+  });
+
   it("prevents double trial", async () => {
     const { LicenseManager } = await import("../../src/main/license");
     const lm = new LicenseManager();

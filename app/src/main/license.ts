@@ -24,6 +24,7 @@ interface LicenseData {
 }
 
 const TRIAL_DAYS = 14;
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 export class LicenseManager {
   private license: LicenseData | null = null;
@@ -64,18 +65,21 @@ export class LicenseManager {
     return tier === "pro" || tier === "team";
   }
 
+  // The trial lasts TRIAL_DAYS days of 24 hours each, so a clock change inside it never adds a day.
+  private trialEndsAt(startedAt: string): number {
+    return new Date(startedAt).getTime() + TRIAL_DAYS * DAY_MS;
+  }
+
   isTrialActive(): boolean {
     if (!this.license?.trialStartedAt) return false;
-    const trialEnd = new Date(this.license.trialStartedAt);
-    trialEnd.setDate(trialEnd.getDate() + TRIAL_DAYS);
-    return new Date() < trialEnd;
+    return Date.now() < this.trialEndsAt(this.license.trialStartedAt);
   }
 
   getTrialDaysRemaining(): number {
     if (!this.license?.trialStartedAt) return TRIAL_DAYS;
-    const trialEnd = new Date(this.license.trialStartedAt);
-    trialEnd.setDate(trialEnd.getDate() + TRIAL_DAYS);
-    const remaining = Math.ceil((trialEnd.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+    const remaining = Math.ceil(
+      (this.trialEndsAt(this.license.trialStartedAt) - Date.now()) / DAY_MS,
+    );
     return Math.max(0, remaining);
   }
 
