@@ -113,6 +113,7 @@ It runs the evals and reads every CLI command and MCP tool.
 It proposes docs for any command or tool the docs never mention, and a skill for any tool no skill teaches.
 It checks the memory budget and compares the eval time with [eval/baseline.json](../eval/baseline.json).
 It writes `logs/proposal.md`, calls no model and never commits, so a person makes every change.
+The workflow then opens one issue labelled `proposal`, or updates the one already open, so a person can review it.
 It is not level 3, because the loop does not change its own checks.
 
 **How do I run its tests or evals?**
