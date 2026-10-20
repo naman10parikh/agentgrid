@@ -34,7 +34,7 @@ splits into parts that several agents can do side by side.
 **MCP server** (`agentgrid-mcp`, stdio, 15 tools): `grid_create`, `grid_status`, `grid_broadcast`, `grid_kill`,
 `grid_equalize`, `grid_dashboard`, `pane_send`, `pane_read`, `pane_rename`, `pane_add`, `pane_inject`, `preset_list`,
 `preset_load`, `session_save`, `session_restore`. Start it with
-`npx -y -p github:naman10parikh/agentgrid agentgrid-mcp`, or `agentgrid mcp-serve` from an installed CLI.
+`npx -y -p github:naman10parikh/agentgrid agentgrid-mcp`, or `agentgrid mcp-serve` from a built clone.
 
 **Skills** ([skills/](skills/)): `agentgrid` (spawn a grid), `agentgrid-orchestrate` (hand out and track work),
 `agentgrid-sessions` (save, restore, presets).
@@ -66,7 +66,7 @@ src/                  # The CLI — TypeScript, compiled by tsc to dist/
                       #     agents.ts (agent detection), sound.ts
   mcp-server.ts       #   exposes agentgrid as an MCP tool for external orchestration
   __tests__/          #   vitest unit tests (build-gating)
-agentgrid             # bash launcher / bin shim invoked by `npx agentgrid`
+agentgrid             # bash launcher: the `agentgrid` bin that `npx -p github:naman10parikh/agentgrid` runs
 pane-status.sh        # the hook callback agents invoke to set @pane_status
 install.sh            # one-command installer (tmux + hooks + sounds)
 app/                  # Electron desktop app — SEPARATE pnpm workspace

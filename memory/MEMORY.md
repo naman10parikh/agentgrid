@@ -5,7 +5,7 @@
 
 ## Architecture Decisions
 
-- agentgrid is two surfaces in one repo: a published **TypeScript CLI** (`src/` → `dist/index.js`) and an optional **Electron desktop app** (`app/`, separate pnpm workspace). The CLI is the npm package; the app is built independently because it needs the native `node-pty` module.
+- agentgrid is two surfaces in one repo: a **TypeScript CLI** (`src/` → `dist/index.js`, not on the npm registry yet) and an optional **Electron desktop app** (`app/`, separate pnpm workspace). The CLI is the npm package; the app is built independently because it needs the native `node-pty` module.
 - Built on **tmux**, not a custom daemon/server. Grids are tmux panes (`split-window` + `select-layout tiled`); per-pane metadata uses custom tmux options `@pane_status` and `@pane_label`.
 - IPC for the app has a **single source of truth**: `app/packages/shared/src/types.ts` (`IPCChannels`). `docs/IPC-PROTOCOL.md` documents it; never redeclare channels elsewhere.
 - Rewritten bash → TypeScript + Electron at **v2.0.0** while keeping the `agentgrid` CLI command surface backward-compatible.
@@ -21,7 +21,7 @@
 
 - CLI deps: `commander` (arg parsing), `chalk` (color), `yaml` (harness/preset parsing). Strict TypeScript, named exports, files < 400 lines.
 - App stack: Electron + electron-vite + React + xterm.js (WebGL renderer, Unicode11, Sixel), vitest (unit) + Playwright (e2e).
-- Distribution: npm (`agentgrid`), one-line `install.sh`, and a Homebrew tap (`Formula/`, `app/homebrew/`).
+- Distribution: the one-line `install.sh` and GitHub (`npx -p github:naman10parikh/agentgrid`, or a clone). npm (`agentgrid`) and a Homebrew formula (`Formula/`, `app/homebrew/`) are prepared but not published.
 - Bash 3.2 floor for shell pieces (`install.sh`, `pane-status.sh`) — stock macOS has no associative arrays.
 
 ## People & Resources

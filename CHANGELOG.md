@@ -92,7 +92,7 @@
 - `agentgrid swap [up|down]` — swap pane positions
 - `agentgrid restore` (no name) — lists saved sessions with timestamps
 - `agentgrid restore <name>` — now restarts agents automatically (not just layout)
-- `npm install -g agentgrid` — npm package distribution
+- npm package distribution, prepared but not published: the package is not on the npm registry yet
 - `package.json` for npm registry publishing
 
 ### Fixed

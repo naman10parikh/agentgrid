@@ -48,7 +48,7 @@ We used AgentGrid to build AgentGrid. A 6-agent grid:
 
 ```bash
 # CLI (free forever)
-npm install -g agentgrid
+curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
 agentgrid 2x2 claude
 
 # App (download)

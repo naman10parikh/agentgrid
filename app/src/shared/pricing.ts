@@ -27,7 +27,7 @@ export const PRICING_TIERS: PricingTier[] = [
       "Signal protocol support",
       "Community presets",
     ],
-    cta: "npm install -g agentgrid",
+    cta: "curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash",
     highlighted: false,
   },
   {

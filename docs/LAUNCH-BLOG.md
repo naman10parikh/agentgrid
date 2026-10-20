@@ -165,7 +165,7 @@ This is the recursive dream: **the tool that builds itself**.
 
 ```bash
 # CLI (works now)
-npx agentgrid 2x3 claude
+npx -y -p github:naman10parikh/agentgrid agentgrid 2x3 claude
 
 # App (build from source)
 cd tools/agentgrid/app && npm install && npm run build && npm start

@@ -7,7 +7,7 @@
  * can interact with grids programmatically.
  *
  * Usage:
- *   claude mcp add agentgrid -- npx agentgrid mcp-serve
+ *   claude mcp add --transport stdio agentgrid -- npx -y -p github:naman10parikh/agentgrid agentgrid-mcp
  *   OR
  *   node dist/mcp-server.js
  */

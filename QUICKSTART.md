@@ -6,16 +6,20 @@ optional Electron desktop app for orchestrating them.
 ## Install + run the CLI (60 seconds)
 
 ```bash
-# Option A — npm (recommended)
-npm install -g agentgrid
+# Option A: a clone, with every command (the TypeScript ones included)
+git clone https://github.com/naman10parikh/agentgrid && cd agentgrid && npm install && npm install -g .
 agentgrid 2x3 claude        # 6 Claude Code panes, evenly tiled
 
-# Option B — one-line installer (also installs tmux + hooks + sounds)
+# Option B: one-line installer (also installs tmux + hooks + sounds)
 curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
 
-# Option C — run without installing
-npx agentgrid 2x3 claude
+# Option C: run without installing, straight from GitHub
+npx -y -p github:naman10parikh/agentgrid agentgrid 2x3 claude
 ```
+
+agentgrid is not on the npm registry yet, so `npm install -g agentgrid` and `npx agentgrid` fail. Option B copies
+only the shell script and the status script. So `send`, `read`, `inject` and the other TypeScript commands need
+option A or C.
 
 Then try the interactive wizard and a saved preset:
 
@@ -25,7 +29,7 @@ agentgrid launch dev-sprint # launch a saved configuration
 agentgrid status            # see who is working / waiting / done
 ```
 
-**Requirements:** bash, tmux, python3 · **Supports:** macOS · Linux · Windows (WSL).
+**Requirements:** bash, tmux, python3, and Node 18 or newer for options A and C · **Supports:** macOS · Linux · Windows (WSL).
 
 ## Build from source (CLI)
 

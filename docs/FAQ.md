@@ -25,8 +25,16 @@ Claude Code, Codex CLI, Gemini CLI, Aider, Goose, Hermes, Cline, GitHub Copilot,
 ### How do I install the CLI?
 
 ```bash
-npm install -g agentgrid
+# The one-line installer: the grid commands, presets, a tmux config and the Claude Code hooks
+curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
+
+# Every command, the TypeScript ones included: clone and build
+git clone https://github.com/naman10parikh/agentgrid && cd agentgrid && npm install && npm install -g .
 ```
+
+agentgrid is not on the npm registry yet, so `npm install -g agentgrid` fails. The one-line installer copies only the
+shell script and the status script. So the commands that run the TypeScript CLI, such as `send`, `read` and `inject`,
+need the clone or `npx -y -p github:naman10parikh/agentgrid agentgrid <command>`.
 
 ### How do I install the Electron app?
 

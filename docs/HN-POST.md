@@ -11,7 +11,7 @@ Create a 2x3 grid, each pane runs a different AI agent with its own terminal. Br
 **CLI (free):**
 
 ```bash
-npm install -g agentgrid
+curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
 agentgrid 2x3 claude    # 6 Claude Code agents
 agentgrid 2x2 codex     # 4 Codex agents
 agentgrid status         # see who's working/idle/done

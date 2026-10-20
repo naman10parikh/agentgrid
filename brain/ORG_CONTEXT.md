@@ -18,8 +18,8 @@ agentgrid is a developer tool that spawns a grid of AI coding agents — Claude 
 Gemini CLI, Aider, Goose, and any other terminal command — each in its own tmux pane, from
 a single command (`agentgrid 2x3 claude`). It surfaces who is working (blue), who is waiting
 for input (yellow), and who is done (green), with sound alerts that punch through Do Not
-Disturb. It ships in two forms from this one repo: a published **TypeScript CLI** (`src/` →
-`dist/index.js`, on npm as `agentgrid`) and an optional **Electron desktop app** (`app/`)
+Disturb. It ships in two forms from this one repo: a **TypeScript CLI** (`src/` →
+`dist/index.js`, packaged for npm as `agentgrid` but not published yet) and an optional **Electron desktop app** (`app/`)
 that adds a visual mission-control over the same grids.
 
 ## Why it exists

@@ -136,6 +136,10 @@ tmux config, and adds the pane-status hooks to Claude Code's settings:
 curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
 ```
 
+It copies only the shell script and the status script. So the commands that run the TypeScript CLI, such as `send`,
+`read`, `inject` and `mcp-serve`, need the clone or `npx` route above. If you add the clone after the installer,
+delete `~/.local/bin/agentgrid` so the clone's copy runs.
+
 ## How it works
 
 The command line is about 1,440 lines of bash on top of tmux: no daemon, no server, no background process. The

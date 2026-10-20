@@ -130,7 +130,7 @@ It does not run the agents itself. It types their commands into tmux panes.
 Only Claude Code updates the pane colors. The hooks are written for Claude Code, and no code reads other agents' exit codes.
 So the Supported Agents table further down says No in the status column for every other agent.
 It is not on the npm registry yet, so `npm install -g agentgrid` fails today.
-The install script copies only the shell script and the status script. So the commands it hands to the TypeScript CLI need a built clone.
+The install script copies only the shell script and the status script. So the commands it hands to the TypeScript CLI need a built clone or `npx`, and without one they say so.
 The `harness`, `init` and `generate` commands write and show harness and settings files, but no grid command reads those files yet. So `agentgrid --help` leaves them out.
 
 ## Why agentgrid?
@@ -150,17 +150,23 @@ Running multiple AI coding agents means juggling tmux splits, remembering pane I
 curl -fsSL https://raw.githubusercontent.com/naman10parikh/agentgrid/main/install.sh | bash
 ```
 
-One command. Installs tmux (if needed), configures everything, sets up agent hooks. 60 seconds.
+One command. Installs tmux (if needed), configures everything, sets up the Claude Code hooks. 60 seconds.
+It copies only the shell script and the status script. The commands that run the TypeScript CLI need one of the
+two routes below.
 
 **Supports:** macOS (Homebrew), Linux (apt/dnf/pacman), Windows (WSL)
 
-**Or via npm:**
+**Or from GitHub, with every command:**
 
 ```bash
-npm install -g agentgrid
+# Run it straight from GitHub, nothing installed
+npx -y -p github:naman10parikh/agentgrid agentgrid --help
+
+# Or keep a copy: clone, build, and put both commands on your PATH
+git clone https://github.com/naman10parikh/agentgrid && cd agentgrid && npm install && npm install -g .
 ```
 
-The package is not on the npm registry yet, so this command fails today. Use the install script above.
+The package is not on the npm registry yet, so `npm install -g agentgrid` fails today.
 
 ## Quick Start
 
