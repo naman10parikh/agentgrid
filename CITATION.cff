@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: If you use this software, please cite it as below.
+title: "AgentGrid: Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command."
+type: software
+authors:
+  - family-names: Parikh
+    given-names: Naman
+repository-code: "https://github.com/naman10parikh/agentgrid"
+license: MIT
+version: "2.0.0"
+abstract: "Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command."
+keywords: ["agent-native", "tmux", "multi-agent", "orchestration"]
