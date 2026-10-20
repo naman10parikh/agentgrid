@@ -15,8 +15,10 @@ export interface SessionMeta {
   createdAt: string;
 }
 
-const SOCKET_NAME = "agentgrid";
-const SESSION_DIR = path.join(os.homedir(), ".agentgrid", "terminal-sessions");
+// The unit tests set both to their own (vitest.config.ts), so a test run never touches the app's live panes.
+const SOCKET_NAME = process.env.AGENTGRID_TMUX_SOCKET || "agentgrid";
+const SESSION_DIR =
+  process.env.AGENTGRID_SESSION_DIR || path.join(os.homedir(), ".agentgrid", "terminal-sessions");
 
 export function getTmuxBin(): string {
   // Use system tmux (available on every macOS via Xcode CLI tools or homebrew)
@@ -33,10 +35,22 @@ function baseArgs(): string[] {
 }
 
 export function tmuxExec(...args: string[]): string {
-  return execFileSync(getTmuxBin(), [...baseArgs(), ...args], {
-    encoding: "utf8",
-    timeout: 5000,
-  }).trim();
+  const run = (): string =>
+    execFileSync(getTmuxBin(), [...baseArgs(), ...args], {
+      encoding: "utf8",
+      timeout: 5000,
+    }).trim();
+  // Right after its last pane closes, the server is still exiting, and a command that reaches it fails with
+  // "server exited unexpectedly". Give it a moment to finish, then start fresh, up to three times.
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return run();
+    } catch (err) {
+      if (attempt === 3 || !(err as Error).message.includes("server exited unexpectedly"))
+        throw err;
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 100);
+    }
+  }
 }
 
 export function tmuxSessionName(paneId: string): string {
