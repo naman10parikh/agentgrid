@@ -554,14 +554,25 @@ export function TerminalPane({
             window.api?.pane?.setCwd(pane.id, cwd);
           }}
           onChangeModel={(model: string) => {
-            window.api?.pane?.setModel(pane.id, model);
-            // Default has no one-line command: the pane's next launch passes no --model flag
-            if (model) window.api?.terminal?.write(pane.id, `/model ${model}\n`);
+            // A typed /model also saves the choice as the person's default for every new session, so the
+            // pane restarts with its own --model flag instead, as Claude Code's model docs advise.
+            window.api?.pane
+              ?.setModel(pane.id, model)
+              .then(() => window.api?.pane?.restart(pane.id))
+              .catch(() => {
+                console.warn("[TerminalPane] Failed to restart pane for model change");
+              });
             onModelChange?.(model);
           }}
           onChangeEffort={(effort: string) => {
-            window.api?.pane?.setEffort(pane.id, effort);
-            window.api?.terminal?.write(pane.id, `/effort ${effort}\n`);
+            if (effort === pane.effort) return;
+            // Likewise a typed /effort saves the level as the default: restart with --effort.
+            window.api?.pane
+              ?.setEffort(pane.id, effort)
+              .then(() => window.api?.pane?.restart(pane.id))
+              .catch(() => {
+                console.warn("[TerminalPane] Failed to restart pane for effort change");
+              });
             onEffortChange?.(effort);
           }}
           onChangeAgent={(agent: string) => {

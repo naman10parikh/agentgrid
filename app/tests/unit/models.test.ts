@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "fs";
+import { join } from "path";
 import {
   CLAUDE_MODEL_OPTIONS,
   PRICE_PER_MTOK,
@@ -78,5 +80,26 @@ describe("prices", () => {
     expect(estimateCostUsd(1_000_000, "")).toBe(PRICE_PER_MTOK.opus);
     expect(estimateCostUsd(1_000_000, undefined)).toBe(PRICE_PER_MTOK.opus);
     expect(estimateCostUsd(500_000, "opus")).toBe(PRICE_PER_MTOK.opus / 2);
+  });
+});
+
+describe("switching one pane's model or effort", () => {
+  // Claude Code saves a typed /model or /effort as the person's default for every new session.
+  const pane = readFileSync(
+    join(__dirname, "../../src/renderer/src/components/TerminalPane.tsx"),
+    "utf-8",
+  );
+
+  it("never types /model or /effort into the running session", () => {
+    expect(pane).not.toMatch(/write\(pane\.id, `\/(model|effort) /);
+  });
+
+  it("saves the pane's own choice, then restarts it so the launch passes --model or --effort", () => {
+    expect(pane).toMatch(
+      /setModel\(pane\.id, model\)\s*\.then\(\(\) => window\.api\?\.pane\?\.restart\(pane\.id\)\)/,
+    );
+    expect(pane).toMatch(
+      /setEffort\(pane\.id, effort\)\s*\.then\(\(\) => window\.api\?\.pane\?\.restart\(pane\.id\)\)/,
+    );
   });
 });

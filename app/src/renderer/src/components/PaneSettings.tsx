@@ -303,6 +303,9 @@ export function PaneSettings({
             </button>
           ))}
         </div>
+        <p className="mt-1 font-mono text-[10px] text-grid-fg-muted">
+          A change restarts this pane. Your own defaults stay as they are.
+        </p>
       </div>
 
       {/* Close */}
