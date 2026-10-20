@@ -14,4 +14,4 @@ Warm black (#141312) background · Amber accent (#f59e0b) for active panes · Zi
 
 ## Landing Copy
 
-Lattice turns your terminal into a command center. One `agentgrid 2x3` command and six Claude Code agents appear in front of you — each named, each focused, each visible. No background sessions. No mystery. The chairman watches the work happen.
+Lattice turns your terminal into a command center. One `agentgrid 2x3` command and six Claude Code agents appear in front of you — each named, each focused, each visible. No background sessions. No mystery. You watch the work happen.
