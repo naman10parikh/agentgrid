@@ -41,10 +41,10 @@ to one pane when the work is done.
 | ⚡ WORKING | Blue | The agent is working |
 | ⏳ WAITING | Yellow | The agent needs input or a permission |
 | ✅ DONE | Green | The agent finished |
-| IDLE | Gray | No agent is active in the pane |
+| IDLE | Gray | No status is set: the pane is idle, or its agent is not Claude Code |
 
-Claude Code, Codex and OpenCode set the status through hooks (`pane-status.sh`, or the plugin's
-`hooks/hooks.json`). Other agents use exit-code detection.
+Only Claude Code sets the status, through hooks (`pane-status.sh`, or the plugin's `hooks/hooks.json`).
+agentgrid sets up no hooks for other agents and reads no exit codes, so their panes stay IDLE.
 
 ## Output
 

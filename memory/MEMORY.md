@@ -12,7 +12,7 @@
 
 ## Key Patterns
 
-- **Status color contract:** ⚡ WORKING (blue) · ⏳ WAITING (yellow) · ✅ DONE (green). Hook-capable agents (Claude/Codex/OpenCode) set status via `pane-status.sh`; others use exit-code detection.
+- **Status color contract:** ⚡ WORKING (blue) · ⏳ WAITING (yellow) · ✅ DONE (green). Only Claude Code sets status, through hooks that call `pane-status.sh`; other agents' panes stay idle (no hooks for them, no exit-code reading).
 - **Two independent test gates:** CLI `pnpm test` (37 tests) and app `pnpm --dir app test` (475 tests) — green the gate for whichever surface you touched.
 - **Never `tmux select-pane`** in code/scripts (steals user focus). Use `capture-pane` to read, `send-keys` to drive.
 - **Sound through DND:** `afplay` (macOS) / `paplay` (Linux) play alerts even under Do Not Disturb / Focus.

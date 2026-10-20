@@ -144,8 +144,8 @@ optional Electron desktop app lives in `app/`.
 
 1. **Grid engine:** creates tmux panes with `split-window` and `select-layout tiled`.
 2. **Status system:** custom tmux options (`@pane_status`, `@pane_label`) hold each pane's state and name.
-3. **Agent hooks:** Claude Code, Codex and OpenCode hooks call `pane-status.sh` when an agent starts, needs input
-   and stops. The Claude Code plugin ships these hooks in [`hooks/hooks.json`](hooks/hooks.json).
+3. **Agent hooks:** Claude Code hooks call `pane-status.sh` when an agent starts, needs input and stops. The Claude
+   Code plugin ships these hooks in [`hooks/hooks.json`](hooks/hooks.json). No other agent sets a status yet.
 4. **Sound alerts:** `afplay` (macOS) or `paplay` (Linux), which play through Do Not Disturb and Focus.
 5. **Session persistence:** JSON snapshots of the layout, each pane's agent, directory and conversation id.
 6. **Agent detection:** walks the process tree (`ps -o args`) to find the agent behind a `node` process.
@@ -222,7 +222,8 @@ Visual wizard with grid preview. 4 steps:
 | Needs input | ⏳ WAITING | Yellow | Tink  |
 | Done        | ✅ DONE    | Green  | Glass |
 
-Status updates automatically via agent hooks (Claude Code, Codex, OpenCode). Other agents use exit code detection.
+Status updates automatically through Claude Code's hooks. agentgrid sets up no hooks for other agents and reads no
+exit codes, so their panes show as idle.
 
 ### Dashboard
 
@@ -308,16 +309,16 @@ agentgrid install-all                # Install all missing
 | Agent           | Command      | Install                                                                        | Auto Status |
 | --------------- | ------------ | ------------------------------------------------------------------------------ | ----------- |
 | Claude Code     | `claude`     | `npm install -g @anthropic-ai/claude-code`                                     | Yes (hooks) |
-| Codex           | `codex`      | `npm install -g @openai/codex`                                                 | Yes (hooks) |
-| Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`                                            | Exit code   |
-| Aider           | `aider`      | `pip install aider-chat`                                                       | Exit code   |
-| OpenCode        | `opencode`   | `npm install -g opencode-ai`                                                   | Yes (hooks) |
-| Goose           | `goose`      | `brew install block-goose-cli`                                                 | Exit code   |
-| Cline           | `cline`      | `npm install -g cline`                                                         | Exit code   |
-| Hermes          | `hermes`     | the vendor's installer: [hermes-agent](https://github.com/NousResearch/hermes-agent) | Exit code   |
-| Copilot         | `copilot`    | `npm install -g @github/copilot`                                               | Exit code   |
-| Cursor          | `cursor`     | the vendor's installer: [Cursor CLI](https://cursor.com/docs/cli/installation) | Exit code   |
-| **Any command** | `<your-cmd>` | none                                                                           | Exit code   |
+| Codex           | `codex`      | `npm install -g @openai/codex`                                                 | No          |
+| Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`                                            | No          |
+| Aider           | `aider`      | `pip install aider-chat`                                                       | No          |
+| OpenCode        | `opencode`   | `npm install -g opencode-ai`                                                   | No          |
+| Goose           | `goose`      | `brew install block-goose-cli`                                                 | No          |
+| Cline           | `cline`      | `npm install -g cline`                                                         | No          |
+| Hermes          | `hermes`     | the vendor's installer: [hermes-agent](https://github.com/NousResearch/hermes-agent) | No          |
+| Copilot         | `copilot`    | `npm install -g @github/copilot`                                               | No          |
+| Cursor          | `cursor`     | the vendor's installer: [Cursor CLI](https://cursor.com/docs/cli/installation) | No          |
+| **Any command** | `<your-cmd>` | none                                                                           | No          |
 
 `agentgrid install <agent>` and `agentgrid install-all` run only the commands above, each checked against its
 registry and listed with its source in [install-allowlist.json](install-allowlist.json). For Hermes and Cursor they

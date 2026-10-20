@@ -101,9 +101,9 @@ Each pane displays a colored border label showing its current state:
 | Needs input | ⏳ WAITING | Yellow | Tink  | Agent hit a permission prompt |
 | Done        | ✅ DONE    | Green  | Glass | Agent finished responding     |
 
-Status updates happen automatically through agent hooks. The installer sets up Claude Code hooks for you. Codex and OpenCode also support hooks natively.
+Status updates happen automatically through agent hooks. The installer sets up Claude Code hooks for you, and so does the Claude Code plugin. agentgrid sets up no hooks for any other agent yet.
 
-For agents without hook support (Gemini, Aider, Goose, etc.), status updates based on exit code — green when the process exits successfully.
+Other agents (Codex, OpenCode, Gemini, Aider, Goose and the rest) get no status. agentgrid reads no exit codes, so their panes show as idle.
 
 ### How Status Works
 

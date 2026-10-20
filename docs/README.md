@@ -128,7 +128,7 @@ The evals need tmux, Python 3 and Node.
 **What does it not do?**
 It does not run the agents itself. It types their commands into tmux panes.
 Only Claude Code updates the pane colors. The hooks are written for Claude Code, and no code reads other agents' exit codes.
-So the status column in the Supported Agents table further down is not set for the other agents.
+So the Supported Agents table further down says No in the status column for every other agent.
 It is not on the npm registry yet, so `npm install -g agentgrid` fails today.
 The install script copies only the shell script and the status script. So the commands it hands to the TypeScript CLI need a built clone.
 The `harness`, `init` and `generate` commands write and show harness and settings files, but no grid command reads those files yet. So `agentgrid --help` leaves them out.
@@ -192,16 +192,16 @@ agentgrid is built on tmux. No daemon, no server, no Electron.
 | Agent           | Command      | Install                              | Auto Status |
 | --------------- | ------------ | ------------------------------------ | ----------- |
 | Claude Code     | `claude`     | Built-in                             | Yes (hooks) |
-| Codex           | `codex`      | `npm install -g @openai/codex`       | Yes (hooks) |
-| Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`  | Exit code   |
-| Aider           | `aider`      | `pip install aider-chat`             | Exit code   |
-| OpenCode        | `opencode`   | `npm install -g opencode-ai`         | Exit code   |
-| Goose           | `goose`      | `brew install block-goose-cli`       | Exit code   |
-| Cline           | `cline`      | `npm install -g cline`               | Exit code   |
-| Hermes          | `hermes`     | [vendor installer](https://github.com/NousResearch/hermes-agent) | Exit code   |
-| Copilot         | `copilot`    | `npm install -g @github/copilot`     | Exit code   |
-| Cursor          | `cursor`     | [vendor installer](https://cursor.com/docs/cli/installation) | Exit code   |
-| **Any command** | `<your-cmd>` | none                                 | Exit code   |
+| Codex           | `codex`      | `npm install -g @openai/codex`       | No          |
+| Gemini CLI      | `gemini`     | `npm install -g @google/gemini-cli`  | No          |
+| Aider           | `aider`      | `pip install aider-chat`             | No          |
+| OpenCode        | `opencode`   | `npm install -g opencode-ai`         | No          |
+| Goose           | `goose`      | `brew install block-goose-cli`       | No          |
+| Cline           | `cline`      | `npm install -g cline`               | No          |
+| Hermes          | `hermes`     | [vendor installer](https://github.com/NousResearch/hermes-agent) | No          |
+| Copilot         | `copilot`    | `npm install -g @github/copilot`     | No          |
+| Cursor          | `cursor`     | [vendor installer](https://cursor.com/docs/cli/installation) | No          |
+| **Any command** | `<your-cmd>` | none                                 | No          |
 
 Custom agents: use literally any terminal command. agentgrid doesn't restrict what you run.
 

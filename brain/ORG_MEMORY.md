@@ -28,8 +28,8 @@ view of the most load-bearing ones.
   panes; it is banned in agentgrid code and scripts. Read panes with `capture-pane` and
   drive them with `send-keys` instead.
 - **Status colors are a UX contract.** ⚡ WORKING (blue) · ⏳ WAITING (yellow) · ✅ DONE
-  (green). Agents with hooks (Claude/Codex/OpenCode) set status via `pane-status.sh`; others
-  fall back to exit-code detection. Don't repaint these meanings.
+  (green). Only Claude Code sets status, through hooks that call `pane-status.sh`; other
+  agents' panes stay idle, since nothing reads exit codes. Don't repaint these meanings.
 - **Bash 3.2 is the floor for shell pieces.** Stock macOS ships bash 3.2 (no associative
   arrays); installer and hook scripts must stay compatible (lesson carried from the
   pre-TypeScript era, still true for `install.sh` / `pane-status.sh`).
