@@ -12,7 +12,7 @@
 <a href="https://www.linkedin.com/in/naman-parikh1/"><img alt="Naman Parikh on LinkedIn" src="https://img.shields.io/badge/LinkedIn-Naman%20Parikh-0a66c2?style=flat-square"></a>
 </p>
 
-<p align="center"><a href="#quick-start">Quick start</a> · <a href="docs/README.md">How it works</a> · <a href="AGENTS.md">AGENTS.md</a> · <a href="llms.txt">llms.txt</a> · <a href="skills/">Skills</a> · <a href="https://github.com/naman10parikh/agentgrid/discussions">Discussions</a> · <a href="https://github.com/naman10parikh">All projects</a></p>
+<p align="center"><a href="#quick-start">Quick start</a> · <a href="https://naman10parikh.github.io/agentgrid/">Website</a> · <a href="docs/README.md">How it works</a> · <a href="AGENTS.md">AGENTS.md</a> · <a href="llms.txt">llms.txt</a> · <a href="skills/">Skills</a> · <a href="https://github.com/naman10parikh/agentgrid/discussions">Discussions</a> · <a href="https://github.com/naman10parikh">All projects</a></p>
 
 **Spawn grids of coding agents (Claude, Codex, Gemini, Cursor) in one command.**
 
@@ -532,10 +532,14 @@ One of the projects by [Naman Parikh](https://github.com/naman10parikh). Each ow
 | [WikiMem](https://github.com/naman10parikh/wikimem) | Memory |
 | [Skillsmith](https://github.com/naman10parikh/skillsmith) | Skills |
 | [Agent Booster](https://github.com/naman10parikh/agent-booster) | Tools / CLIs |
+| [Hooksmith](https://github.com/naman10parikh/hooksmith) | Hooks |
+| [AgentCast](https://github.com/naman10parikh/agentcast) | Sub-agents |
+| [Plugsmith](https://github.com/naman10parikh/plugsmith) | Plugins |
 | [Armory](https://github.com/naman10parikh/armory) | MCPs and the component registry |
 | [AgentSwarm](https://github.com/naman10parikh/agentswarm) | Dispatch |
 | [AgentBench](https://github.com/naman10parikh/agentbench) | Evals |
 | [AgentMoney](https://github.com/naman10parikh/agentmoney) | Observability |
+| [Sandforge](https://github.com/naman10parikh/sandforge) | Sandbox / Infra |
 | [Claude Harness](https://github.com/naman10parikh/claude-harness) | The whole harness, as a template |
 
 ## Community
